@@ -9,7 +9,7 @@ public class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         try {
             return new Configuration().configure().addPackage("model")
-                    .addAnnotatedClass(model.Product.class)
+                    .addAnnotatedClass(model.produit.class)
                     .buildSessionFactory();
         } catch (Exception ex) {
             System.err.println("Hibernate 初始化失败: " + ex);

@@ -16,6 +16,6 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- 实体类映射 -->
-        <mapping class="model.Product"/>
+        <mapping class="model.produit"/>
     </session-factory>
 </hibernate-configuration>
