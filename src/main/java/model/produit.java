@@ -16,4 +16,5 @@ public class produit {
     private Double price;
 
     // Getters and Setters
+    
 }
