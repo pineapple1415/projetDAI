@@ -18,11 +18,11 @@ function loadProducts() {
 }
 
 // 添加到购物车 ajouter dans le panier
-function addToPanier(productId) {
+function addToPanier(IdProduit) {
     fetch('/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'add', productId: productId })
+        body: JSON.stringify({ action: 'add', IdProduit: IdProduit })
     }).then(response => updateCartDisplay());
 }
 
