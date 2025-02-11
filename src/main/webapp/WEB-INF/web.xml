@@ -21,13 +21,15 @@
     <url-pattern>/panier</url-pattern>
   </servlet-mapping>
 
+
   <servlet>
     <servlet-name>ServletAddPanier</servlet-name>
     <servlet-class>Servlet.ServletAddPanier</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ServletAddPanier</servlet-name>
-    <url-pattern>/addPanier</url-pattern>
+    <url-pattern>/addToPanier</url-pattern>
   </servlet-mapping>
+
 
 </web-app>
