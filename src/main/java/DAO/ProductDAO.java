@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO {
@@ -27,6 +28,29 @@ public class ProductDAO {
         }
     }
 
+    public List<produit> getAllProducts() {
+        List<produit> products = new ArrayList<>();
+        String sql = "SELECT idProduit, nomProduit, origineProduit, prixUnit, tailleProduit, descriptionProduit FROM produits";
+
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                products.add(new produit(
+                        rs.getInt("idProduit"),
+                        rs.getString("nomProduit"),
+                        rs.getString("origineProduit"),
+                        rs.getDouble("prixUnit"),
+                        rs.getString("tailleProduit"),
+                        rs.getString("descriptionProduit")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
 
 
 

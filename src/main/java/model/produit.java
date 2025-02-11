@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "produit")
-public class Produit {
+public class produit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,15 +30,15 @@ public class Produit {
 
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
-    private Fournisseur fournisseur;
+    private fournisseur fournisseur;
 
     @ManyToOne
     @JoinColumn(name = "idCategorie")
-    private Categorie categorie;
+    private categorie categorie;
 
     @ManyToOne
     @JoinColumn(name = "idRayon")
-    private Rayon rayon;
+    private rayon rayon;
 
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ligneCommande> ligneCommande = new HashSet<>();
@@ -47,7 +47,7 @@ public class Produit {
     }
 
     public Produit(Integer idProduit, String nomProduit, Double prixUnit, String origineProduit,
-                   String tailleProduit, String description, Fournisseur fournisseur, Categorie categorie) {
+                   String tailleProduit, String description, fournisseur fournisseur, categorie categorie) {
         this.idProduit = idProduit;
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
@@ -106,27 +106,27 @@ public class Produit {
         this.description = description;
     }
 
-    public Fournisseur getFournisseur() {
+    public fournisseur getFournisseur() {
         return fournisseur;
     }
 
     public void setFournisseur(fournisseur fournisseur) {
-        this.Fournisseur = fournisseur;
+        this.fournisseur = fournisseur;
     }
 
-    public Categorie getCategorie() {
+    public categorie getCategorie() {
         return categorie;
     }
 
-    public void setCategorie(Categorie categorie) {
+    public void setCategorie(categorie categorie) {
         this.categorie = categorie;
     }
 
-    public Rayon getRayon() {
+    public rayon getRayon() {
         return rayon;
     }
 
-    public void setRayon(Rayon rayon) {
+    public void setRayon(rayon rayon) {
         this.rayon = rayon;
     }
 

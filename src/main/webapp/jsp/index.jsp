@@ -21,8 +21,8 @@
     <div id="productList">
         <!-- Les produits seront affichés ici -->
     </div>
-
-
 </main>
+
+<script type="text/JavaScript" src="js/fctxml.js"></script>
 </body>
 </html>
