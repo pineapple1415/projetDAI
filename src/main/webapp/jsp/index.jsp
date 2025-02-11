@@ -5,7 +5,6 @@
     <title>Welcome</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" type="text/css" />
     <script defer src="${pageContext.request.contextPath}/js/script.js"></script>
-
 </head>
 <body>
 <header>
@@ -14,12 +13,13 @@
         <button id="filterButton">Filtrer</button>
     </div>
     <button id="loginButton">Login</button>
+    <span id="cartCount">0</span> <!-- 购物车数量显示 -->
 </header>
 
 <main>
     <h2>Liste des Produits</h2>
     <div id="productList">
-        <!-- Les produits seront affichés ici -->
+        <!-- 产品将在这里动态添加 -->
     </div>
 </main>
 

@@ -1,21 +1,24 @@
 package DAO;
 
-import model.produit;
+import model.Produit;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO {
-    public List<produit> getAllProducts() {
+    public List<Produit> getAllProducts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("from produit ", produit.class).list();
+            return session.createQuery("from Produit ", Produit.class).list();
         }
     }
 
-    public void addProduit(produit product) {
+
+
+    public void addProduit(Produit product) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
@@ -28,29 +31,7 @@ public class ProductDAO {
         }
     }
 
-    public List<produit> getAllProducts() {
-        List<produit> products = new ArrayList<>();
-        String sql = "SELECT idProduit, nomProduit, origineProduit, prixUnit, tailleProduit, descriptionProduit FROM produits";
 
-        try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                products.add(new produit(
-                        rs.getInt("idProduit"),
-                        rs.getString("nomProduit"),
-                        rs.getString("origineProduit"),
-                        rs.getDouble("prixUnit"),
-                        rs.getString("tailleProduit"),
-                        rs.getString("descriptionProduit")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return products;
-    }
 
 
 

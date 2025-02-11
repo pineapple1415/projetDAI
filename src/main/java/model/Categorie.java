@@ -1,9 +1,9 @@
 package model;
 
-public class categorie {
+public class Categorie {
     private int id;
     private String nom;
-    public categorie(int id, String nom) {
+    public Categorie(int id, String nom) {
         this.id = id;
         this.nom = nom;
     }

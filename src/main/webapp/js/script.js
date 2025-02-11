@@ -3,13 +3,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchBox = document.getElementById("searchBox");
     const filterButton = document.getElementById("filterButton");
 
-    // 预设的产品数据（如果产品来自数据库，建议使用 AJAX 动态获取）
-    const products = [
-        { name: "Produit 1", price: "10€" },
-        { name: "Produit 2", price: "15€" },
-        { name: "Produit 3", price: "20€" },
-        { name: "Produit 4", price: "25€" }
-    ];
+    let products = []; // 用于存储从后端获取的产品数据
+
+    /**
+     * 获取产品数据 (AJAX 从 Servlet `/api/products` 获取)
+     */
+    function fetchProducts() {
+        fetch(`${window.location.origin}/api/products`) // 访问 Servlet
+            .then(response => response.json())
+            .then(data => {
+                products = data; // 存储数据
+                displayProducts(); // 显示产品
+            })
+            .catch(error => console.error("获取产品列表失败:", error));
+    }
 
     /**
      * 显示产品列表
@@ -23,27 +30,35 @@ document.addEventListener("DOMContentLoaded", function () {
             .forEach(p => {
                 const div = document.createElement("div");
                 div.className = "product-item";
-                div.innerHTML = `<h3>${p.name}</h3><p>Prix: ${p.price}</p>`;
+                div.innerHTML = `
+                    <h3>${p.name}</h3>
+                    <p>Prix: ${p.price}€</p>
+                    <button class="addToCartBtn" data-id="${p.id}" data-name="${p.name}">Ajouter au panier</button>
+                `;
                 productList.appendChild(div);
             });
+
+        // 重新绑定“添加到购物车”按钮的点击事件
+        bindAddToCartEvents();
     }
 
     /**
-     * 添加商品到购物车
+     * 绑定"添加到购物车"按钮的点击事件
      */
-    function addToCart() {
-        const productIdElement = document.getElementById("productId");
-        const productNameElement = document.getElementById("productName");
+    function bindAddToCartEvents() {
+        document.querySelectorAll(".addToCartBtn").forEach(button => {
+            button.addEventListener("click", function () {
+                let productId = this.getAttribute("data-id");
+                let productName = this.getAttribute("data-name");
+                addToCart(productId, productName);
+            });
+        });
+    }
 
-        if (!productIdElement || !productNameElement) {
-            alert("Erreur : produit non trouvé !");
-            return;
-        }
-
-        let productId = productIdElement.value; // 产品 ID
-        let productName = productNameElement.innerText; // 产品名称
-
-        // 发送 AJAX 请求到 Servlet
+    /**
+     * 添加商品到购物车 (POST 请求到 Servlet `/addToCart`)
+     */
+    function addToCart(productId, productName) {
         fetch(`${window.location.origin}/addToCart`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -53,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 if (data.success) {
                     alert("Produit ajouté au panier avec succès !");
-                    updateCartCount(data.cartCount); // 更新购物车数量
+                    updateCartCount(data.cartCount);
                 } else {
                     alert("Erreur lors de l'ajout au panier.");
                 }
@@ -79,6 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
         displayProducts(searchBox.value);
     });
 
-    // 页面加载时，显示所有产品
-    displayProducts();
+    // 页面加载时，从后端获取数据
+    fetchProducts();
 });

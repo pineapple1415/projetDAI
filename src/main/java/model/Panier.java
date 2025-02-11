@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "panier")
-public class panier {
+public class Panier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long IdPanier;
@@ -17,11 +17,11 @@ public class panier {
     private User user;
 
     @OneToMany(mappedBy = "panier", cascade = CascadeType.ALL)
-    private Set<produit> items = new HashSet<>();
+    private Set<Produit> items = new HashSet<>();
 
-    public panier() {}
+    public Panier() {}
 
-    public panier(User user, Set<produit> items) {
+    public Panier(User user, Set<Produit> items) {
         this.user = user;
         this.items = items;
     }
@@ -37,7 +37,7 @@ public class panier {
         return user;
     }
 
-    public Set<produit> getItems() {
+    public Set<Produit> getItems() {
         return items;
     }
 
@@ -49,7 +49,7 @@ public class panier {
         this.user = user;
     }
 
-    public void setItems(Set<produit> items) {
+    public void setItems(Set<Produit> items) {
         this.items = items;
     }
 
@@ -57,7 +57,7 @@ public class panier {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        panier panier = (panier) o;
+        Panier panier = (Panier) o;
         return Objects.equals(IdPanier, panier.IdPanier) && Objects.equals(user, panier.user) && Objects.equals(items, panier.items);
     }
 
