@@ -16,6 +16,7 @@ public class ServletPanier extends HttpServlet {
     private final ProductDAO productDAO = new ProductDAO();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    //affiche panier
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String action = req.getParameter("action");

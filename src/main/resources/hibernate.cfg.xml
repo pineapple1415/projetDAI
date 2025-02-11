@@ -17,5 +17,6 @@
 
         <!-- 实体类映射 -->
         <mapping class="model.produit"/>
+        <mapping class="model.panier"/>
     </session-factory>
 </hibernate-configuration>
