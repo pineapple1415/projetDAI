@@ -10,26 +10,24 @@ public class Rayon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idRayon")
     private Integer idRayon;
 
-    @Column(name = "nomRayon")
     private String nomRayon;
 
-    @OneToMany(mappedBy = "rayon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Produit> produits = new HashSet<>();
-
+    /** 多对多：Rayon 和 Magasin */
     @ManyToMany
     @JoinTable(name = "Posseder",
             joinColumns = @JoinColumn(name = "idRayon"),
             inverseJoinColumns = @JoinColumn(name = "idMagasin"))
     private Set<Magasin> magasins = new HashSet<>();
 
-    public Rayon() {
-    }
+    /** 一对多：Rayon 和 Produit */
+    @OneToMany(mappedBy = "rayon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Produit> produits = new HashSet<>();
 
-    public Rayon(Integer idRayon, String nomRayon) {
-        this.idRayon = idRayon;
+    public Rayon() {}
+
+    public Rayon(String nomRayon) {
         this.nomRayon = nomRayon;
     }
 
@@ -49,19 +47,19 @@ public class Rayon {
         this.nomRayon = nomRayon;
     }
 
-    public Set<Produit> getProduits() {
-        return produits;
-    }
-
-    public void setProduits(Set<Produit> produits) {
-        this.produits = produits;
-    }
-
     public Set<Magasin> getMagasins() {
         return magasins;
     }
 
     public void setMagasins(Set<Magasin> magasins) {
         this.magasins = magasins;
+    }
+
+    public Set<Produit> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(Set<Produit> produits) {
+        this.produits = produits;
     }
 }

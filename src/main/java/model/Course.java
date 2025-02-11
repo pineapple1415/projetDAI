@@ -10,26 +10,20 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idCourse")
     private Integer idCourse;
 
     @ManyToOne
     @JoinColumn(name = "idClient")
-    private User user;
+    private Client client;
 
-    @ManyToMany
-    @JoinTable(name = "Ajouter",
-            joinColumns = @JoinColumn(name = "idCourse"),
-            inverseJoinColumns = @JoinColumn(name = "idProduit"))
-    private Set<Produit> produits = new HashSet<>();
+    /** 多对多：Course 和 Produit 通过 Ajouter 连接 */
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Ajouter> ajouts = new HashSet<>();
 
-    public Course() {
-    }
+    public Course() {}
 
-    public Course(Integer idCourse, User user, Set<Produit> produits) {
-        this.idCourse = idCourse;
-        this.user = user;
-        this.produits = produits;
+    public Course(Client client) {
+        this.client = client;
     }
 
     public Integer getIdCourse() {
@@ -40,19 +34,19 @@ public class Course {
         this.idCourse = idCourse;
     }
 
-    public User getUser() {
-        return user;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public Set<Produit> getProduits() {
-        return produits;
+    public Set<Ajouter> getAjouts() {
+        return ajouts;
     }
 
-    public void setProduits(Set<Produit> produits) {
-        this.produits = produits;
+    public void setAjouts(Set<Ajouter> ajouts) {
+        this.ajouts = ajouts;
     }
 }

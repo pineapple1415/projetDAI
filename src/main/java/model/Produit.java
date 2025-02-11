@@ -10,71 +10,42 @@ public class Produit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idProduit")
     private Integer idProduit;
 
-    @Column(name = "nomProduit")
     private String nomProduit;
-
-    @Column(name = "prixUnit")
     private Double prixUnit;
-
-    @Column(name = "origineProduit")
-    private String origineProduit;
-
-    @Column(name = "tailleProduit")
-    private String tailleProduit;
-
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
     private Fournisseur fournisseur;
 
     @ManyToOne
-    @JoinColumn(name = "idCategorie")
-    private Categorie categorie;
-
-    @ManyToOne
     @JoinColumn(name = "idRayon")
     private Rayon rayon;
 
+    @ManyToOne
+    @JoinColumn(name = "idCategorie")
+    private Categorie categorie;
+
+    /** 一对多：Produit 和 Composer（中间表，用于订单） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<LigneCommande> ligneCommande = new HashSet<>();
+    private Set<Composer> composers = new HashSet<>();
 
-    /*----- Ajouter course -----*/
-    @ManyToMany
-    @JoinTable(name = "Ajouter",
-            joinColumns = @JoinColumn(name = "idProduit"),
-            inverseJoinColumns = @JoinColumn(name = "idCourse"))
-    private Set<Course> listCourse = new HashSet<>();
+    /** 多对多：Produit 和 Course（购物车） 通过 Ajouter 连接 */
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Ajouter> ajouts = new HashSet<>();
 
-    @Column(name = "quantite")
-    private Integer quantite;
+    /** 多对多：Produit 和 Magasin 通过 Stocker 连接 */
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Stocker> stockers = new HashSet<>();
 
-    /*----- Stocker magasin -----*/
-    @ManyToMany
-    @JoinTable(name = "Stocker",
-            joinColumns = @JoinColumn(name = "idProduit"),
-            inverseJoinColumns = @JoinColumn(name = "idMagasin"))
-    private Set<Magasin> listeMagasin = new HashSet<>();
+    public Produit() {}
 
-    @Column(name = "quantiteStock")
-    private Integer quantiteStock;
-
-    public Produit() {
-    }
-
-    public Produit(Integer idProduit, String nomProduit, Double prixUnit, String origineProduit,
-                   String tailleProduit, String description, Fournisseur fournisseur, Categorie categorie) {
-        this.idProduit = idProduit;
+    public Produit(String nomProduit, Double prixUnit, Fournisseur fournisseur, Rayon rayon, Categorie categorie) {
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
-        this.origineProduit = origineProduit;
-        this.tailleProduit = tailleProduit;
-        this.description = description;
         this.fournisseur = fournisseur;
+        this.rayon = rayon;
         this.categorie = categorie;
     }
 
@@ -102,44 +73,12 @@ public class Produit {
         this.prixUnit = prixUnit;
     }
 
-    public String getOrigineProduit() {
-        return origineProduit;
-    }
-
-    public void setOrigineProduit(String origineProduit) {
-        this.origineProduit = origineProduit;
-    }
-
-    public String getTailleProduit() {
-        return tailleProduit;
-    }
-
-    public void setTailleProduit(String tailleProduit) {
-        this.tailleProduit = tailleProduit;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Fournisseur getFournisseur() {
         return fournisseur;
     }
 
     public void setFournisseur(Fournisseur fournisseur) {
         this.fournisseur = fournisseur;
-    }
-
-    public Categorie getCategorie() {
-        return categorie;
-    }
-
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
     }
 
     public Rayon getRayon() {
@@ -150,43 +89,27 @@ public class Produit {
         this.rayon = rayon;
     }
 
-    public Set<LigneCommande> getLigneCommande() {
-        return ligneCommande;
+    public Categorie getCategorie() {
+        return categorie;
     }
 
-    public void setLigneCommande(Set<LigneCommande> ligneCommande) {
-        this.ligneCommande = ligneCommande;
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
     }
 
-    public Set<Course> getListCourse() {
-        return listCourse;
+    public Set<Ajouter> getAjouts() {
+        return ajouts;
     }
 
-    public void setListCourse(Set<Course> listCourse) {
-        this.listCourse = listCourse;
+    public void setAjouts(Set<Ajouter> ajouts) {
+        this.ajouts = ajouts;
     }
 
-    public Integer getQuantite() {
-        return quantite;
+    public Set<Stocker> getStockers() {
+        return stockers;
     }
 
-    public void setQuantite(Integer quantite) {
-        this.quantite = quantite;
-    }
-
-    public Set<Magasin> getListeMagasin() {
-        return listeMagasin;
-    }
-
-    public void setListeMagasin(Set<Magasin> listeMagasin) {
-        this.listeMagasin = listeMagasin;
-    }
-
-    public Integer getQuantiteStock() {
-        return quantiteStock;
-    }
-
-    public void setQuantiteStock(Integer quantiteStock) {
-        this.quantiteStock = quantiteStock;
+    public void setStockers(Set<Stocker> stockers) {
+        this.stockers = stockers;
     }
 }

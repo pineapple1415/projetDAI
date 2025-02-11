@@ -11,32 +11,36 @@ public class Commande {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idCommande")
     private Integer idCommande;
 
-    @Column(name = "dateCommande")
+    private Double prixTotal;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCommande;
 
-    @ManyToOne
-    @JoinColumn(name = "idUser")
-    private User user;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "statut")
-    private Statut statut;
+    private Statut statut;  // 使用 Statut 作为订单状态
 
+    @ManyToOne
+    @JoinColumn(name = "idClient")
+    private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "idMagasin")
+    private Magasin magasin;
+
+    /** 一对多：Commande 和 Composer（订单详情） */
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<LigneCommande> ligneCommandes = new HashSet<>();
+    private Set<Composer> composers = new HashSet<>();
 
-    public Commande() {
-    }
+    public Commande() {}
 
-    public Commande(Integer idCommande, Date dateCommande, User user, Statut statut) {
-        this.idCommande = idCommande;
+    public Commande(Double prixTotal, Date dateCommande, Statut statut, Client client, Magasin magasin) {
+        this.prixTotal = prixTotal;
         this.dateCommande = dateCommande;
-        this.user = user;
         this.statut = statut;
+        this.client = client;
+        this.magasin = magasin;
     }
 
     public Integer getIdCommande() {
@@ -47,20 +51,20 @@ public class Commande {
         this.idCommande = idCommande;
     }
 
+    public Double getPrixTotal() {
+        return prixTotal;
+    }
+
+    public void setPrixTotal(Double prixTotal) {
+        this.prixTotal = prixTotal;
+    }
+
     public Date getDateCommande() {
         return dateCommande;
     }
 
     public void setDateCommande(Date dateCommande) {
         this.dateCommande = dateCommande;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Statut getStatut() {
@@ -71,11 +75,27 @@ public class Commande {
         this.statut = statut;
     }
 
-    public Set<LigneCommande> getLigneCommandes() {
-        return ligneCommandes;
+    public Client getClient() {
+        return client;
     }
 
-    public void setLigneCommandes(Set<LigneCommande> ligneCommandes) {
-        this.ligneCommandes = ligneCommandes;
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Magasin getMagasin() {
+        return magasin;
+    }
+
+    public void setMagasin(Magasin magasin) {
+        this.magasin = magasin;
+    }
+
+    public Set<Composer> getComposers() {
+        return composers;
+    }
+
+    public void setComposers(Set<Composer> composers) {
+        this.composers = composers;
     }
 }
