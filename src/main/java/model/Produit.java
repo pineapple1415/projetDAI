@@ -14,6 +14,9 @@ public class Produit {
 
     private String nomProduit;
     private Double prixUnit;
+    private String origineProduit;
+    private String tailleProduit;
+    private String descriptionProduit;
 
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
@@ -27,89 +30,68 @@ public class Produit {
     @JoinColumn(name = "idCategorie")
     private Categorie categorie;
 
-    /** 一对多：Produit 和 Composer（中间表，用于订单） */
+    /** 一对多：Produit 和 Composer（订单详情） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Composer> composers = new HashSet<>();
 
-    /** 多对多：Produit 和 Course（购物车） 通过 Ajouter 连接 */
+    /** 一对多：Produit 和 Ajouter（购物车中间表） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Ajouter> ajouts = new HashSet<>();
 
-    /** 多对多：Produit 和 Magasin 通过 Stocker 连接 */
+    /** 一对多：Produit 和 Stocker（库存中间表） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Stocker> stockers = new HashSet<>();
 
+    /** ✅ **默认构造函数**（Hibernate 需要） */
     public Produit() {}
 
-    public Produit(String nomProduit, Double prixUnit, Fournisseur fournisseur, Rayon rayon, Categorie categorie) {
+    /** ✅ **参数化构造函数** */
+    public Produit(String nomProduit, Double prixUnit, String origineProduit, String tailleProduit, String descriptionProduit,
+                   Fournisseur fournisseur, Rayon rayon, Categorie categorie) {
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
+        this.origineProduit = origineProduit;
+        this.tailleProduit = tailleProduit;
+        this.descriptionProduit = descriptionProduit;
         this.fournisseur = fournisseur;
         this.rayon = rayon;
         this.categorie = categorie;
     }
 
-    public Integer getIdProduit() {
-        return idProduit;
-    }
+    /** ✅ **Getter 和 Setter** */
+    public Integer getIdProduit() { return idProduit; }
+    public void setIdProduit(Integer idProduit) { this.idProduit = idProduit; }
 
-    public void setIdProduit(Integer idProduit) {
-        this.idProduit = idProduit;
-    }
+    public String getNomProduit() { return nomProduit; }
+    public void setNomProduit(String nomProduit) { this.nomProduit = nomProduit; }
 
-    public String getNomProduit() {
-        return nomProduit;
-    }
+    public Double getPrixUnit() { return prixUnit; }
+    public void setPrixUnit(Double prixUnit) { this.prixUnit = prixUnit; }
 
-    public void setNomProduit(String nomProduit) {
-        this.nomProduit = nomProduit;
-    }
+    public String getOrigineProduit() { return origineProduit; }
+    public void setOrigineProduit(String origineProduit) { this.origineProduit = origineProduit; }
 
-    public Double getPrixUnit() {
-        return prixUnit;
-    }
+    public String getTailleProduit() { return tailleProduit; }
+    public void setTailleProduit(String tailleProduit) { this.tailleProduit = tailleProduit; }
 
-    public void setPrixUnit(Double prixUnit) {
-        this.prixUnit = prixUnit;
-    }
+    public String getDescriptionProduit() { return descriptionProduit; }
+    public void setDescriptionProduit(String descriptionProduit) { this.descriptionProduit = descriptionProduit; }
 
-    public Fournisseur getFournisseur() {
-        return fournisseur;
-    }
+    public Fournisseur getFournisseur() { return fournisseur; }
+    public void setFournisseur(Fournisseur fournisseur) { this.fournisseur = fournisseur; }
 
-    public void setFournisseur(Fournisseur fournisseur) {
-        this.fournisseur = fournisseur;
-    }
+    public Rayon getRayon() { return rayon; }
+    public void setRayon(Rayon rayon) { this.rayon = rayon; }
 
-    public Rayon getRayon() {
-        return rayon;
-    }
+    public Categorie getCategorie() { return categorie; }
+    public void setCategorie(Categorie categorie) { this.categorie = categorie; }
 
-    public void setRayon(Rayon rayon) {
-        this.rayon = rayon;
-    }
+    public Set<Composer> getComposers() { return composers; }
+    public void setComposers(Set<Composer> composers) { this.composers = composers; }
 
-    public Categorie getCategorie() {
-        return categorie;
-    }
+    public Set<Ajouter> getAjouts() { return ajouts; }
+    public void setAjouts(Set<Ajouter> ajouts) { this.ajouts = ajouts; }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
-    }
-
-    public Set<Ajouter> getAjouts() {
-        return ajouts;
-    }
-
-    public void setAjouts(Set<Ajouter> ajouts) {
-        this.ajouts = ajouts;
-    }
-
-    public Set<Stocker> getStockers() {
-        return stockers;
-    }
-
-    public void setStockers(Set<Stocker> stockers) {
-        this.stockers = stockers;
-    }
+    public Set<Stocker> getStockers() { return stockers; }
+    public void setStockers(Set<Stocker> stockers) { this.stockers = stockers; }
 }
