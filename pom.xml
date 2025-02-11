@@ -63,11 +63,12 @@
 
 
     <!-- MySQL 驱动 -->
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.29</version>
-    </dependency>
+  <dependency>
+    <groupId>com.mysql</groupId>  <!-- ✅ 这里应该是 com.mysql，而不是 mysql -->
+    <artifactId>mysql-connector-j</artifactId>  <!-- ✅ 确保是 mysql-connector-j -->
+    <version>8.0.33</version>
+  </dependency>
+
   </dependencies>
 
   <build>

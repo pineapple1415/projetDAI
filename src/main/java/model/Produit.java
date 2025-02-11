@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Produit")
+@Table(name = "testProduit")
 public class Produit {
 
     @Id
@@ -16,11 +16,12 @@ public class Produit {
     @Column(name = "nomProduit")
     private String nomProduit;
 
+    @Column(name = "origineProduit")
+    private String origineProduit;
+
     @Column(name = "prixUnit")
     private Double prixUnit;
 
-    @Column(name = "origineProduit")
-    private String origineProduit;
 
     @Column(name = "tailleProduit")
     private String tailleProduit;

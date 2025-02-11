@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/api/products")  // 访问URL
+@WebServlet("/products")  // 访问URL
 public class ServletAffiche extends HttpServlet {
     private ProductDAO productDAO = new ProductDAO(); // 实例化 DAO
 
