@@ -6,9 +6,9 @@
     <session-factory>
         <!-- 数据库连接配置 -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/shopping_cart?useSSL=false</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">password</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3307/db_22208348</property>
+        <property name="hibernate.connection.username">22208348</property>
+        <property name="hibernate.connection.password">3783GD</property>
 
         <!-- Hibernate 特性 -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
