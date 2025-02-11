@@ -1,8 +1,6 @@
 package model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "LigneCommande")
@@ -16,15 +14,20 @@ public class LigneCommande {
     private Integer quantite;
 
     @ManyToOne
+    @JoinColumn(name = "idProduit")
+    private Produit produit;
+
+    @ManyToOne
     @JoinColumn(name = "idCommande")
     private Commande commande;
 
     public LigneCommande() {
     }
 
-    public LigneCommande(Integer idLigneCommande, Integer quantite, Commande commande) {
+    public LigneCommande(Integer idLigneCommande, Integer quantite, Produit produit, Commande commande) {
         this.idLigneCommande = idLigneCommande;
         this.quantite = quantite;
+        this.produit = produit;
         this.commande = commande;
     }
 
@@ -42,6 +45,14 @@ public class LigneCommande {
 
     public void setQuantite(Integer quantite) {
         this.quantite = quantite;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
     }
 
     public Commande getCommande() {
