@@ -15,7 +15,7 @@ public class produitDansPanier {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produit_id")
-    private produit produit;
+    private Produit produit;
 
     private Integer quantity = 1;
 
@@ -39,11 +39,11 @@ public class produitDansPanier {
         this.panier = panier;
     }
 
-    public produit getProduit() {
+    public Produit getProduit() {
         return produit;
     }
 
-    public void setProduit(produit produit) {
+    public void setProduit(Produit produit) {
         this.produit = produit;
     }
 

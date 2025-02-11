@@ -1,6 +1,6 @@
 package DAO;
 
-import model.produit;
+import model.Produit;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
@@ -8,13 +8,13 @@ import util.HibernateUtil;
 import java.util.List;
 
 public class ProductDAO {
-    public List<produit> getAllProducts() {
+    public List<Produit> getAllProducts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("from produit ", produit.class).list();
+            return session.createQuery("from produit ", Produit.class).list();
         }
     }
 
-    public void addProduit(produit product) {
+    public void addProduit(Produit product) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();

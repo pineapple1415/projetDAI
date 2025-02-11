@@ -16,7 +16,7 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- 实体类映射 -->
-        <mapping class="model.produit"/>
+        <mapping class="model.Produit"/>
 <<<<<<< Updated upstream
         <mapping class="model.Panier"/>
 =======

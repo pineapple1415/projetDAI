@@ -1,7 +1,7 @@
 package DAO;
 
 import model.Panier;
-import model.produit;
+import model.Produit;
 import model.User;
 import model.produitDansPanier;
 import org.hibernate.Session;
@@ -14,8 +14,8 @@ public class PanierDAO {
             Transaction tx = session.beginTransaction();
 
             // 获取商品（只加载必要字段）
-            produit produit = session.createQuery(
-                            "SELECT new Produit(p.id, p.name, p.price) " + "FROM Produit p WHERE p.id = :id", produit.class).setParameter("id", produitId).uniqueResult();
+            Produit produit = session.createQuery(
+                            "SELECT new Produit(p.id, p.name, p.price) " + "FROM Produit p WHERE p.id = :id", Produit.class).setParameter("id", produitId).uniqueResult();
             // 获取或创建购物车
             Panier panier = session.createQuery(
                             "FROM Panier WHERE user = :user", Panier.class)

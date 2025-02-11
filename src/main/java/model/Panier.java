@@ -17,11 +17,11 @@ public class Panier {
     private User user;
 
     @OneToMany(mappedBy = "panier", cascade = CascadeType.ALL)
-    private Set<produit> items = new HashSet<>();
+    private Set<Produit> items = new HashSet<>();
 
     public Panier() {}
 
-    public Panier(User user, Set<produit> items) {
+    public Panier(User user, Set<Produit> items) {
         this.user = user;
         this.items = items;
     }
@@ -37,7 +37,7 @@ public class Panier {
         return user;
     }
 
-    public Set<produit> getItems() {
+    public Set<Produit> getItems() {
         return items;
     }
 
@@ -49,7 +49,7 @@ public class Panier {
         this.user = user;
     }
 
-    public void setItems(Set<produit> items) {
+    public void setItems(Set<Produit> items) {
         this.items = items;
     }
 
