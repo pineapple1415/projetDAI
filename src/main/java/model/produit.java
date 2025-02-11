@@ -6,11 +6,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "produit")
-public class produit {
+public class Produit {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProduit")
-    private Integer IdProduit;
+    private Integer idProduit;
 
     @Column(name = "nomProduit")
     private String nomProduit;
@@ -19,7 +20,7 @@ public class produit {
     private Double prixUnit;
 
     @Column(name = "origineProduit")
-    private String Origin;
+    private String origineProduit;
 
     @Column(name = "tailleProduit")
     private String tailleProduit;
@@ -29,74 +30,46 @@ public class produit {
 
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
-    private fournisseur fournisseur;
+    private Fournisseur fournisseur;
 
     @ManyToOne
     @JoinColumn(name = "idCategorie")
-    private categorie categorie;
+    private Categorie categorie;
 
     @ManyToOne
     @JoinColumn(name = "idRayon")
-    private rayon rayon;
+    private Rayon rayon;
 
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Demande> demandes = new HashSet<>(0);
+    private Set<ligneCommande> ligneCommande = new HashSet<>();
 
-<<<<<<< Updated upstream
-    public produit(){}
-
-    public produit(String nomProduit, Double prixProduit, String origin, String fourisseur, Set<categorie> categorieSet) {
-        this.nomProduit = nomProduit;
-        this.prixProduit = prixProduit;
-        Origin = origin;
-        Fourisseur = fourisseur;
-        this.categorieSet = categorieSet;
+    public Produit() {
     }
 
-
-
-
-    public Long getIdProduit() {
-        return IdProduit;
-    }
-
-=======
-    /**
-     * Constructeurs.
-     */
-    public produit() {
-    }
-
-    public produit(Integer idProduit, String nomProduit, Double prixUnit, String origin, String tailleProduit, String description, model.fournisseur fournisseur, model.categorie categorie) {
-        this.IdProduit = idProduit;
+    public Produit(Integer idProduit, String nomProduit, Double prixUnit, String origineProduit,
+                   String tailleProduit, String description, Fournisseur fournisseur, Categorie categorie) {
+        this.idProduit = idProduit;
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
-        this.Origin = origin;
+        this.origineProduit = origineProduit;
         this.tailleProduit = tailleProduit;
         this.description = description;
         this.fournisseur = fournisseur;
+        this.categorie = categorie;
     }
 
-    /**
-     * Setter / Getter.
-     */
     public Integer getIdProduit() {
-        return IdProduit;
+        return idProduit;
     }
 
     public void setIdProduit(Integer idProduit) {
-        IdProduit = idProduit;
+        this.idProduit = idProduit;
     }
 
->>>>>>> Stashed changes
     public String getNomProduit() {
         return nomProduit;
     }
 
-<<<<<<< Updated upstream
-    public Double getPrixProduit() {
-        return prixProduit;
-=======
     public void setNomProduit(String nomProduit) {
         this.nomProduit = nomProduit;
     }
@@ -107,48 +80,16 @@ public class produit {
 
     public void setPrixUnit(Double prixUnit) {
         this.prixUnit = prixUnit;
->>>>>>> Stashed changes
     }
 
-    public String getOrigin() {
-        return Origin;
+    public String getOrigineProduit() {
+        return origineProduit;
     }
 
-<<<<<<< Updated upstream
-    public String getFourisseur() {
-        return Fourisseur;
+    public void setOrigineProduit(String origineProduit) {
+        this.origineProduit = origineProduit;
     }
 
-    public Set<categorie> getCategorieSet() {
-        return categorieSet;
-    }
-
-    public void setIdProduit(Long idProduit) {
-        IdProduit = idProduit;
-    }
-
-    public void setNomProduit(String nomProduit) {
-        this.nomProduit = nomProduit;
-    }
-
-    public void setPrixProduit(Double prixProduit) {
-        this.prixProduit = prixProduit;
-    }
-
-=======
->>>>>>> Stashed changes
-    public void setOrigin(String origin) {
-        Origin = origin;
-    }
-
-<<<<<<< Updated upstream
-    public void setFourisseur(String fourisseur) {
-        Fourisseur = fourisseur;
-    }
-
-    public void setCategorieSet(Set<categorie> categorieSet) {
-        this.categorieSet = categorieSet;
-=======
     public String getTailleProduit() {
         return tailleProduit;
     }
@@ -165,12 +106,35 @@ public class produit {
         this.description = description;
     }
 
-    public fournisseur getFournisseur() {
+    public Fournisseur getFournisseur() {
         return fournisseur;
     }
 
     public void setFournisseur(fournisseur fournisseur) {
-        this.fournisseur = fournisseur;
->>>>>>> Stashed changes
+        this.Fournisseur = fournisseur;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
+
+    public Rayon getRayon() {
+        return rayon;
+    }
+
+    public void setRayon(Rayon rayon) {
+        this.rayon = rayon;
+    }
+
+    public Set<ligneCommande> getDemandes() {
+        return ligneCommande;
+    }
+
+    public void setDemandes(Set<ligneCommande> ligneCommande) {
+        this.ligneCommande = ligneCommande;
     }
 }
