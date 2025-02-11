@@ -41,7 +41,27 @@ public class Produit {
     private Rayon rayon;
 
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ligneCommande> ligneCommande = new HashSet<>();
+    private Set<LigneCommande> ligneCommande = new HashSet<>();
+
+    /*----- Ajouter course -----*/
+    @ManyToMany
+    @JoinTable(name = "Ajouter",
+            joinColumns = @JoinColumn(name = "idProduit"),
+            inverseJoinColumns = @JoinColumn(name = "idCourse"))
+    private Set<Course> listCourse = new HashSet<>();
+
+    @Column(name = "quantite")
+    private Integer quantite;
+
+    /*----- Stocker magasin -----*/
+    @ManyToMany
+    @JoinTable(name = "Stocker",
+            joinColumns = @JoinColumn(name = "idProduit"),
+            inverseJoinColumns = @JoinColumn(name = "idMagasin"))
+    private Set<Magasin> listeMagasin = new HashSet<>();
+
+    @Column(name = "quantiteStock")
+    private Integer quantiteStock;
 
     public Produit() {
     }
@@ -110,8 +130,8 @@ public class Produit {
         return fournisseur;
     }
 
-    public void setFournisseur(fournisseur fournisseur) {
-        this.Fournisseur = fournisseur;
+    public void setFournisseur(Fournisseur fournisseur) {
+        this.fournisseur = fournisseur;
     }
 
     public Categorie getCategorie() {
@@ -130,11 +150,43 @@ public class Produit {
         this.rayon = rayon;
     }
 
-    public Set<ligneCommande> getDemandes() {
+    public Set<LigneCommande> getLigneCommande() {
         return ligneCommande;
     }
 
-    public void setDemandes(Set<ligneCommande> ligneCommande) {
+    public void setLigneCommande(Set<LigneCommande> ligneCommande) {
         this.ligneCommande = ligneCommande;
+    }
+
+    public Set<Course> getListCourse() {
+        return listCourse;
+    }
+
+    public void setListCourse(Set<Course> listCourse) {
+        this.listCourse = listCourse;
+    }
+
+    public Integer getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(Integer quantite) {
+        this.quantite = quantite;
+    }
+
+    public Set<Magasin> getListeMagasin() {
+        return listeMagasin;
+    }
+
+    public void setListeMagasin(Set<Magasin> listeMagasin) {
+        this.listeMagasin = listeMagasin;
+    }
+
+    public Integer getQuantiteStock() {
+        return quantiteStock;
+    }
+
+    public void setQuantiteStock(Integer quantiteStock) {
+        this.quantiteStock = quantiteStock;
     }
 }

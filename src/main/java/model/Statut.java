@@ -1,6 +1,6 @@
 package model;
 
-public enum statut {
+public enum Statut {
     PROCESSING,
     READY_FOR_SHIPMENT,
     SHIPPED,

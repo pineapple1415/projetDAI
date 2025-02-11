@@ -1,6 +1,6 @@
 package DAO;
 
-import model.panier;
+import model.Panier;
 import model.produit;
 import model.User;
 import model.produitDansPanier;
@@ -17,12 +17,12 @@ public class PanierDAO {
             produit produit = session.createQuery(
                             "SELECT new Produit(p.id, p.name, p.price) " + "FROM Produit p WHERE p.id = :id", produit.class).setParameter("id", produitId).uniqueResult();
             // 获取或创建购物车
-            panier panier = session.createQuery(
-                            "FROM Panier WHERE user = :user", panier.class)
+            Panier panier = session.createQuery(
+                            "FROM Panier WHERE user = :user", Panier.class)
                     .setParameter("user", user)
                     .uniqueResultOptional()
                     .orElseGet(() -> {
-                        panier newPanier = new panier();
+                        Panier newPanier = new Panier();
                         newPanier.setUser(user);
                         session.persist(newPanier);
                         return newPanier;
