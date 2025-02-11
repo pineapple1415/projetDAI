@@ -1,53 +1,57 @@
 package model;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
-@Table(name = "produitDansPanier")
+@Table(name = "panier_item")
 public class produitDansPanier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long IdProduit;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "Panier")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "panier_id")
     private panier panier;
 
-    private String nomProduit;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "produit_id")
+    private produit produit;
 
-    public produitDansPanier(){}
+    private Integer quantity = 1;
 
-    public produitDansPanier(String nomProduit) {
-        this.nomProduit = nomProduit;
+
+
+    // Getters/Setters
+
+    public Long getId() {
+        return id;
     }
 
-
-
-
-
-    // Getters and Setters
-    public Long getIdProduit() {
-        return IdProduit;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public model.panier getPanier() {
+    public panier getPanier() {
         return panier;
     }
 
-    public String getNomProduit() {
-        return nomProduit;
-    }
-
-    public void setIdProduit(Long IdProduit) {
-        this.IdProduit = IdProduit;
-    }
-
-    public void setPanier(model.panier panier) {
+    public void setPanier(panier panier) {
         this.panier = panier;
     }
 
-    public void setNomProduit(String nomProduit) {
-        this.nomProduit = nomProduit;
+    public produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(produit produit) {
+        this.produit = produit;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

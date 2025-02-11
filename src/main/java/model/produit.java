@@ -88,9 +88,4 @@ public class produit {
     public void setCategorieSet(Set<categorie> categorieSet) {
         this.categorieSet = categorieSet;
     }
-
-
-    public void addToPanier(panier panier) {
-
-    }
 }
