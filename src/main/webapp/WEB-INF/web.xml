@@ -41,15 +41,17 @@
     <url-pattern>/panier</url-pattern>
   </servlet-mapping>
 
+
   <servlet>
     <servlet-name>ServletAddPanier</servlet-name>
     <servlet-class>Servlet.ServletAddPanier</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ServletAddPanier</servlet-name>
-    <url-pattern>/addPanier</url-pattern>
+    <url-pattern>/addToPanier</url-pattern>
   </servlet-mapping>
 
+<<<<<<< HEAD
   <!-- 配置 ArticleServlet -->
   <servlet>
     <servlet-name>ArticleServlet</servlet-name>
@@ -77,5 +79,7 @@
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>
+=======
+>>>>>>> b0a78d810ce8f909720f849a754620616306b0e1
 
 </web-app>
