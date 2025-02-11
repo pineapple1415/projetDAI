@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Ajax - Produits</title>
-    <link rel="stylesheet" href="css/style.css" type="text/css" />
-    <script defer src="js/script.js"></script>
+    <title>Welcome</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" type="text/css" />
+    <script defer src="${pageContext.request.contextPath}/js/script.js"></script>
+
 </head>
 <body>
 <header>
@@ -20,6 +21,8 @@
     <div id="productList">
         <!-- Les produits seront affichés ici -->
     </div>
+
+
 </main>
 </body>
 </html>
