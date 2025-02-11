@@ -24,6 +24,38 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    function addToCart() {
+        // 假设产品 ID 和名称可以通过 HTML 元素获取（你可以动态设置）
+        let productId = document.getElementById("productId").value; // 产品 ID
+        let productName = document.getElementById("productName").innerText; // 产品名称
+
+        // 发送 AJAX 请求到 Servlet
+        fetch('${pageContext.request.contextPath}/addToCart', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId: productId, productName: productName })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Produit ajouté au panier avec succès !");
+                    // 可选：更新购物车 UI
+                    updateCartCount(data.cartCount);
+                } else {
+                    alert("Erreur lors de l'ajout au panier.");
+                }
+            })
+            .catch(error => console.error("Erreur AJAX:", error));
+    }
+
+// 更新购物车数量
+    function updateCartCount(count) {
+        let cartCounter = document.getElementById("cartCount");
+        if (cartCounter) {
+            cartCounter.innerText = count;
+        }
+    }
+
     // Initial display
     displayProducts();
 

@@ -8,8 +8,28 @@
 
   <!-- 配置欢迎页面 -->
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index</welcome-file>
   </welcome-file-list>
+
+  <servlet>
+    <servlet-name>index</servlet-name>
+    <jsp-file>/jsp/index.jsp</jsp-file>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>index</servlet-name>
+    <url-pattern>/index</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>article</servlet-name>
+    <jsp-file>/jsp/article.jsp</jsp-file>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>article</servlet-name>
+    <url-pattern>/article</url-pattern>
+  </servlet-mapping>
 
   <!-- 配置 Servlets -->
   <servlet>
@@ -29,5 +49,33 @@
     <servlet-name>ServletAddPanier</servlet-name>
     <url-pattern>/addPanier</url-pattern>
   </servlet-mapping>
+
+  <!-- 配置 ArticleServlet -->
+  <servlet>
+    <servlet-name>ArticleServlet</servlet-name>
+    <servlet-class>Servlet.ArticleServlet</servlet-class>
+  </servlet>
+
+  <!-- 文章相关 URL 映射 -->
+  <servlet-mapping>
+    <servlet-name>ArticleServlet</servlet-name>
+    <url-pattern>/articles</url-pattern>
+  </servlet-mapping>
+
+  <!-- 配置支持 JSON 解析 -->
+  <servlet>
+    <servlet-name>JsonServlet</servlet-name>
+    <servlet-class>com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JsonServlet</servlet-name>
+    <url-pattern>/api/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Session 超时时间 -->
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
 
 </web-app>
