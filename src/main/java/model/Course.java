@@ -47,6 +47,6 @@ public class Course {
     }
 
     public void setAjouts(Set<Ajouter> ajouts) {
-        this.ajouts = ajouts;
+        this.ajouts =ajouts;
     }
 }

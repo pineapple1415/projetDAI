@@ -29,5 +29,24 @@
     <url-pattern>/article</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>ajouteSuccess</servlet-name>
+    <jsp-file>/jsp/ajouteSuccess.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ajouteSuccess</servlet-name>
+    <url-pattern>/ajouteSuccess</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>affichePanier</servlet-name>
+    <jsp-file>/jsp/panier.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>affichePanier</servlet-name>
+    <url-pattern>/affichePanier</url-pattern>
+  </servlet-mapping>
+
 
 </web-app>

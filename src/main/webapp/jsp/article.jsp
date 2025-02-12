@@ -65,33 +65,26 @@
     }
 
     // 修改后的加入购物车函数
+    // 修改后的addToCart函数
     function addToCart() {
         const productId = document.getElementById('productId').value;
-        const productName = document.getElementById('productName').dataset.productName;
 
         fetch('${pageContext.request.contextPath}/addToPanier', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 productId: productId,
-                productName: productName,
                 quantity: currentQuantity
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if(data.type === 'db') {
-                    alert('Ajouté au panier permanent !');
-                } else {
-                    alert('Panier temporaire mis à jour');
-                }
-                // 更新全局购物车数量显示
-                if(typeof updateCartDisplay === 'function') {
-                    updateCartDisplay();
+            .then(response => {
+                if(response.redirected) {
+                    window.location.href = response.url; // 跳转到成功页面
                 }
             })
             .catch(error => console.error('Erreur:', error));
     }
+
 
     // 绑定点击事件（替代onclick属性）
     document.getElementById('ajoutePanier').addEventListener('click', addToCart);

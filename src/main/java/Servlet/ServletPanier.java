@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-
+@WebServlet("/panier")
 public class ServletPanier extends HttpServlet {
     private final ProductDAO productDAO = new ProductDAO();
     private final ObjectMapper objectMapper = new ObjectMapper();

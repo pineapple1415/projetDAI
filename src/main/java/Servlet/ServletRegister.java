@@ -1,8 +1,8 @@
 package Servlet;
 
 import DAO.UserDAO;
-import org.mindrot.jbcrypt.BCrypt;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,14 +14,15 @@ import java.io.IOException;
 @WebServlet("/register")
 public class ServletRegister extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("nom");
+        String nom = request.getParameter("name");
         String prenom = request.getParameter("prenom");
-        String address = request.getParameter("address");
-        String codePostal = request.getParameter("codePostal");
         String email = request.getParameter("email");
         String telephone = request.getParameter("telephone");
-        String login = request.getParameter("email");
+        String adresse = request.getParameter("address");
         String password = request.getParameter("password");
+        String codePostal = request.getParameter("codePostal");
+        String login = request.getParameter("login");
+        String type = request.getParameter("type");
 
         UserDAO userDAO = new UserDAO();
 
@@ -33,12 +34,11 @@ public class ServletRegister extends HttpServlet {
         }
 
         // Hachage du mot de passe avec BCrypt
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw(codePostal, BCrypt.gensalt());
 
         // Création de l'utilisateur
-        User newUser = new User(name, prenom, address, codePostal, email, telephone, login, password, "client");
-
-        userDAO.saveUser(newUser);
+        User user = new User(nom, prenom, adresse, codePostal, email, telephone, login, password, type);
+        userDAO.saveUser(user);
 
         // Redirection vers login.jsp après succès
         response.sendRedirect("login.jsp");

@@ -9,34 +9,26 @@ document.getElementById('productList').addEventListener('click', function(e) {
 });
 
 // 修改后的addToCart函数
-function addToCart(productId, quantity = 1) {
-    fetch('/ProjetDAI_war/addToPanier', {
+// 修改后的addToCart函数
+function addToCart() {
+    const productId = document.getElementById('productId').value;
+
+    fetch('${pageContext.request.contextPath}/addToPanier', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             productId: productId,
-            quantity: quantity
+            quantity: currentQuantity
         })
     })
-        .then(response => response.json())
-        .then(data => {
-            if(data.type === 'db') {
-                // 登录用户：更新全局购物车数量
-                fetch(`/getCartCount?userId=${data.userId}`)
-                    .then(res => res.json())
-                    .then(updateCartCount);
-            } else {
-                // 未登录用户：解析Cookie更新数量
-                const panierCookie = document.cookie.split('; ')
-                    .find(c => c.startsWith('panier='));
-                if(panierCookie) {
-                    const items = JSON.parse(decodeURIComponent(panierCookie.split('=')[1]));
-                    updateCartCount(Object.values(items).reduce((a,b) => a+b, 0));
-                }
+        .then(response => {
+            if(response.redirected) {
+                window.location.href = response.url; // 跳转到成功页面
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Erreur:', error));
 }
+
 
 // 修改产品展示添加数据属性
 function displayProducts() {

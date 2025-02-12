@@ -23,6 +23,7 @@
         <mapping class="model.Fournisseur"/>
         <mapping class="model.Commande"/>
         <mapping class="model.User"/>
+        <mapping class="model.Composer"/>
         <mapping class="model.Categorie"/>
         <mapping class="model.Course"/>
         <mapping class="model.Ajouter"/>
