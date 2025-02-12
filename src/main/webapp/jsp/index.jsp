@@ -13,7 +13,7 @@
         <input type="text" id="searchBox" placeholder="Rechercher un produit..." />
         <button id="filterButton">Filtrer</button>
     </div>
-    <button id="loginButton">Login</button>
+    <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
 </header>
 
 <main>
@@ -21,7 +21,6 @@
     <div id="productList">
         <!-- Les produits seront affichés ici -->
     </div>
-
 
 </main>
 </body>

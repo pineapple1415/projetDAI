@@ -20,7 +20,7 @@
     <p style="color: red;">Email ou mot de passe incorrect</p>
     <% } %>
 
-    <form action="login" method="post">
+    <form action="${pageContext.request.contextPath}/login" method="post">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br>
 

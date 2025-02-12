@@ -31,7 +31,7 @@ public class ServletLogin extends HttpServlet {
             response.addCookie(loginCookie);
 
             // Redirection vers le tableau de bord
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("jsp/index.jsp");
         } else {
             // Redirection avec un message d'erreur
             response.sendRedirect("login.jsp?error=1");
