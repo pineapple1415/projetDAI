@@ -19,32 +19,41 @@ public class ServletAddPanier extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws IOException {
+        try{
+            System.out.println("------ Servlet used ------"); // 确认是否执行
 
-        System.out.println("------ Servlet被调用 ------"); // 确认是否执行
+            // 解析请求参数
+            Map<String, String> params = objectMapper.readValue(request.getReader(), HashMap.class);
+            Long productId = Long.parseLong(params.get("productId"));
+            int quantity = Integer.parseInt(String.valueOf(params.getOrDefault("quantity", "1")));
 
-        // 解析请求参数
-        Map<String, String> params = objectMapper.readValue(request.getReader(), HashMap.class);
-        Long productId = Long.parseLong(params.get("productId"));
-        int quantity = Integer.parseInt(params.getOrDefault("quantity", "1"));
 
-        HttpSession session = request.getSession(false);
-        Map<String, Object> responseData = new HashMap<>();
+            HttpSession session = request.getSession(false);
+            Map<String, Object> responseData = new HashMap<>();
 
-        if (session != null && session.getAttribute("user") != null) {
-            // 已登录用户（7天有效期）
-            User user = (User) session.getAttribute("user");
-            new PanierDAO().addItemToPanier(user, productId, quantity);
-            responseData.put("type", "db");
-            responseData.put("userId", user.getId()); // 返回用户ID用于Cookie标识
-        } else {
-            // 未登录用户（3天有效期）
-            int cookieDays = 3;
-            handleCookiePanier(request, resp, productId, quantity, cookieDays);
-            responseData.put("type", "cookie");
+            if (session != null && session.getAttribute("user") != null) {
+                // 已登录用户（7天有效期）
+                User user = (User) session.getAttribute("user");
+                new PanierDAO().addItemToPanier(user, productId, quantity);
+                responseData.put("type", "db");
+                responseData.put("userId", user.getIdUser()); // 返回用户ID用于Cookie标识
+            } else {
+                // 未登录用户（3天有效期）
+                int cookieDays = 3;
+                handleCookiePanier(request, resp, productId, quantity, cookieDays);
+                responseData.put("type", "cookie");
+            }
+
+            resp.setContentType("application/json");
+            objectMapper.writeValue(resp.getWriter(), responseData);
+
+        }catch (Exception e) {
+            e.printStackTrace(); // 打印完整堆栈信息
+            resp.setStatus(500);
+            resp.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
         }
 
-        resp.setContentType("application/json");
-        objectMapper.writeValue(resp.getWriter(), responseData);
+
     }
 
     private void handleCookiePanier(HttpServletRequest req, HttpServletResponse resp,
