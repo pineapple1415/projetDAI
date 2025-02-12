@@ -18,6 +18,9 @@ public class Produit {
     private String tailleProduit;
     private String descriptionProduit;
 
+    @Column(name = "image")
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
     private Fournisseur fournisseur;
@@ -46,13 +49,14 @@ public class Produit {
     public Produit() {}
 
     /** ✅ **参数化构造函数** */
-    public Produit(String nomProduit, Double prixUnit, String origineProduit, String tailleProduit, String descriptionProduit,
+    public Produit(String nomProduit, Double prixUnit, String origineProduit, String tailleProduit, String descriptionProduit, String imageUrl,
                    Fournisseur fournisseur, Rayon rayon, Categorie categorie) {
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
         this.origineProduit = origineProduit;
         this.tailleProduit = tailleProduit;
         this.descriptionProduit = descriptionProduit;
+        this.imageUrl = imageUrl;
         this.fournisseur = fournisseur;
         this.rayon = rayon;
         this.categorie = categorie;
@@ -76,6 +80,9 @@ public class Produit {
 
     public String getDescriptionProduit() { return descriptionProduit; }
     public void setDescriptionProduit(String descriptionProduit) { this.descriptionProduit = descriptionProduit; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public Fournisseur getFournisseur() { return fournisseur; }
     public void setFournisseur(Fournisseur fournisseur) { this.fournisseur = fournisseur; }

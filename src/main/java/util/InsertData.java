@@ -75,11 +75,19 @@ public class InsertData {
 
             /** 6️⃣ 插入 10 个产品 */
             List<Produit> produits = Arrays.asList(
-                    new Produit("iPhone 15", 999.99, "USA", "6.7 pouces", "Smartphone Apple", fournisseurs.get(7), rayons.get(0), categories.get(0)),
-                    new Produit("MacBook Pro", 2499.99, "USA", "16 pouces", "Ordinateur portable Apple", fournisseurs.get(7), rayons.get(0), categories.get(0)),
-                    new Produit("Nike Air Max", 129.99, "Chine", "42", "Chaussures sport", fournisseurs.get(1), rayons.get(1), categories.get(1))
+                    new Produit("iPhone 15", 999.99, "USA", "6.7 pouces", "Smartphone Apple",
+                            "https://www.apple.com/v/iphone-15/a/images/overview/design/iphone_15_color.jpg",
+                            fournisseurs.get(7), rayons.get(0), categories.get(0)),
+
+                    new Produit("MacBook Pro", 2499.99, "USA", "16 pouces", "Ordinateur portable Apple",
+                            "https://www.apple.com/v/macbook-pro/a/images/overview/hero/macbook_pro_16.jpg",
+                            fournisseurs.get(7), rayons.get(0), categories.get(0)),
+
+                    new Produit("Nike Air Max", 129.99, "Chine", "42", "Chaussures de sport",
+                            "https://www.nike.com/images/air-max.jpg",
+                            fournisseurs.get(1), rayons.get(1), categories.get(1))
             );
-            produits.forEach(session::save);
+
 
             /** 7️⃣ 插入 10 个订单 */
             List<Commande> commandes = new ArrayList<>();
