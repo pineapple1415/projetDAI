@@ -2,7 +2,6 @@ package DAO;
 
 import model.Panier;
 import model.Produit;
-import model.User;
 import model.produitDansPanier;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -26,7 +25,7 @@ public class PanierDAO {
 
             // 查找现有商品项
             produitDansPanier existingItem = session.createQuery(
-                            "FROM produitDansPanier WHERE Panier = :Panier AND produit.id = :productId",
+                            "FROM produitDansPanier WHERE Panier = :Panier AND Produit.id = :productId",
                             produitDansPanier.class)
                     .setParameter("Panier", panier)
                     .setParameter("productId", productId)

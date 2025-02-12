@@ -1,7 +1,6 @@
 package Servlet;
 
 import DAO.UserDAO;
-import model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.ServletException;

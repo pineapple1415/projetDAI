@@ -3,7 +3,6 @@ package util;
 import model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import util.HibernateUtil;
 
 import java.util.*;
 
@@ -64,14 +63,14 @@ public class InsertData {
             magasins.forEach(session::save);
 
             /** 5️⃣ 插入 10 个客户 */
-            List<Client> clients = Arrays.asList(
-                    new Client("Jean", "Dupont", "Paris", "75001", "jean@email.com", "0601020304", "jeanDup", "password1"),
-                    new Client("Marie", "Curie", "Lyon", "75002", "marie@email.com", "0611223344", "marieCurie", "password2"),
-                    new Client("Paul", "Durand", "Marseille", "75003", "paul@email.com", "0622334455", "paulDurand", "password3"),
-                    new Client("Sophie", "Bernard", "Toulouse", "75004", "sophie@email.com", "0633445566", "sophieB", "password4"),
-                    new Client("Luc", "Morel", "Nantes", "75005", "luc@email.com", "0644556677", "lucMorel", "password5")
+            List<User> users = Arrays.asList(
+                    new User("Jean", "Dupont", "Paris", "75001", "jean@email.com", "0601020304", "jeanDup", "password1","Client"),
+                    new User("Marie", "Curie", "Lyon", "75002", "marie@email.com", "0611223344", "marieCurie", "password2","Client"),
+                    new User("Paul", "Durand", "Marseille", "75003", "paul@email.com", "0622334455", "paulDurand", "password3","Client"),
+                    new User("Sophie", "Bernard", "Toulouse", "75004", "sophie@email.com", "0633445566", "sophieB", "password4","Client"),
+                    new User("Luc", "Morel", "Nantes", "75005", "luc@email.com", "0644556677", "lucMorel", "password5","Client")
             );
-            clients.forEach(session::save);
+            users.forEach(session::save);
 
             /** 6️⃣ 插入 10 个产品 */
             List<Produit> produits = Arrays.asList(
@@ -92,7 +91,7 @@ public class InsertData {
             /** 7️⃣ 插入 10 个订单 */
             List<Commande> commandes = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
-                commandes.add(new Commande((i + 1) * 100.0, new Date(), Statut.PAYEE, clients.get(i % clients.size()), magasins.get(i % magasins.size())));
+                commandes.add(new Commande((i + 1) * 100.0, new Date(), Statut.PAYEE, users.get(i % users.size()), magasins.get(i % magasins.size())));
             }
             commandes.forEach(session::save);
 
@@ -105,8 +104,8 @@ public class InsertData {
 
             /** 9️⃣ 插入 10 个购物车 */
             List<Course> courses = new ArrayList<>();
-            for (Client client : clients) {
-                courses.add(new Course(client));
+            for (User user : users) {
+                courses.add(new Course(user));
             }
             courses.forEach(session::save);
 

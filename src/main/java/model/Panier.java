@@ -1,54 +1,44 @@
 package model;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "panier")
 public class Panier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long IdPanier;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToMany(mappedBy = "panier", cascade = CascadeType.ALL)
     private Set<Produit> items = new HashSet<>();
 
     public Panier() {}
 
-    public Panier(User user, Set<Produit> items) {
-        this.user = user;
+    public Panier(Set<Produit> items) {
         this.items = items;
     }
 
-
-    // Getters and Setters
-
-    public Long getIdPanier() {
-        return IdPanier;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
+    // 获取购物车中的商品
     public Set<Produit> getItems() {
         return items;
     }
 
-    public void setIdPanier(Long idPanier) {
-        this.IdPanier = idPanier;
+    // 添加商品
+    public void addProduit(Produit produit) {
+        items.add(produit);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    // 删除商品
+    public void removeProduit(Produit produit) {
+        items.remove(produit);
     }
 
+    // 清空购物车
+    public void clearPanier() {
+        items.clear();
+    }
+
+    // 计算购物车中的商品数量
+    public int getItemCount() {
+        return items.size();
+    }
+
+    // 设置商品列表（用于恢复会话中的购物车）
     public void setItems(Set<Produit> items) {
         this.items = items;
     }
@@ -58,20 +48,18 @@ public class Panier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Panier panier = (Panier) o;
-        return Objects.equals(IdPanier, panier.IdPanier) && Objects.equals(user, panier.user) && Objects.equals(items, panier.items);
+        return Objects.equals(items, panier.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(IdPanier, user, items);
+        return Objects.hash(items);
     }
 
     @Override
     public String toString() {
-        return "panier{" +
-                "IDpanier=" + IdPanier +
-                ", user=" + user +
-                ", items=" + items +
+        return "Panier{" +
+                "items=" + items +
                 '}';
     }
 }

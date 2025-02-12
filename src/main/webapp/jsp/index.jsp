@@ -10,8 +10,11 @@
 <body>
 <header>
     <div class="search-container">
-        <input type="text" id="searchBox" placeholder="Rechercher un produit..." />
-        <button id="filterButton">Filtrer</button>
+        <form action="${pageContext.request.contextPath}/searchProduct" method="get">
+            <input type="text" id="searchBox" name="nomProduit" placeholder="Rechercher un produit..." />
+            <button type="submit">Filtrer</button>
+        </form>
+
     </div>
     <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
 </header>
