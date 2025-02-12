@@ -29,20 +29,21 @@ public class UserDAO {
     }
 
     public User getUserByEmail(String email) {
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            return session.createQuery("FROM User WHERE email = :email", User.class)
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.createQuery("FROM User WHERE email = :email", User.class)
                     .setParameter("email", email)
                     .uniqueResult();
+
+            if (user == null) {
+                throw new RuntimeException("Aucun utilisateur trouvé avec cet email : " + email);
+            }
+
+            return user;
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors de la récupération de l'utilisateur par email", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
     }
+
 
     public List<User> getAllUsers() {
         Session session = null;
