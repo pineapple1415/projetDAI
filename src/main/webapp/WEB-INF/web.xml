@@ -15,7 +15,6 @@
     <servlet-name>index</servlet-name>
     <jsp-file>/jsp/index.jsp</jsp-file>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>index</servlet-name>
     <url-pattern>/index</url-pattern>
@@ -25,30 +24,9 @@
     <servlet-name>article</servlet-name>
     <jsp-file>/jsp/article.jsp</jsp-file>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>article</servlet-name>
     <url-pattern>/article</url-pattern>
-  </servlet-mapping>
-
-  <!-- 配置 Servlets -->
-  <servlet>
-    <servlet-name>ServletPanier</servlet-name>
-    <servlet-class>Servlet.ServletPanier</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ServletPanier</servlet-name>
-    <url-pattern>/panier</url-pattern>
-  </servlet-mapping>
-
-
-  <servlet>
-    <servlet-name>ServletAddPanier</servlet-name>
-    <servlet-class>Servlet.ServletAddPanier</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ServletAddPanier</servlet-name>
-    <url-pattern>/addToPanier</url-pattern>
   </servlet-mapping>
 
 

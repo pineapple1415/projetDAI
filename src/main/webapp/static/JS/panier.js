@@ -31,3 +31,27 @@ window.onload = () => {
     loadProducts();
     updateCartDisplay();
 };
+
+
+
+// 统一Cookie处理函数
+function getPanierData() {
+    const panierCookie = document.cookie.split('; ')
+        .find(c => c.startsWith('panier='));
+    if(!panierCookie) return {};
+
+    try {
+        return JSON.parse(
+            decodeURIComponent(panierCookie.split('=')[1])
+        );
+    } catch {
+        return {};
+    }
+}
+
+// 更新购物车显示
+function updateCartDisplay() {
+    const panierData = getPanierData();
+    const totalCount = Object.values(panierData).reduce((a,b) => a+b, 0);
+    document.getElementById('cartCount').textContent = totalCount;
+}
