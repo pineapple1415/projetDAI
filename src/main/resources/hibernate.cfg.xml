@@ -20,18 +20,16 @@
 
         <!-- 实体类映射 -->
         <mapping class="model.Produit"/>
-        <mapping class="model.produitDansPanier"/>
-        <mapping class="model.Panier"/>
         <mapping class="model.Fournisseur"/>
         <mapping class="model.Commande"/>
         <mapping class="model.User"/>
         <mapping class="model.Categorie"/>
-        <mapping class="model.User"/>
         <mapping class="model.Course"/>
         <mapping class="model.Ajouter"/>
         <mapping class="model.Rayon"/>
         <mapping class="model.Magasin"/>
         <mapping class="model.Stocker"/>
         <mapping class="model.Composer"/>
+        <mapping class="model.Posseder"/>
     </session-factory>
 </hibernate-configuration>

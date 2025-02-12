@@ -23,6 +23,8 @@ public class ServletSearchProduct extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String searchQuery = request.getParameter("nomProduit");
+        System.out.println("Recherche : " + searchQuery);
+
 
         if (searchQuery == null || searchQuery.trim().isEmpty()) {
             request.setAttribute("error", "Aucun mot-clé de recherche fourni.");
@@ -35,6 +37,6 @@ public class ServletSearchProduct extends HttpServlet {
 
         // 传递结果到 JSP 页面
         request.setAttribute("produits", produits);
-        request.getRequestDispatcher("articleMotCle.jsp").forward(request, response);
+        request.getRequestDispatcher("jsp/articleMotCle.jsp").forward(request, response);
     }
 }

@@ -2,7 +2,7 @@ package Servlet;
 
 import DAO.UserDAO;
 import org.mindrot.jbcrypt.BCrypt;
-
+import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
