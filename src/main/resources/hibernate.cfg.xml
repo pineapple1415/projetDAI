@@ -15,21 +15,23 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
 
+        <!-- 自动创建表格 -->
+<!--        <property name="hibernate.hbm2ddl.auto">create</property>-->
+
         <!-- 实体类映射 -->
-        <mapping class="model.produit"/>
+        <mapping class="model.Produit"/>
         <mapping class="model.produitDansPanier"/>
-        <mapping class="model.panier"/>
-        <mapping class="model.fournisseur"/>
-        <mapping class="model.ligneCommande"/>
-        <mapping class="model.commande"/>
+        <mapping class="model.Panier"/>
+        <mapping class="model.Fournisseur"/>
+        <mapping class="model.Commande"/>
         <mapping class="model.User"/>
-        <mapping class="model.categorie"/>
-        <mapping class="model.course"/>
-        <mapping class="model.ajouter"/>
-        <mapping class="model.rayon"/>
-        <mapping class="model.location"/>
-        <mapping class="model.magasin"/>
-        <mapping class="model.appartenir"/>
-        <mapping class="model.stocker"/>
+        <mapping class="model.Categorie"/>
+        <mapping class="model.Course"/>
+        <mapping class="model.Ajouter"/>
+        <mapping class="model.Rayon"/>
+<!--        <mapping class="model.Location"/>-->
+        <mapping class="model.Magasin"/>
+<!--        <mapping class="model.Appartenir"/>-->
+        <mapping class="model.Stocker"/>
     </session-factory>
 </hibernate-configuration>

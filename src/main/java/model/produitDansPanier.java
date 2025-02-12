@@ -11,11 +11,11 @@ public class produitDansPanier {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "panier_id")
-    private panier panier;
+    private Panier panier;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produit_id")
-    private produit produit;
+    private Produit produit;
 
     private Integer quantity = 1;
 
@@ -31,19 +31,19 @@ public class produitDansPanier {
         this.id = id;
     }
 
-    public panier getPanier() {
+    public Panier getPanier() {
         return panier;
     }
 
-    public void setPanier(panier panier) {
+    public void setPanier(Panier panier) {
         this.panier = panier;
     }
 
-    public produit getProduit() {
+    public Produit getProduit() {
         return produit;
     }
 
-    public void setProduit(produit produit) {
+    public void setProduit(Produit produit) {
         this.produit = produit;
     }
 

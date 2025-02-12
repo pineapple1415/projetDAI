@@ -1,7 +1,7 @@
 package Servlet;
 
 import DAO.ProductDAO;
-import model.produit;
+import model.Produit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +23,7 @@ public class ServletPanier extends HttpServlet {
         resp.setContentType("application/json");
 
         if ("listProducts".equals(action)) {
-            List<produit> products = productDAO.getAllProducts();
+            List<Produit> products = productDAO.getAllProducts();
             objectMapper.writeValue(resp.getWriter(), products);
         }
     }

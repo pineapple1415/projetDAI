@@ -1,0 +1,40 @@
+package model;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Ajouter")
+public class Ajouter {
+
+    @EmbeddedId
+    private AjouterId id;
+
+    @ManyToOne
+    @MapsId("idCourse")
+    @JoinColumn(name = "idCourse")
+    private Course course;
+
+    @ManyToOne
+    @MapsId("idProduit")
+    @JoinColumn(name = "idProduit")
+    private Produit produit;
+
+    private Integer nombre;
+
+    public Ajouter() {}
+
+    public Ajouter(Course course, Produit produit, Integer nombre) {
+        this.id = new AjouterId(course.getIdCourse(), produit.getIdProduit());
+        this.course = course;
+        this.produit = produit;
+        this.nombre = nombre;
+    }
+
+    public Integer getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(Integer nombre) {
+        this.nombre = nombre;
+    }
+}

@@ -1,7 +1,7 @@
 package DAO;
 
-import model.panier;
-import model.produit;
+import model.Panier;
+import model.Produit;
 import model.User;
 import model.produitDansPanier;
 import org.hibernate.Session;
@@ -14,11 +14,11 @@ public class PanierDAO {
             Transaction tx = session.beginTransaction();
 
             // 获取或创建购物车
-            panier panier = session.createQuery("FROM panier WHERE user = :user", panier.class)
+            Panier panier = session.createQuery("FROM Panier WHERE user = :user", Panier.class)
                     .setParameter("user", user)
                     .uniqueResultOptional()
                     .orElseGet(() -> {
-                        panier newPanier = new panier();
+                        Panier newPanier = new Panier();
                         newPanier.setUser(user);
                         session.persist(newPanier);
                         return newPanier;
@@ -26,9 +26,9 @@ public class PanierDAO {
 
             // 查找现有商品项
             produitDansPanier existingItem = session.createQuery(
-                            "FROM produitDansPanier WHERE panier = :panier AND produit.id = :productId",
+                            "FROM produitDansPanier WHERE Panier = :Panier AND produit.id = :productId",
                             produitDansPanier.class)
-                    .setParameter("panier", panier)
+                    .setParameter("Panier", panier)
                     .setParameter("productId", productId)
                     .uniqueResultOptional()
                     .orElse(null);
@@ -38,7 +38,7 @@ public class PanierDAO {
                 existingItem.setQuantity(existingItem.getQuantity() + quantity);
             } else {
                 // 新增商品项
-                produit product = session.get(produit.class, productId);
+                Produit product = session.get(Produit.class, productId);
                 produitDansPanier newItem = new produitDansPanier();
                 newItem.setPanier(panier);
                 newItem.setProduit(product);
