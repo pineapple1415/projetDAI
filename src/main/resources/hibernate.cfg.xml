@@ -17,13 +17,12 @@
 
         <!-- 实体类映射 -->
         <mapping class="model.produit"/>
-<<<<<<< Updated upstream
+        <mapping class="model.produitDansPanier"/>
         <mapping class="model.panier"/>
-=======
         <mapping class="model.fournisseur"/>
         <mapping class="model.ligneCommande"/>
         <mapping class="model.commande"/>
-        <mapping class="model.user"/>
+        <mapping class="model.User"/>
         <mapping class="model.categorie"/>
         <mapping class="model.course"/>
         <mapping class="model.ajouter"/>
@@ -32,6 +31,5 @@
         <mapping class="model.magasin"/>
         <mapping class="model.appartenir"/>
         <mapping class="model.stocker"/>
->>>>>>> Stashed changes
     </session-factory>
 </hibernate-configuration>

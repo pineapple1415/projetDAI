@@ -9,16 +9,12 @@ import org.hibernate.Transaction;
 import util.HibernateUtil;
 
 public class PanierDAO {
-    public void addItemToPanier(User user, Long produitId) {
+    public void addItemToPanier(User user, Long productId, int quantity) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
 
-            // 获取商品（只加载必要字段）
-            produit produit = session.createQuery(
-                            "SELECT new Produit(p.id, p.name, p.price) " + "FROM Produit p WHERE p.id = :id", produit.class).setParameter("id", produitId).uniqueResult();
             // 获取或创建购物车
-            panier panier = session.createQuery(
-                            "FROM Panier WHERE user = :user", panier.class)
+            panier panier = session.createQuery("FROM panier WHERE user = :user", panier.class)
                     .setParameter("user", user)
                     .uniqueResultOptional()
                     .orElseGet(() -> {
@@ -28,11 +24,27 @@ public class PanierDAO {
                         return newPanier;
                     });
 
-            // 添加购物车项
-            produitDansPanier item = new produitDansPanier();
-            item.setPanier(panier);
-            item.setProduit(produit);
-            session.persist(item);
+            // 查找现有商品项
+            produitDansPanier existingItem = session.createQuery(
+                            "FROM produitDansPanier WHERE panier = :panier AND produit.id = :productId",
+                            produitDansPanier.class)
+                    .setParameter("panier", panier)
+                    .setParameter("productId", productId)
+                    .uniqueResultOptional()
+                    .orElse(null);
+
+            if (existingItem != null) {
+                // 更新数量
+                existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            } else {
+                // 新增商品项
+                produit product = session.get(produit.class, productId);
+                produitDansPanier newItem = new produitDansPanier();
+                newItem.setPanier(panier);
+                newItem.setProduit(product);
+                newItem.setQuantity(quantity);
+                session.persist(newItem);
+            }
 
             tx.commit();
         }
