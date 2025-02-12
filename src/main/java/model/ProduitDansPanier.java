@@ -2,19 +2,13 @@ package model;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "panier_item")
-public class produitDansPanier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+public class ProduitDansPanier {
+
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "panier_id")
     private Panier panier;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produit_id")
     private Produit produit;
 
     private Integer quantity = 1;

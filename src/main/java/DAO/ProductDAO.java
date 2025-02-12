@@ -10,7 +10,7 @@ import java.util.List;
 public class ProductDAO {
     public List<Produit> getAllProducts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("from produit ", Produit.class).list();
+            return session.createQuery("from Produit ", Produit.class).list();
         }
     }
 

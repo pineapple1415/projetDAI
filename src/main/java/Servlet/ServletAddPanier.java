@@ -14,7 +14,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 
-
+@WebServlet("/addToPanier")
 public class ServletAddPanier extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -37,11 +37,15 @@ public class ServletAddPanier extends HttpServlet {
                 new PanierDAO().addItemToPanier(user, productId, quantity);
                 responseData.put("type", "db");
                 responseData.put("userId", user.getIdUser()); // 返回用户ID用于Cookie标识
+
+                resp.sendRedirect("ajouteSuccess"); // 重定向到成功页面
             } else {
                 // 未登录用户（3天有效期）
                 int cookieDays = 3;
                 handleCookiePanier(request, resp, productId, quantity, cookieDays);
                 responseData.put("type", "cookie");
+
+                resp.sendRedirect("ajouteSuccess"); // 重定向到成功页面
             }
 
             resp.setContentType("application/json");

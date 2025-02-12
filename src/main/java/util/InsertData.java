@@ -13,7 +13,7 @@ public class InsertData {
         Transaction transaction = session.beginTransaction();
 
         try {
-            /** 1️⃣ 插入 10 个供应商 */
+            /** ⿡ 插入 10 个供应商 */
             List<Fournisseur> fournisseurs = Arrays.asList(
                     new Fournisseur("Samsung", "Seoul, South Korea", "contact@samsung.com"),
                     new Fournisseur("Nike", "USA", "support@nike.com"),
@@ -28,7 +28,7 @@ public class InsertData {
             );
             fournisseurs.forEach(session::save);
 
-            /** 2️⃣ 插入 10 个类别 */
+            /** ⿢ 插入 10 个类别 */
             List<Categorie> categories = Arrays.asList(
                     new Categorie("Électronique"), new Categorie("Vêtements"),
                     new Categorie("Alimentation"), new Categorie("Meubles"),
@@ -38,7 +38,7 @@ public class InsertData {
             );
             categories.forEach(session::save);
 
-            /** 3️⃣ 插入 10 个货架 */
+            /** ⿣ 插入 10 个货架 */
             List<Rayon> rayons = Arrays.asList(
                     new Rayon("Téléviseurs"), new Rayon("Chaussures"),
                     new Rayon("Produits laitiers"), new Rayon("Salles de bain"),
@@ -48,7 +48,7 @@ public class InsertData {
             );
             rayons.forEach(session::save);
 
-            /** 4️⃣ 插入 10 个商店 */
+            /** ⿤ 插入 10 个商店 */
             List<Magasin> magasins = Arrays.asList(
                     new Magasin("Carrefour", "Paris", "0145678901"),
                     new Magasin("Auchan", "Lille", "0320456789"),
@@ -63,17 +63,17 @@ public class InsertData {
             );
             magasins.forEach(session::save);
 
-            /** 5️⃣ 插入 10 个客户 */
-            List<Client> clients = Arrays.asList(
-                    new Client("Jean", "Dupont", "Paris", "75001", "jean@email.com", "0601020304", "jeanDup", "password1"),
-                    new Client("Marie", "Curie", "Lyon", "75002", "marie@email.com", "0611223344", "marieCurie", "password2"),
-                    new Client("Paul", "Durand", "Marseille", "75003", "paul@email.com", "0622334455", "paulDurand", "password3"),
-                    new Client("Sophie", "Bernard", "Toulouse", "75004", "sophie@email.com", "0633445566", "sophieB", "password4"),
-                    new Client("Luc", "Morel", "Nantes", "75005", "luc@email.com", "0644556677", "lucMorel", "password5")
+            /** ⿥ 插入 10 个客户 */
+            List<User> users = Arrays.asList(
+                    new User("Jean", "Dupont", "Paris", "75001", "jean@email.com", "0601020304", "jeanDup", "password1","Client"),
+                    new User("Marie", "Curie", "Lyon", "75002", "marie@email.com", "0611223344", "marieCurie", "password2","Client"),
+                    new User("Paul", "Durand", "Marseille", "75003", "paul@email.com", "0622334455", "paulDurand", "password3","Client"),
+                    new User("Sophie", "Bernard", "Toulouse", "75004", "sophie@email.com", "0633445566", "sophieB", "password4","Client"),
+                    new User("Luc", "Morel", "Nantes", "75005", "luc@email.com", "0644556677", "lucMorel", "password5","Client")
             );
-            clients.forEach(session::save);
+            users.forEach(session::save);
 
-            /** 6️⃣ 插入 10 个产品 */
+            /** ⿦ 插入 10 个产品 */
             List<Produit> produits = Arrays.asList(
                     new Produit("iPhone 15", 999.99, "USA", "6.7 pouces", "Smartphone Apple",
                             "https://www.apple.com/v/iphone-15/a/images/overview/design/iphone_15_color.jpg",
@@ -89,24 +89,24 @@ public class InsertData {
             );
 
 
-            /** 7️⃣ 插入 10 个订单 */
+            /** ⿧ 插入 10 个订单 */
             List<Commande> commandes = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
-                commandes.add(new Commande((i + 1) * 100.0, new Date(), Statut.PAYEE, clients.get(i % clients.size()), magasins.get(i % magasins.size())));
+                commandes.add(new Commande((i + 1) * 100.0, new Date(), Statut.PAYEE, users.get(i % users.size()), magasins.get(i % magasins.size())));
             }
             commandes.forEach(session::save);
 
-            /** 8️⃣ 插入 10 个订单详情（Composer），确保 1 个订单包含 1-3 个产品 */
+            /** ⿨ 插入 10 个订单详情（Composer），确保 1 个订单包含 1-3 个产品 */
             for (Commande commande : commandes) {
                 for (int i = 0; i < new Random().nextInt(3) + 1; i++) {
                     session.save(new Composer(commande, produits.get(i % produits.size()), new Random().nextInt(5) + 1));
                 }
             }
 
-            /** 9️⃣ 插入 10 个购物车 */
+            /** ⿩ 插入 10 个购物车 */
             List<Course> courses = new ArrayList<>();
-            for (Client client : clients) {
-                courses.add(new Course(client));
+            for (User user : users) {
+                courses.add(new Course(user));
             }
             courses.forEach(session::save);
 
@@ -117,14 +117,14 @@ public class InsertData {
                 }
             }
 
-            /** 11️⃣ 插入 10 个库存（Stocker），确保 1 个商店包含多个产品 */
+            /** 1⿡ 插入 10 个库存（Stocker），确保 1 个商店包含多个产品 */
             for (Magasin magasin : magasins) {
                 for (int i = 0; i < new Random().nextInt(3) + 1; i++) {
                     session.save(new Stocker(produits.get(i % produits.size()), magasin, new Random().nextInt(100) + 1));
                 }
             }
 
-            /** 12️⃣ 插入 10 个商店-货架关系（Posseder），确保 1 个商店有 2-4 个货架 */
+            /** 1⿢ 插入 10 个商店-货架关系（Posseder），确保 1 个商店有 2-4 个货架 */
             for (Magasin magasin : magasins) {
                 for (int i = 0; i < new Random().nextInt(3) + 2; i++) {
                     session.save(new Posseder(rayons.get(i % rayons.size()), magasin));

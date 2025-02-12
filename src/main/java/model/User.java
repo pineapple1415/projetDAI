@@ -1,12 +1,11 @@
 package model;
 
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "User")
 public class User {
 
     @Id
@@ -20,53 +19,77 @@ public class User {
     @Column(name = "prenom")
     private String prenom;
 
+    @Column(name = "adresse")
+    private String adresse;
+
+    @Column(name = "codePostal")
+    private String codePostal;
+
     @Column(name = "email")
     private String email;
 
     @Column(name = "telephone")
     private String telephone;
 
-    @Column(name = "adress")
-    private String adress;
+    @Column(name = "login")
+    private String login;
 
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Commande> commandes = new HashSet<>();
+    @Column(name = "type")
+    private String type; // 用于区分不同用户类型（如管理员、普通用户等）
 
+    /** 一对多：User 和 Course（购物车） */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Course> courses = new HashSet<>();
 
+    /** 一对多：User 和 Commande（订单） */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Commande> commandes = new HashSet<>();
 
-    //Constructeur avec paramettre et sans paramettre
-    public User() {
-    }
+    /** 默认构造函数（JPA 需要） */
+    public User() {}
 
-    public User( String nom, String prenom, String adress, String email, String telephone,  String password) {
+    /** 全参数构造函数（无 ID） */
+    public User(String nom, String prenom, String adresse, String codePostal, String email, String telephone,
+                String login, String password, String type) {
         this.nom = nom;
         this.prenom = prenom;
-        this.adress = adress;
+        this.adresse = adresse;
+        this.codePostal = codePostal;
         this.email = email;
         this.telephone = telephone;
+        this.login = login;
         this.password = password;
+        this.type = type;
     }
 
-    public User(Integer idUser, String nom, String prenom, String adress, String email, String telephone, String password, Set<Commande> commandes, Set<Course> courses) {
+    /** 全参数构造函数（包括 ID） */
+    public User(Integer idUser, String nom, String prenom, String adresse, String codePostal, String email,
+                String telephone, String login, String password, String type,
+                Set<Course> courses, Set<Commande> commandes) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
-        this.adress = adress;
+        this.adresse = adresse;
+        this.codePostal = codePostal;
         this.email = email;
         this.telephone = telephone;
+        this.login = login;
         this.password = password;
-        this.commandes = commandes;
+        this.type = type;
         this.courses = courses;
+        this.commandes = commandes;
     }
 
-    //Getter et setter
+    // *GETTERS & SETTERS*
     public Integer getIdUser() {
         return idUser;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
 
     public String getNom() {
@@ -85,12 +108,20 @@ public class User {
         this.prenom = prenom;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAdresse() {
+        return adresse;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getCodePostal() {
+        return codePostal;
+    }
+
+    public void setCodePostal(String codePostal) {
+        this.codePostal = codePostal;
     }
 
     public String getEmail() {
@@ -109,6 +140,14 @@ public class User {
         this.telephone = telephone;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -117,12 +156,12 @@ public class User {
         this.password = password;
     }
 
-    public Set<Commande> getCommandes() {
-        return commandes;
+    public String getType() {
+        return type;
     }
 
-    public void setCommandes(Set<Commande> commandes) {
-        this.commandes = commandes;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Set<Course> getCourses() {
@@ -133,18 +172,27 @@ public class User {
         this.courses = courses;
     }
 
+    public Set<Commande> getCommandes() {
+        return commandes;
+    }
+
+    public void setCommandes(Set<Commande> commandes) {
+        this.commandes = commandes;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "idUser=" + idUser +
                 ", nom='" + nom + '\'' +
                 ", prenom='" + prenom + '\'' +
-                ", adress='" + adress + '\'' +
+                ", adresse='" + adresse + '\'' +
+                ", codePostal='" + codePostal + '\'' +
                 ", email='" + email + '\'' +
                 ", telephone='" + telephone + '\'' +
+                ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
-
-
 }

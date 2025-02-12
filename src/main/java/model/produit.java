@@ -14,6 +14,9 @@ public class Produit {
 
     private String nomProduit;
     private Double prixUnit;
+
+
+
     private String origineProduit;
     private String tailleProduit;
     private String descriptionProduit;

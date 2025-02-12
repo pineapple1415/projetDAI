@@ -22,8 +22,8 @@ public class Commande {
     private Statut statut;  // 使用 Statut 作为订单状态
 
     @ManyToOne
-    @JoinColumn(name = "idClient")
-    private Client client;
+    @JoinColumn(name = "IdUser")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "idMagasin")
@@ -35,11 +35,11 @@ public class Commande {
 
     public Commande() {}
 
-    public Commande(Double prixTotal, Date dateCommande, Statut statut, Client client, Magasin magasin) {
+    public Commande(Double prixTotal, Date dateCommande, Statut statut, User user, Magasin magasin) {
         this.prixTotal = prixTotal;
         this.dateCommande = dateCommande;
         this.statut = statut;
-        this.client = client;
+        this.user = user;
         this.magasin = magasin;
     }
 
@@ -75,12 +75,12 @@ public class Commande {
         this.statut = statut;
     }
 
-    public Client getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Magasin getMagasin() {
