@@ -2,6 +2,7 @@ package Servlet;
 
 import DAO.UserDAO;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,10 +21,23 @@ public class ServletRegister extends HttpServlet {
         String address = request.getParameter("address");
         String password = request.getParameter("password");
 
-        User user = new User(name, prenom, email,telephone, address,password);
         UserDAO userDAO = new UserDAO();
+
+        // Vérifier si l'email existe déjà
+        if (userDAO.getUserByEmail(email) != null) {
+            request.setAttribute("error", "Cet email est déjà utilisé.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+
+        // Hachage du mot de passe avec BCrypt
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        // Création de l'utilisateur
+        User user = new User(name, prenom, email, telephone, address, hashedPassword);
         userDAO.saveUser(user);
 
+        // Redirection vers login.jsp après succès
         response.sendRedirect("login.jsp");
     }
 }
