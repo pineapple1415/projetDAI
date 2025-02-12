@@ -15,9 +15,6 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
 
-        <!-- 自动创建表格 -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
-
         <!-- 实体类映射 -->
         <mapping class="model.Produit"/>
         <mapping class="model.Fournisseur"/>

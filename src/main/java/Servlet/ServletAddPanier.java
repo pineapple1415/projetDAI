@@ -13,7 +13,6 @@ import java.util.*;
 
 
 
-@WebServlet("/addToPanier")
 public class ServletAddPanier extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
