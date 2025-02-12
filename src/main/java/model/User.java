@@ -19,17 +19,14 @@ public class User {
     @Column(name = "prenom")
     private String prenom;
 
-    @Column(name = "adress")
-    private String adress;
-
     @Column(name = "email")
     private String email;
 
     @Column(name = "telephone")
     private String telephone;
 
-    @Column(name = "codePostal")
-    private String codePostal;
+    @Column(name = "adress")
+    private String adress;
 
     @Column(name = "password")
     private String password;
@@ -45,18 +42,16 @@ public class User {
     public User() {
     }
 
-    public User(Integer idUser, String nom, String prenom, String adress, String email, String telephone, String codePostal, String password) {
-        this.idUser = idUser;
+    public User( String nom, String prenom, String adress, String email, String telephone,  String password) {
         this.nom = nom;
         this.prenom = prenom;
         this.adress = adress;
         this.email = email;
         this.telephone = telephone;
-        this.codePostal = codePostal;
         this.password = password;
     }
 
-    public User(Integer idUser, String nom, String prenom, String adress, String email, String telephone, String password, String codePostal, Set<Commande> commandes, Set<Course> courses) {
+    public User(Integer idUser, String nom, String prenom, String adress, String email, String telephone, String password, Set<Commande> commandes, Set<Course> courses) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -64,7 +59,6 @@ public class User {
         this.email = email;
         this.telephone = telephone;
         this.password = password;
-        this.codePostal = codePostal;
         this.commandes = commandes;
         this.courses = courses;
     }
@@ -104,14 +98,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getCodePostal() {
-        return codePostal;
-    }
-
-    public void setCodePostal(String codePostal) {
-        this.codePostal = codePostal;
     }
 
     public String getTelephone() {
@@ -155,7 +141,6 @@ public class User {
                 ", adress='" + adress + '\'' +
                 ", email='" + email + '\'' +
                 ", telephone='" + telephone + '\'' +
-                ", codePostal='" + codePostal + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

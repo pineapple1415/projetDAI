@@ -11,17 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/register")
-public class RegisterServlet extends HttpServlet {
+public class ServletRegister extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         String prenom = request.getParameter("prenom");
         String email = request.getParameter("email");
-
-        String password = request.getParameter("password");
         String telephone = request.getParameter("telephone");
         String address = request.getParameter("address");
+        String password = request.getParameter("password");
 
-        User user = new User(name, prenom, password, telephone, address, email);
+        User user = new User(name, prenom, email,telephone, address,password);
         UserDAO userDAO = new UserDAO();
         userDAO.saveUser(user);
 

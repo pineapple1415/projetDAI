@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Inscription</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/register.css" type="text/css" />
 </head>
 <body>
 <div class="container">
@@ -24,14 +24,14 @@
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br>
 
-        <label for="password">Mot de passe:</label>
-        <input type="password" id="password" name="password" required><br>
-
         <label for="telephone">Téléphone:</label>
         <input type="text" id="telephone" name="telephone"><br>
 
-        <label for="address">Adresse:</label>
+        <label for="address">Adresse Complete:</label>
         <input type="text" id="address" name="address"><br>
+
+        <label for="password">Mot de passe:</label>
+        <input type="password" id="password" name="password" required><br>
 
         <button type="submit">S'inscrire</button>
     </form>
