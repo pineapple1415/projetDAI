@@ -3,7 +3,7 @@ package Servlet;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import DAO.PanierDAO;
-
+import model.User;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.net.URLDecoder;

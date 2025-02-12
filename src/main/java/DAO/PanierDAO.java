@@ -2,7 +2,8 @@ package DAO;
 
 import model.Panier;
 import model.Produit;
-import model.produitDansPanier;
+import model.User;
+import model.ProduitDansPanier;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
@@ -24,9 +25,9 @@ public class PanierDAO {
                     });
 
             // 查找现有商品项
-            produitDansPanier existingItem = session.createQuery(
-                            "FROM produitDansPanier WHERE Panier = :Panier AND Produit.id = :productId",
-                            produitDansPanier.class)
+            ProduitDansPanier existingItem = session.createQuery(
+                            "FROM ProduitDansPanier WHERE Panier = :Panier AND produit.id = :productId",
+                            ProduitDansPanier.class)
                     .setParameter("Panier", panier)
                     .setParameter("productId", productId)
                     .uniqueResultOptional()
@@ -38,7 +39,7 @@ public class PanierDAO {
             } else {
                 // 新增商品项
                 Produit product = session.get(Produit.class, productId);
-                produitDansPanier newItem = new produitDansPanier();
+                ProduitDansPanier newItem = new ProduitDansPanier();
                 newItem.setPanier(panier);
                 newItem.setProduit(product);
                 newItem.setQuantity(quantity);

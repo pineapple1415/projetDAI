@@ -4,9 +4,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+
 public class Panier {
     private Set<Produit> items = new HashSet<>();
-
+    private User user;
     public Panier() {}
 
     public Panier(Set<Produit> items) {
@@ -16,6 +17,14 @@ public class Panier {
     // 获取购物车中的商品
     public Set<Produit> getItems() {
         return items;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) { // 👈 添加这个方法
+        this.user = user;
     }
 
     // 添加商品
