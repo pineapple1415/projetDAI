@@ -11,37 +11,104 @@ header {
     padding: 10px 20px;
     background-color: #333;
     color: white;
+    position: relative; /* 让菜单基于 header 定位 */
 }
 
+/* 搜索框居中 */
 .search-container {
+    flex-grow: 1;
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 .search-container input {
     padding: 8px;
     font-size: 16px;
-    width: 250px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-.search-container button, #loginButton {
-    padding: 8px 15px;
+/* 过滤按钮 */
+.filter-container {
+    margin-left: auto; /* 让过滤按钮靠右 */
+}
+
+#searchButton, #filterButton {
+    padding: 10px 15px;
     font-size: 16px;
     background-color: #ff9800;
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
+#searchButton:hover, #filterButton:hover {
+    background-color: #e68900; /* 悬停时改变颜色 */
+}
+
+/* 过滤菜单 */
+.filter-menu {
+    position: absolute;
+    top: 100%; /* 让菜单在按钮正下方 */
+    left: 0;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    display: none; /* 默认隐藏 */
+    width: 250px;
+    z-index: 100;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.filter-menu.show {
+    display: block; /* 当 class 为 'show' 时显示 */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 过滤菜单标题 */
+.filter-menu h3 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 选项样式 */
+.filter-menu label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+/* 复选框 */
+.filter-menu input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* 登录按钮 */
 #loginButton {
     background-color: #4CAF50;
+    padding: 8px 15px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
+/* 主要内容区 */
 main {
     text-align: center;
     padding: 20px;
 }
 
+/* 产品列表 */
 #productList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -49,36 +116,35 @@ main {
     padding: 20px;
 }
 
+/* 产品项 */
 .product-item {
     border: 1px solid #ddd;
     padding: 15px;
     background: white;
+    border-radius: 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
-/* 购物车表格样式 */
-.cart-items table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: collapse;
-}
-
-.cart-items th, .cart-items td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-.cart-items th {
-    background-color: #f8f9fa;
-}
-
-/* 按钮统一样式 */
-button {
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    opacity: 0.8;
+.product-item:hover {
     transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 响应式设计：在小屏设备上调整布局 */
+@media (max-width: 768px) {
+    .search-container input {
+        width: 250px;
+    }
+
+    #productList {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .filter-menu {
+        width: 100%;
+    }
+}
+
+.show {
+    display: block !important;
 }
