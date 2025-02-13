@@ -58,7 +58,7 @@ public class PanierDAO {
 
             // 获取购物车项
             ProduitDansPanier item = session.createQuery(
-                            "FROM ProduitDansPanier WHERE panier.user = :user AND produit.id = :productId",
+                            "FROM ProduitDansPanier WHERE panier.user = :user AND Produit.id = :productId",
                             ProduitDansPanier.class)
                     .setParameter("user", user)
                     .setParameter("productId", productId)
