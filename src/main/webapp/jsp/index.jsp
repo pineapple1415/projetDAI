@@ -35,5 +35,17 @@
     </div>
 
 </main>
+
+<script>
+    // 统一事件监听（支持动态生成的按钮）
+    document.getElementById('productList').addEventListener('click', function(e) {
+        if(e.target.closest('.add-btn')) {
+            const button = e.target.closest('.add-btn');
+            const productId = button.dataset.productId;
+            const quantity = parseInt(button.dataset.quantity || 1);
+            addToCart(productId, quantity);
+        }
+    });
+</script>
 </body>
 </html>

@@ -103,16 +103,12 @@
         document.getElementById('quantity').textContent = currentQuantity;
     }
 
-    // 绑定 "Ajouter au panier" 按钮事件
-    document.getElementById('ajoutePanier').addEventListener('click', function () {
+    // 修改后的加入购物车函数
+    // 修改后的addToCart函数
+    function addToCart() {
         const productId = document.getElementById('productId').value;
 
-        if (!productId) {
-            alert("Erreur : Produit ID manquant !");
-            return;
-        }
-
-        fetch(`${window.location.origin}/ProjetDAI_war/addToPanier`, {
+        fetch('${pageContext.request.contextPath}/addToPanier', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -121,13 +117,23 @@
             })
         })
             .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
+                if(response.redirected) {
+                    window.location.href = response.url; // 跳转到成功页面
                 }
             })
             .catch(error => console.error('Erreur:', error));
-    });
 
+        // 在addToCart函数中添加验证
+        console.log('正在添加商品:', {
+            productId: productId,
+            quantity: currentQuantity
+        });
+
+    }
+
+
+    // 绑定点击事件（替代onclick属性）
+    document.getElementById('ajoutePanier').addEventListener('click', addToCart);
 </script>
 
 </body>

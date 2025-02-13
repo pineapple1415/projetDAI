@@ -59,24 +59,31 @@ public class ServletAddPanier extends HttpServlet {
 
     private void handleCookiePanier(HttpServletRequest req, HttpServletResponse resp,
                                     Long productId, int quantity, int maxAgeDays) throws IOException {
-        // 数据结构：{ productId: quantity }
         Map<Long, Integer> panierMap = new HashMap<>();
-        Cookie panierCookie = Arrays.stream(req.getCookies())
-                .filter(c -> "panier".equals(c.getName()))
-                .findFirst().orElse(null);
 
-        // 解析现有Cookie
-        if (panierCookie != null) {
-            panierMap = objectMapper.readValue(
-                    URLDecoder.decode(panierCookie.getValue(), "UTF-8"),
-                    new TypeReference<HashMap<Long, Integer>>(){}
-            );
+        // 读取现有 Cookie
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("panier".equals(cookie.getName())) {
+                    try {
+                        panierMap = objectMapper.readValue(
+                                URLDecoder.decode(cookie.getValue(), "UTF-8"),
+                                new TypeReference<HashMap<Long, Integer>>(){}
+                        );
+                    } catch (Exception e) {
+                        // 如果解析失败，重置购物车
+                        panierMap = new HashMap<>();
+                    }
+                    break;
+                }
+            }
         }
 
         // 更新数量
         panierMap.put(productId, panierMap.getOrDefault(productId, 0) + quantity);
 
-        // 创建新Cookie
+        // 保存新 Cookie
         String cookieValue = URLEncoder.encode(
                 objectMapper.writeValueAsString(panierMap),
                 "UTF-8"
@@ -84,7 +91,14 @@ public class ServletAddPanier extends HttpServlet {
 
         Cookie newCookie = new Cookie("panier", cookieValue);
         newCookie.setMaxAge(maxAgeDays * 24 * 3600);
-        newCookie.setPath("/");
+        newCookie.setPath("/"); // 确保 Cookie 对所有路径可见
         resp.addCookie(newCookie);
+
+        // 在handleCookiePanier方法中添加
+        System.out.println("new Cookie : " + panierMap);
+        System.out.println("set Cookie route: " + newCookie.getPath());
+
     }
 }
+
+

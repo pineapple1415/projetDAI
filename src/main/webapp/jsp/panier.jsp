@@ -35,12 +35,28 @@
     productInfoMap.put(Long.valueOf(p.getIdProduit()), p);
   }
 %>
+
+
 <html>
 <head>
   <title>Mon Panier</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
+<%-- 调试输出（临时可见） --%>
+<div style="border: 1px solid red; padding: 10px; margin: 20px;">
+  <h3>Debug信息</h3>
+  <p>Cookie原始值: <%= panierValue %></p>
+  <p>解析后的Map: <%= panierMap %></p>
+  <p>商品总数: <%= productInfoMap.size() %></p>
+  <p>匹配的商品ID:
+    <% for (Long key : panierMap.keySet()) { %>
+    <%= key %> -> <%= productInfoMap.containsKey(key) ? "存在" : "不存在" %> <br>
+    <% } %>
+  </p>
+</div>
+
+
 <h1>🛒 Mon panier</h1>
 <div class="cart-items">
   <% if (panierMap.isEmpty()) { %>
@@ -52,21 +68,68 @@
       <th>prix/unit</th>
       <th>quantity</th>
       <th>prix ensemble</th>
+      <th>操作</th>
     </tr>
     <% for (Map.Entry<Long, Integer> entry : panierMap.entrySet()) {
       Produit p = productInfoMap.get(entry.getKey());
       if (p != null) { %>
-    <tr>
+    <tr data-product-id="<%= String.valueOf(entry.getKey()) %>"
+        data-price="<%= p.getPrixUnit() %>">
       <td><%= p.getNomProduit() %></td>
-      <td>€<%= p.getPrixUnit() %></td>
-      <td><%= entry.getValue() %></td>
-      <td>€<%= p.getPrixUnit() * entry.getValue() %></td>
+      <td>€<span class="unit-price"><%= p.getPrixUnit() %></span></td>
+      <td class="quantity"><%= entry.getValue() %></td>
+      <td class="total-price">€<%= p.getPrixUnit() * entry.getValue() %></td>
+      <td>
+        <button class="btn-minus" data-action="decrease">-</button>
+        <button class="btn-plus" data-action="increase">+</button>
+      </td>
     </tr>
     <% }
     } %>
   </table>
   <% } %>
 </div>
-<button onclick="location.href='index'">back to shopping</button>
+
+<div class="total-section">
+  <h3 id="total-price">Prix Total : €0.00</h3>
+</div>
+
+
+<div class="button-group" style="margin-top: 20px;">
+  <button onclick="clearCart()" style="background-color: #ff4444; color: white;">
+    🗑️ 清空购物车
+  </button>
+  <button onclick="location.href='index'" style="margin-left: 10px;">
+    ← 继续购物
+  </button>
+</div>
+
+<script src="/ProjetDAI_war/js/script.js">
+
+</script>
+
+<script>
+
+  updateTotalPrice();
+
+  document.querySelector('.cart-items').addEventListener('click', function(e) {
+    const target = e.target;
+
+    // 仅处理加减按钮的点击
+    if (target.classList.contains('btn-minus') || target.classList.contains('btn-plus')) {
+      // 获取商品行元素
+      const row = target.closest('tr[data-product-id]');
+      if (!row) return; // 安全校验
+
+      // 从行元素获取商品ID和单价
+      const productId = row.dataset.productId;
+      const delta = target.classList.contains('btn-minus') ? -1 : 1; // 操作类型
+
+      // 调用更新函数
+      updateQuantity(productId, delta);
+    }
+  });
+</script>
+
 </body>
 </html>
