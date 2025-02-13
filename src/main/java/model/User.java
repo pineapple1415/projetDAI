@@ -1,164 +1,55 @@
 package model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 单表继承
+@DiscriminatorColumn(name = "userType", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "User")
-public class User {
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdUser")
     private Integer idUser;
 
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false)
     private String nom;
 
-    @Column(name = "prenom")
+    @Column(name = "prenom", nullable = false)
     private String prenom;
 
-    @Column(name = "adresse")
-    private String adresse;
-
-    @Column(name = "codePostal")
-    private String codePostal;
-
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "telephone")
-    private String telephone;
-
-    @Column(name = "login")
-    private String login;
-
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "userType", insertable = false, updatable = false)
+    private String userType;
 
-    /** 一对多：User 和 Course（购物车） */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Course> courses = new HashSet<>();
-
-    /** 一对多：User 和 Commande（订单） */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Commande> commandes = new HashSet<>();
-
-    /** 默认构造函数（JPA 需要） */
     public User() {}
 
-    /** 全参数构造函数 */
-    public User(String nom, String prenom, String adresse, String codePostal, String email, String telephone,
-                String login, String password, String type) {
+    public User(String nom, String prenom, String email, String password) {
         this.nom = nom;
         this.prenom = prenom;
-        this.adresse = adresse;
-        this.codePostal = codePostal;
         this.email = email;
-        this.telephone = telephone;
-        this.login = login;
-        this.password = password;
-        this.type = type;
-    }
-
-    // **GETTERS & SETTERS**
-    public Integer getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
-    public String getCodePostal() {
-        return codePostal;
-    }
-
-    public void setCodePostal(String codePostal) {
-        this.codePostal = codePostal;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getType() {
-        return type;
-    }
+    // Getters & Setters
+    public Integer getIdUser() { return idUser; }
+    public void setIdUser(Integer idUser) { this.idUser = idUser; }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    public Set<Course> getCourses() {
-        return courses;
-    }
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public Set<Commande> getCommandes() {
-        return commandes;
-    }
-
-    public void setCommandes(Set<Commande> commandes) {
-        this.commandes = commandes;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

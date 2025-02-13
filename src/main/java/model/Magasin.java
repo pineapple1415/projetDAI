@@ -16,23 +16,8 @@ public class Magasin {
     private String adresseMagasin;
     private String telMagasin;
 
-    /** 多对多：Magasin 和 Rayon */
-    @ManyToMany
-    @JoinTable(name = "Posseder",
-            joinColumns = @JoinColumn(name = "idMagasin"),
-            inverseJoinColumns = @JoinColumn(name = "idRayon"))
-    private Set<Rayon> rayons = new HashSet<>();
-
-    /** 一对多：Magasin 和 Commande */
     @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Commande> commandes = new HashSet<>();
-
-    /** 多对多：Magasin 和 Produit 通过 Stocker 连接 */
-    @ManyToMany
-    @JoinTable(name = "Stocker",
-            joinColumns = @JoinColumn(name = "idMagasin"),
-            inverseJoinColumns = @JoinColumn(name = "idProduit"))
-    private Set<Produit> produits = new HashSet<>();
+    private Set<Preparateur> preparateurs = new HashSet<>(); // 🚀 确保这里是 Set<Preparateur>，而不是 User！
 
     public Magasin() {}
 
@@ -42,59 +27,19 @@ public class Magasin {
         this.telMagasin = telMagasin;
     }
 
-    public Integer getIdMagasin() {
-        return idMagasin;
+    public Integer getIdMagasin() { return idMagasin; }
+    public void setIdMagasin(Integer idMagasin) { this.idMagasin = idMagasin; }
+
+    public Set<Preparateur> getPreparateurs() { return preparateurs; }
+    public void setPreparateurs(Set<Preparateur> preparateurs) { this.preparateurs = preparateurs; }
+
+    public void addPreparateur(Preparateur preparateur) {
+        this.preparateurs.add(preparateur);
+        preparateur.setMagasin(this);
     }
 
-    public void setIdMagasin(Integer idMagasin) {
-        this.idMagasin = idMagasin;
-    }
-
-    public String getNomMagasin() {
-        return nomMagasin;
-    }
-
-    public void setNomMagasin(String nomMagasin) {
-        this.nomMagasin = nomMagasin;
-    }
-
-    public String getAdresseMagasin() {
-        return adresseMagasin;
-    }
-
-    public void setAdresseMagasin(String adresseMagasin) {
-        this.adresseMagasin = adresseMagasin;
-    }
-
-    public String getTelMagasin() {
-        return telMagasin;
-    }
-
-    public void setTelMagasin(String telMagasin) {
-        this.telMagasin = telMagasin;
-    }
-
-    public Set<Rayon> getRayons() {
-        return rayons;
-    }
-
-    public void setRayons(Set<Rayon> rayons) {
-        this.rayons = rayons;
-    }
-
-    public Set<Commande> getCommandes() {
-        return commandes;
-    }
-
-    public void setCommandes(Set<Commande> commandes) {
-        this.commandes = commandes;
-    }
-
-    public Set<Produit> getProduits() {
-        return produits;
-    }
-
-    public void setProduits(Set<Produit> produits) {
-        this.produits = produits;
+    public void removePreparateur(Preparateur preparateur) {
+        this.preparateurs.remove(preparateur);
+        preparateur.setMagasin(null);
     }
 }

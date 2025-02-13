@@ -13,8 +13,8 @@ public class Course {
     private Integer idCourse;
 
     @ManyToOne
-    @JoinColumn(name = "IdUser")
-    private User user;
+    @JoinColumn(name = "IdUser", nullable = false)
+    private User client;
 
     /** 多对多：Course 和 Produit 通过 Ajouter 连接 */
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -22,8 +22,8 @@ public class Course {
 
     public Course() {}
 
-    public Course(User user) {
-        this.user = user;
+    public Course(User client) {
+        this.client = client;
     }
 
     public Integer getIdCourse() {
@@ -34,12 +34,12 @@ public class Course {
         this.idCourse = idCourse;
     }
 
-    public User getUser() {
-        return user;
+    public User getClient() {
+        return client;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(User client) {
+        this.client = client;
     }
 
     public Set<Ajouter> getAjouts() {

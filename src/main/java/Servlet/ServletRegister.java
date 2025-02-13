@@ -2,6 +2,9 @@ package Servlet;
 
 import DAO.UserDAO;
 import model.User;
+import model.Client;
+import model.Gerant;
+import model.Preparateur;
 import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.ServletException;
@@ -14,33 +17,42 @@ import java.io.IOException;
 @WebServlet("/register")
 public class ServletRegister extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String nom = request.getParameter("name");
+        String nom = request.getParameter("nom");
         String prenom = request.getParameter("prenom");
         String email = request.getParameter("email");
-        String telephone = request.getParameter("telephone");
-        String adresse = request.getParameter("address");
         String password = request.getParameter("password");
-        String codePostal = request.getParameter("codePostal");
-        String login = request.getParameter("login");
-        String type = request.getParameter("type");
+        String userType = request.getParameter("userType"); // 确保前端传入 userType
 
-        UserDAO userDAO = new UserDAO();
+        // 密码加密
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        // Vérifier si l'email existe déjà
-        if (userDAO.getUserByEmail(email) != null) {
-            request.setAttribute("error", "Cet email est déjà utilisé.");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-            return;
+        User newUser;
+
+        // 🏷 **实例化具体的子类**
+        switch (userType.toUpperCase()) {
+            case "CLIENT":
+                String adresse = request.getParameter("adresse");
+                String codePostal = request.getParameter("codePostal");
+                String telephone = request.getParameter("telephone");
+                newUser = new Client(nom, prenom, email, hashedPassword, adresse, codePostal, telephone);
+                break;
+
+            case "GERANT":
+                newUser = new Gerant(nom, prenom, email, hashedPassword);
+                break;
+
+            case "PREPARATEUR":
+                newUser = new Preparateur(nom, prenom, email, hashedPassword);
+                break;
+
+            default:
+                throw new ServletException("Type d'utilisateur inconnu : " + userType);
         }
 
-        // Hachage du mot de passe avec BCrypt
-        String hashedPassword = BCrypt.hashpw(codePostal, BCrypt.gensalt());
+        // ✅ **正确：实例化 UserDAO 再调用 saveUser**
+        UserDAO userDAO = new UserDAO();
+        userDAO.saveUser(newUser);
 
-        // Création de l'utilisateur
-        User user = new User(nom, prenom, adresse, codePostal, email, telephone, login, password, type);
-        userDAO.saveUser(user);
-
-        // Redirection vers login.jsp après succès
         response.sendRedirect("login.jsp");
     }
 }

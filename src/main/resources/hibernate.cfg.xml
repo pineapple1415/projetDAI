@@ -23,6 +23,9 @@
         <mapping class="model.Fournisseur"/>
         <mapping class="model.Commande"/>
         <mapping class="model.User"/>
+        <mapping class="model.Client"/>
+        <mapping class="model.Gerant"/>
+        <mapping class="model.Preparateur"/>
         <mapping class="model.Composer"/>
         <mapping class="model.Categorie"/>
         <mapping class="model.Course"/>
