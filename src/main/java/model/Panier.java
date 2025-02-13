@@ -3,8 +3,6 @@ package model;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import model.Produit;
-import model.User;
 
 public class Panier {
 

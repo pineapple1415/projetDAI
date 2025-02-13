@@ -26,7 +26,7 @@ public class PanierDAO {
 
             // 查找现有商品项
             ProduitDansPanier existingItem = session.createQuery(
-                            "FROM ProduitDansPanier WHERE Panier = :Panier AND produit.id = :productId",
+                            "FROM ProduitDansPanier WHERE Panier = :Panier AND Produit.id = :productId",
                             ProduitDansPanier.class)
                     .setParameter("Panier", panier)
                     .setParameter("productId", productId)

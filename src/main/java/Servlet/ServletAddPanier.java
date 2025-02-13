@@ -11,7 +11,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 
-@WebServlet("/addToPanier")
+//@WebServlet("/addToPanier")
 public class ServletAddPanier extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

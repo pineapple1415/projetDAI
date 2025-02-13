@@ -10,7 +10,7 @@
 <body>
 <header>
     <h1>Résultats de la recherche</h1>
-    <button onclick="window.location.href='index.jsp'">Retour à l'accueil</button>
+    <button onclick="window.location.href='${pageContext.request.contextPath}/index'">Retour à l'accueil</button>
 </header>
 
 <main>
@@ -34,6 +34,7 @@
         %>
     </div>
 </main>
+
 
 </body>
 </html>

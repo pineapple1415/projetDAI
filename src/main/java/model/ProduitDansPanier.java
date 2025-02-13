@@ -1,7 +1,5 @@
 package model;
 
-import javax.persistence.*;
-
 
 public class ProduitDansPanier {
 

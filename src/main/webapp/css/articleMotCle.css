@@ -1,4 +1,4 @@
-/* 样式应用于 articleMotCle.jsp */
+/* 让整个页面居中 */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -31,38 +31,61 @@ button:hover {
 
 main {
     padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
-.product-grid {
+/* 产品网格布局 */
+.product-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(4, 1fr);  /* 确保一行最多 4 列 */
     gap: 20px;
-    text-align: center;
-    padding: 20px;
+    width: 80%;
+    max-width: 1200px;
+    justify-items: center;
 }
 
-.product-item {
+/* 产品卡片样式 */
+.product-card {
     background: white;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
-}
-
-.product-item:hover {
-    transform: scale(1.05);
-}
-
-.product-item img {
+    text-align: center;
     width: 100%;
-    height: auto;
-    max-height: 150px;
-    object-fit: cover;
+    max-width: 250px;
+}
+
+.product-card:hover {
+    transform: scale(1.1);  /* 悬浮时放大 */
+}
+
+/* 图片自适应，不裁剪 */
+.product-card img {
+    width: 100%;        /* 让图片宽度适应容器 */
+    height: auto;       /* 保持原始比例 */
+    max-height: 200px;  /* 最大高度，防止图片过高 */
+    object-fit: contain; /* 让整个图片适应框内，不裁剪 */
     border-radius: 8px;
 }
 
-.product-item p {
+/* 产品名称 */
+.product-card p {
     margin-top: 10px;
     font-size: 16px;
     font-weight: bold;
+}
+
+/* 响应式设计：在小屏幕上适配 */
+@media (max-width: 1024px) {
+    .product-container {
+        grid-template-columns: repeat(2, 1fr); /* 变成两列 */
+    }
+}
+
+@media (max-width: 600px) {
+    .product-container {
+        grid-template-columns: repeat(1, 1fr); /* 小屏幕变成一列 */
+    }
 }
