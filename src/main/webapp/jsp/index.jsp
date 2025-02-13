@@ -14,7 +14,7 @@
     <div class="search-container">
         <form action="${pageContext.request.contextPath}/searchProduct" method="get">
             <input type="text" id="searchBox" name="nomProduit" placeholder="Rechercher un produit..." />
-            <button type="submit">Check</button>
+            <button id="searchButton" type="submit">Check</button>
         </form>
         <button id="filter-container">Filtrer</button>
         <div id="filterMenu" class="filter-menu">

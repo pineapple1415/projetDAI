@@ -1,4 +1,5 @@
 package Servlet;
+
 import DAO.FiltrerDAO;
 import model.Categorie;
 import model.Rayon;
@@ -8,37 +9,45 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/filtrer")
 public class ServletFiltrer extends HttpServlet {
-    private final FiltrerDAO FiltrerDAO = new FiltrerDAO();
+    private final FiltrerDAO filtrerDAO = new FiltrerDAO();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String action = req.getParameter("action");
-        resp.setContentType("application/json");
+        resp.setContentType("application/json;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
-        if ("listfiltrer".equals(action)) {
-            List<Categorie> categories = FiltrerDAO.getAllCategories();
-            List<Rayon> rayons = FiltrerDAO.getAllRayon();
+        try {
+            String action = req.getParameter("action");
 
-            // Création d'un objet JSON personnalisé
-            String jsonResponse = objectMapper.writeValueAsString(new ResponseData(categories, rayons));
-            resp.getWriter().write(jsonResponse);
-        }
-    }
+            if ("listfiltrer".equals(action)) {
+                List<String> categories = filtrerDAO.getNameCategories();
+                List<String> rayons = filtrerDAO.getNameRayon();
 
-    // Classe interne pour structurer la réponse JSON
-    private static class ResponseData {
-        public List<Categorie> categories;
-        public List<Rayon> rayons;
+                if (categories == null || rayons == null) {
+                    throw new NullPointerException("Les données de catégories ou de rayons sont null.");
+                }
 
-        public ResponseData(List<Categorie> categories, List<Rayon> rayons) {
-            this.categories = categories;
-            this.rayons = rayons;
+                // Création d'une structure de réponse JSON
+                Map<String, Object> responseData = new HashMap<>();
+                responseData.put("categories", categories);
+                responseData.put("rayons", rayons);
+
+                // Conversion en JSON et envoi de la réponse
+                resp.getWriter().write(objectMapper.writeValueAsString(responseData));
+            } else {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètre 'action' invalide.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Enregistre l'erreur dans les logs du serveur
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur interne du serveur : " + e.getMessage());
         }
     }
 }

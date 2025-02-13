@@ -16,28 +16,36 @@ public class ProductDAO {
 
     public List<Object[]> getFilteredProducts(List<String> categories, List<String> rayons) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "SELECT p.nomProduit, p.prixUnit FROM Produit p WHERE 1=1";
+            String hql = "SELECT p.imageUrl ,p.nomProduit, p.prixUnit FROM Produit p " +
+                    "JOIN p.categorie c " +
+                    "JOIN p.rayon r WHERE 1=1";
 
             if (!categories.isEmpty()) {
-                hql += " AND p.categorie.nom IN (:categories)";
+                hql += " AND c.nomCategorie IN (:categories)";
             }
             if (!rayons.isEmpty()) {
-                hql += " AND p.rayon.nom IN (:rayons)";
+                hql += " AND r.nomRayon IN (:rayons)";
             }
 
             Query<Object[]> query = session.createQuery(hql, Object[].class);
             if (!categories.isEmpty()) {
-                query.setParameter("categories", categories);
+                query.setParameterList("categories", categories);
             }
             if (!rayons.isEmpty()) {
-                query.setParameter("rayons", rayons);
+                query.setParameterList("rayons", rayons);
             }
 
             return query.list();
         }
     }
 
-
+    public Produit getProduitByNom(String nomProduit) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Produit WHERE nomProduit = :nomProduit", Produit.class)
+                    .setParameter("nomProduit", nomProduit)
+                    .uniqueResult();
+        }
+    }
 
     public List<Produit> searchProducts(String searchQuery) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

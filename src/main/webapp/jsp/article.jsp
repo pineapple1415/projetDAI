@@ -34,11 +34,15 @@
 <main>
     <h2>Détails du produit</h2>
     <div id="productDetail">
-        <!-- 固定商品信息 -->
-        <input type="hidden" id="productId" value="101">
-        <h2 id="productName" data-product-id="101" data-product-name="T-shirt en coton">
-            T-shirt en coton - 25€
-        </h2>
+        <img id="productImage" src="" alt="Image du produit" style="width: 200px; height: auto;">
+        <p>Nom du produit : <span id="produitNom"></span></p>
+        <p>Description : <span id="productDesc"></span></p>
+        <p>Origine : <span id="productOrigin"></span></p>
+        <p>Taille : <span id="productSize"></span></p>
+        <p>Prix : <span id="productPrice"></span> €</p>
+
+        <!-- 隐藏的 input 存 productId -->
+        <input type="hidden" id="productId">
 
         <!-- 数量选择器 -->
         <div class="quantity-selector">
@@ -48,14 +52,49 @@
         </div>
     </div>
 
-    <button type="button" id="ajoutePanier"
-            data-product-id="101"
-            data-product-name="T-shirt en coton">
-        Ajouter au panier
-    </button>
+    <button type="button" id="ajoutePanier">Ajouter au panier</button>
 </main>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let nomProduit = sessionStorage.getItem("nomProduit"); // 获取产品名称
+
+        if (!nomProduit) {
+            document.getElementById("produitNom").innerText = "Produit non trouvé";
+            return;
+        }
+
+        // 发送请求获取产品信息
+        fetch(`${window.location.origin}/ProjetDAI_war/produitDetail?nomProduit=` + encodeURIComponent(nomProduit), {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur lors de la récupération des détails du produit");
+                }
+                return response.json();
+            })
+            .then(produit => {
+                if (!produit || produit.error) {
+                    document.getElementById("produitNom").innerText = "Produit non trouvé";
+                    return;
+                }
+
+                // 填充页面数据
+                document.getElementById("produitNom").innerText = produit.nomProduit;
+                document.getElementById("productPrice").innerText = produit.prixUnit;
+                document.getElementById("productDesc").innerText = produit.descriptionProduit;
+                document.getElementById("productOrigin").innerText = produit.origineProduit;
+                document.getElementById("productSize").innerText = produit.tailleProduit;
+                document.getElementById("productImage").src = produit.image;
+
+                // 设置 productId
+                document.getElementById("productId").value = produit.idProduit;
+            })
+            .catch(error => console.error("Erreur:", error));
+    });
+
     // 数量控制逻辑
     let currentQuantity = 1;
 
@@ -64,12 +103,16 @@
         document.getElementById('quantity').textContent = currentQuantity;
     }
 
-    // 修改后的加入购物车函数
-    // 修改后的addToCart函数
-    function addToCart() {
+    // 绑定 "Ajouter au panier" 按钮事件
+    document.getElementById('ajoutePanier').addEventListener('click', function () {
         const productId = document.getElementById('productId').value;
 
-        fetch('${pageContext.request.contextPath}/addToPanier', {
+        if (!productId) {
+            alert("Erreur : Produit ID manquant !");
+            return;
+        }
+
+        fetch(`${window.location.origin}/ProjetDAI_war/addToPanier`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -78,16 +121,13 @@
             })
         })
             .then(response => {
-                if(response.redirected) {
-                    window.location.href = response.url; // 跳转到成功页面
+                if (response.redirected) {
+                    window.location.href = response.url;
                 }
             })
             .catch(error => console.error('Erreur:', error));
-    }
+    });
 
-
-    // 绑定点击事件（替代onclick属性）
-    document.getElementById('ajoutePanier').addEventListener('click', addToCart);
 </script>
 
 </body>
