@@ -27,6 +27,10 @@ public class Magasin {
     @JsonManagedReference
     private Set<Preparateur> preparateurs = new HashSet<>(); // 🚀 确保这里是 Set<Preparateur>，而不是 User！
 
+    /** 一对多：Magasin 和 Stocker（库存中间表） */
+    @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Stocker> stockers = new HashSet<>();
+
     public Magasin() {}
 
     public Magasin(String nomMagasin, String adresseMagasin, String telMagasin) {
@@ -64,6 +68,9 @@ public class Magasin {
 
     public Set<Preparateur> getPreparateurs() { return preparateurs; }
     public void setPreparateurs(Set<Preparateur> preparateurs) { this.preparateurs = preparateurs; }
+
+    public Set<Stocker> getStockers() { return stockers; }
+    public void setStockers(Set<Stocker> stockers) { this.stockers = stockers; }
 
     public void addPreparateur(Preparateur preparateur) {
         this.preparateurs.add(preparateur);

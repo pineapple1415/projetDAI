@@ -15,14 +15,19 @@ public class Categorie {
 
     private String nomCategorie;
 
+    @ManyToOne
+    @JoinColumn(name = "idRayon")
+    private Rayon rayon;
+
     @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Produit> produits;
 
     public Categorie() {}
 
-    public Categorie(String nomCategorie) {
+    public Categorie(String nomCategorie, Rayon rayon) {
         this.nomCategorie = nomCategorie;
+        this.rayon = rayon;
     }
 
     public Integer getIdCategorie() {
