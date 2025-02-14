@@ -97,11 +97,15 @@
 
 <div class="button-group" style="margin-top: 20px;">
   <button onclick="clearCart()" style="background-color: #ff4444; color: white;">
-    🗑️ 清空购物车
+    🗑️ vider panier
   </button>
   <button onclick="location.href='index'" style="margin-left: 10px;">
-    ← 继续购物
+    ← continue achate
   </button>
+
+  <button id="validateCart" onclick="window.location.href='ValidePanier'">passer la commande</button>
+
+
 </div>
 
 <script src="/ProjetDAI_war/js/script.js">

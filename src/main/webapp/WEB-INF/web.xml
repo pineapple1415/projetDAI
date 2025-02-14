@@ -49,4 +49,14 @@
   </servlet-mapping>
 
 
+  <servlet>
+    <servlet-name>ValidePanier</servlet-name>
+    <jsp-file>/jsp/ValidePanier.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ValidePanier</servlet-name>
+    <url-pattern>/ValidePanier</url-pattern>
+  </servlet-mapping>
+
+
 </web-app>
