@@ -30,12 +30,8 @@ header {
     border-radius: 5px;
 }
 
-/* 过滤按钮 */
-.filter-container {
-    margin-left: auto; /* 让过滤按钮靠右 */
-}
 
-#searchButton, #filter-containe {
+#searchButton, #filter-container {
     padding: 10px 15px;
     font-size: 16px;
     background-color: #ff9800;
@@ -46,7 +42,7 @@ header {
     transition: background-color 0.3s ease;
 }
 
-#searchButton:hover, #filterButton:hover {
+#searchButton:hover, #filter-container:hover {
     background-color: #e68900; /* 悬停时改变颜色 */
 }
 

@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
     // 事件委托处理（整合点击事件）
     document.addEventListener('click', function(e) {
         // 处理购物车数量按钮
@@ -247,6 +246,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+document.querySelector(".product-container")?.addEventListener("click", function (e) {
+    if (e.target.classList.contains("detail-link")) {
+        e.preventDefault();
+        sessionStorage.setItem("nomProduit", e.target.dataset.nom);
+
+        // ✅ 确保 URL 生成正确
+        const basePath = window.location.origin + "/" + window.location.pathname.split('/')[1];
+        window.location.href = basePath + "/jsp/article.jsp";
+    }
+});
+
 
 
 // 更新总价函数（原有）
