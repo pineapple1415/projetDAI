@@ -14,16 +14,6 @@ public class Rayon {
 
     private String nomRayon;
 
-    /** 多对多：Rayon 和 Magasin */
-    @ManyToMany
-    @JoinTable(name = "Posseder",
-            joinColumns = @JoinColumn(name = "idRayon"),
-            inverseJoinColumns = @JoinColumn(name = "idMagasin"))
-    private Set<Magasin> magasins = new HashSet<>();
-
-    /** 一对多：Rayon 和 Produit */
-    @OneToMany(mappedBy = "rayon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Produit> produits = new HashSet<>();
 
     public Rayon() {}
 
@@ -47,19 +37,4 @@ public class Rayon {
         this.nomRayon = nomRayon;
     }
 
-    public Set<Magasin> getMagasins() {
-        return magasins;
-    }
-
-    public void setMagasins(Set<Magasin> magasins) {
-        this.magasins = magasins;
-    }
-
-    public Set<Produit> getProduits() {
-        return produits;
-    }
-
-    public void setProduits(Set<Produit> produits) {
-        this.produits = produits;
-    }
 }

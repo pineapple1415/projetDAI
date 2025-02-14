@@ -108,9 +108,7 @@
 
 </div>
 
-<script src="/ProjetDAI_war/js/script.js">
-
-</script>
+<script src="/ProjetDAI_war/js/script.js"></script>
 
 <script>
 

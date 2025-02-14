@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,10 +12,9 @@ public class Preparateur extends User {
 
     @ManyToOne
     @JoinColumn(name = "idMagasin")
+    @JsonBackReference
     private Magasin magasin;
 
-    @OneToMany(mappedBy = "preparateur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Commande> commandes = new HashSet<>();
 
     public Preparateur() {}
 
@@ -29,11 +30,4 @@ public class Preparateur extends User {
         this.magasin = magasin;
     }
 
-    public Set<Commande> getCommandes() {
-        return commandes;
-    }
-
-    public void setCommandes(Set<Commande> commandes) {
-        this.commandes = commandes;
-    }
 }

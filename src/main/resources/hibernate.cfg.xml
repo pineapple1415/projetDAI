@@ -34,6 +34,5 @@
         <mapping class="model.Magasin"/>
         <mapping class="model.Stocker"/>
         <mapping class="model.Composer"/>
-        <mapping class="model.Posseder"/>
     </session-factory>
 </hibernate-configuration>

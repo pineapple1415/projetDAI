@@ -11,8 +11,6 @@ public class ProduitDansPanier {
 
     private Integer quantity = 1;
 
-    private Double prix = 0.0;
-
 
 
     // Getters/Setters
@@ -47,13 +45,5 @@ public class ProduitDansPanier {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public Double getPrix() {
-        return prix;
-    }
-
-    public void setPrix(Double prix) {
-        this.prix = prix;
     }
 }

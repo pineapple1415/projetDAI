@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,11 +14,13 @@ public class Composer {
     @ManyToOne
     @MapsId("idCommande")  // 复合主键的一部分
     @JoinColumn(name = "idCommande")
+    @JsonBackReference
     private Commande commande;
 
     @ManyToOne
     @MapsId("idProduit")  // 复合主键的一部分
     @JoinColumn(name = "idProduit")
+    @JsonBackReference
     private Produit produit;
 
     private Integer quantite;

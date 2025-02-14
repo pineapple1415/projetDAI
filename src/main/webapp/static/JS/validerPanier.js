@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOMContentLoaded");
     function loadCartItems() {
-        console.log("loadCartItems");
         fetch(`${window.location.origin}/ProjetDAI_war/panier`)
             .then(response => {
+                console.log(response);
                 if (!response.ok) throw new Error(`购物车加载失败: ${response.status}`);
                 return response.json();
             })
             .then(cart => {
+                console.log(cart);
                 const tbody = document.getElementById("cartBody");
                 let total = 0;
 
@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 return response.json();
             })
             .then(magasins => {
-                console.log(magasins);
                 const select = document.getElementById("magasin");
                 select.innerHTML = '<option value="">choisir magasin</option>' +
                     magasins.map(m => `
@@ -53,7 +52,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    loadCartItems();
     loadMagasins();
 
 

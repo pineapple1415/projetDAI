@@ -18,7 +18,7 @@ public class ProductDAO {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT p.imageUrl ,p.nomProduit, p.prixUnit FROM Produit p " +
                     "JOIN p.categorie c " +
-                    "JOIN p.rayon r WHERE 1=1";
+                    "WHERE 1=1";
 
             if (!categories.isEmpty()) {
                 hql += " AND c.nomCategorie IN (:categories)";

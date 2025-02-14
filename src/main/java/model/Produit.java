@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,26 +29,28 @@ public class Produit {
 
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
+    @JsonBackReference
     private Fournisseur fournisseur;
 
-    @ManyToOne
-    @JoinColumn(name = "idRayon")
-    private Rayon rayon;
 
     @ManyToOne
     @JoinColumn(name = "idCategorie")
+    @JsonBackReference
     private Categorie categorie;
 
     /** 一对多：Produit 和 Composer（订单详情） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Composer> composers = new HashSet<>();
 
     /** 一对多：Produit 和 Ajouter（购物车中间表） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Ajouter> ajouts = new HashSet<>();
 
     /** 一对多：Produit 和 Stocker（库存中间表） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Stocker> stockers = new HashSet<>();
 
     /** ✅ **默认构造函数**（Hibernate 需要） */
@@ -53,7 +58,7 @@ public class Produit {
 
     /** ✅ **参数化构造函数** */
     public Produit(String nomProduit, Double prixUnit, String origineProduit, String tailleProduit, String descriptionProduit, String imageUrl,
-                   Fournisseur fournisseur, Rayon rayon, Categorie categorie) {
+                   Fournisseur fournisseur, Categorie categorie) {
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
         this.origineProduit = origineProduit;
@@ -61,7 +66,6 @@ public class Produit {
         this.descriptionProduit = descriptionProduit;
         this.imageUrl = imageUrl;
         this.fournisseur = fournisseur;
-        this.rayon = rayon;
         this.categorie = categorie;
     }
 
@@ -89,9 +93,6 @@ public class Produit {
 
     public Fournisseur getFournisseur() { return fournisseur; }
     public void setFournisseur(Fournisseur fournisseur) { this.fournisseur = fournisseur; }
-
-    public Rayon getRayon() { return rayon; }
-    public void setRayon(Rayon rayon) { this.rayon = rayon; }
 
     public Categorie getCategorie() { return categorie; }
     public void setCategorie(Categorie categorie) { this.categorie = categorie; }

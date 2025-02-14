@@ -88,15 +88,15 @@ public class InsertData {
             List<Produit> produits = Arrays.asList(
                     new Produit("iPhone 15", 999.99, "USA", "6.7 pouces", "Smartphone Apple",
                             "https://res.cloudinary.com/mozillion/image/upload/f_auto,q_auto/v1694595603/hmcmbp5eyh41hrrcw1qt.png",
-                            fournisseurs.get(7), rayons.get(0), categories.get(0)),
+                            fournisseurs.get(7), categories.get(0)),
 
                     new Produit("MacBook Pro", 2499.99, "USA", "16 pouces", "Ordinateur portable Apple",
                             "https://th.bing.com/th/id/R.71c92a552a4481a5294785b0ec187a3f?rik=YrX3E7PfsRj8cQ&pid=ImgRaw&r=0",
-                            fournisseurs.get(7), rayons.get(0), categories.get(0)),
+                            fournisseurs.get(7),  categories.get(0)),
 
                     new Produit("Nike Air Max", 129.99, "Chine", "42", "Chaussures de sport",
                             "https://th.bing.com/th/id/R.e92c524b033c17d52b1ce6821e890d41?rik=73pAa9GqBI2h%2bg&riu=http%3a%2f%2fwww.authentkicks.com%2fwp-content%2fuploads%2f2015%2f06%2fIMG_6168.jpg&ehk=V1yN0NNnsA1MhVZqoEZ8AbZeGQTYJIIsmG%2fuhVtImYw%3d&risl=1&pid=ImgRaw&r=0",
-                            fournisseurs.get(1), rayons.get(1), categories.get(1))
+                            fournisseurs.get(1),  categories.get(1))
             );
             produits.forEach(session::save);
 
