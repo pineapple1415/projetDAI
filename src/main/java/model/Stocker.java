@@ -20,6 +20,7 @@ public class Stocker {
     @ManyToOne
     @MapsId("idMagasin")
     @JoinColumn(name = "idMagasin")
+    @JsonBackReference
     private Magasin magasin;
 
     private Integer nbStock;
