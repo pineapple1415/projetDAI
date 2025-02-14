@@ -1,8 +1,8 @@
 package model;
 
 public enum Statut {
-    EN_COURS,
     PAYEE,
+    EN_COURS,
     EXPEDIEE,
     LIVREE,
     ANNULEE

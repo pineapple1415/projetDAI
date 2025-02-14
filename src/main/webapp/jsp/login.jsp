@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: rachi
-  Date: 12/02/2025
-  Time: 08:48
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -15,9 +8,8 @@
 <div class="container">
     <h2>Connexion</h2>
 
-    <%-- Affichage d'un message d'erreur si les identifiants sont incorrects --%>
     <% if (request.getParameter("error") != null) { %>
-    <p style="color: red;">Email ou mot de passe incorrect</p>
+    <p style="color: red;">❌ Email ou mot de passe incorrect</p>
     <% } %>
 
     <form action="${pageContext.request.contextPath}/login" method="post">

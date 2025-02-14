@@ -38,6 +38,30 @@ public class Magasin {
     public Integer getIdMagasin() { return idMagasin; }
     public void setIdMagasin(Integer idMagasin) { this.idMagasin = idMagasin; }
 
+    public String getNomMagasin() {
+        return nomMagasin;
+    }
+
+    public void setNomMagasin(String nomMagasin) {
+        this.nomMagasin = nomMagasin;
+    }
+
+    public String getAdresseMagasin() {
+        return adresseMagasin;
+    }
+
+    public void setAdresseMagasin(String adresseMagasin) {
+        this.adresseMagasin = adresseMagasin;
+    }
+
+    public String getTelMagasin() {
+        return telMagasin;
+    }
+
+    public void setTelMagasin(String telMagasin) {
+        this.telMagasin = telMagasin;
+    }
+
     public Set<Preparateur> getPreparateurs() { return preparateurs; }
     public void setPreparateurs(Set<Preparateur> preparateurs) { this.preparateurs = preparateurs; }
 

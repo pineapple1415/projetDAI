@@ -52,4 +52,36 @@ public class Commande {
 
     public Date getDateCommande() { return dateCommande; }
     public void setDateCommande(Date dateCommande) { this.dateCommande = dateCommande; }
+
+    public Statut getStatut() {
+        return statut;
+    }
+
+    public void setStatut(Statut statut) {
+        this.statut = statut;
+    }
+
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
+
+    public User getPreparateur() {
+        return preparateur;
+    }
+
+    public void setPreparateur(User preparateur) {
+        this.preparateur = preparateur;
+    }
+
+    public Magasin getMagasin() {
+        return magasin;
+    }
+
+    public void setMagasin(Magasin magasin) {
+        this.magasin = magasin;
+    }
 }
