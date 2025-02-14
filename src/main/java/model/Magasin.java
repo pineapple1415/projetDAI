@@ -80,27 +80,5 @@ public class Magasin {
         this.preparateurs.remove(preparateur);
     }
 
-    public String getNomMagasin() {
-        return nomMagasin;
-    }
 
-    public void setNomMagasin(String nomMagasin) {
-        this.nomMagasin = nomMagasin;
-    }
-
-    public String getAdresseMagasin() {
-        return adresseMagasin;
-    }
-
-    public void setAdresseMagasin(String adresseMagasin) {
-        this.adresseMagasin = adresseMagasin;
-    }
-
-    public String getTelMagasin() {
-        return telMagasin;
-    }
-
-    public void setTelMagasin(String telMagasin) {
-        this.telMagasin = telMagasin;
-    }
 }
