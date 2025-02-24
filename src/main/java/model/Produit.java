@@ -24,6 +24,9 @@ public class Produit {
     @Column(name = "image")
     private String imageUrl;
 
+    @Column(name = "promotion")
+    private double promotion = 0.0;
+
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
     private Fournisseur fournisseur;
@@ -49,6 +52,19 @@ public class Produit {
 
     /** ✅ **参数化构造函数** */
     public Produit(String nomProduit, Double prixUnit, String origineProduit, String tailleProduit, String descriptionProduit, String imageUrl,
+                   Fournisseur fournisseur,Categorie categorie, double promotion) {
+        this.nomProduit = nomProduit;
+        this.prixUnit = prixUnit;
+        this.origineProduit = origineProduit;
+        this.tailleProduit = tailleProduit;
+        this.descriptionProduit = descriptionProduit;
+        this.imageUrl = imageUrl;
+        this.fournisseur = fournisseur;
+        this.categorie = categorie;
+        this.promotion = promotion;
+    }
+
+    public Produit(String nomProduit, Double prixUnit, String origineProduit, String tailleProduit, String descriptionProduit, String imageUrl,
                    Fournisseur fournisseur,Categorie categorie) {
         this.nomProduit = nomProduit;
         this.prixUnit = prixUnit;
@@ -58,6 +74,7 @@ public class Produit {
         this.imageUrl = imageUrl;
         this.fournisseur = fournisseur;
         this.categorie = categorie;
+        this.promotion = 0.0;
     }
 
     /** ✅ **Getter 和 Setter** */
@@ -96,4 +113,23 @@ public class Produit {
 
     public Set<Stocker> getStockers() { return stockers; }
     public void setStockers(Set<Stocker> stockers) { this.stockers = stockers; }
+
+    public double getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(double promotion) {
+        this.promotion = promotion;
+    }
+
+    // 方便显示促销文本的方法
+    public String getPromotionText() {
+        return promotion > 0.0 ? ((int)(promotion * 100) + "%") : "None";
+    }
+
+    // 快捷获得折扣后的价格
+    public double getPrixApresPromotion() {
+        return prixUnit * (1 - promotion);
+    }
+
 }
