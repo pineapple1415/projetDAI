@@ -22,7 +22,7 @@ public class ServletClient extends HttpServlet {
         try {
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("user") == null) {
-                response.sendRedirect("login.jsp");
+                response.sendRedirect("pageLogin");
                 return;
             }
 
@@ -40,7 +40,6 @@ public class ServletClient extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
         }
     }
 

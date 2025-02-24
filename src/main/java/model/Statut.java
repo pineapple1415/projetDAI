@@ -5,5 +5,6 @@ public enum Statut {
     EN_COURS,
     EXPEDIEE,
     LIVREE,
-    ANNULEE
+    ANNULEE,
+    PRETE
 }

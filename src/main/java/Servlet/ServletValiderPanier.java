@@ -131,7 +131,7 @@ public class ServletValiderPanier extends HttpServlet {
                     if (quantity == null || quantity <= 0) {
                         return 0.0;
                     }
-                    return p.getPrixUnit() * quantity;
+                    return p.getPrixApresPromotion() * quantity;
                 })
                 .sum();
     }

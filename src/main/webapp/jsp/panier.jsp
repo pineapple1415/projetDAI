@@ -78,17 +78,18 @@
       <th>prix/unit</th>
       <th>quantity</th>
       <th>prix ensemble</th>
-      <th>操作</th>
+      <th>prix reduit</th>
     </tr>
     <% for (Map.Entry<Long, Integer> entry : panierMap.entrySet()) {
       Produit p = productInfoMap.get(entry.getKey());
       if (p != null) { %>
     <tr data-product-id="<%= String.valueOf(entry.getKey()) %>"
-        data-price="<%= p.getPrixUnit() %>">
+        data-price="<%= p.getPrixApresPromotion() %>">
       <td><%= p.getNomProduit() %></td>
       <td>€<span class="unit-price"><%= p.getPrixUnit() %></span></td>
       <td class="quantity"><%= entry.getValue() %></td>
       <td class="total-price">€<%= p.getPrixUnit() * entry.getValue() %></td>
+      <td class="total-price">€<%= p.getPrixApresPromotion() * entry.getValue() %></td>
       <td>
         <button class="btn-minus" data-action="decrease">-</button>
         <button class="btn-plus" data-action="increase">+</button>
