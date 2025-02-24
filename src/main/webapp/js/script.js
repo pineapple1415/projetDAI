@@ -19,6 +19,30 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     }
+
+    console.log("Document ready, attaching event listener for Trier");
+
+    const trierContainer = document.getElementById("trier-container");
+    const sortAsc = document.getElementById("sortAsc");
+    const sortDesc = document.getElementById("sortDesc");
+
+    if (trierContainer) {
+        trierContainer.addEventListener("click", function () {
+            console.log("Trier button clicked");
+            toggleTrierMenu();
+        });
+    }
+
+    document.getElementById("sortAsc").addEventListener("click", function () {
+        sortProduits("asc"); // 升序排序
+    });
+
+    document.getElementById("sortDesc").addEventListener("click", function () {
+        sortProduits("desc"); // 降序排序
+    });
+
+
+
     fetchProduits();
 
 
@@ -200,9 +224,17 @@ function applyFilters() {
                     </div>`;
                     productList.innerHTML += productHTML;
                 });
+
+
             } else {
                 productList.innerHTML = "<p>Aucun produit trouvé</p>";
             }
+
+            // ✅ 存储筛选后的产品数据，以便排序功能可用
+            window.currentProduits = data;
+
+            // ✅ 直接使用 `renderProduits(produits);` 进行渲染
+            renderProduits(data);
 
             toggleFilterMenu(false);
         })
@@ -257,6 +289,8 @@ function fetchProduits() {
             });
 
             elt.innerHTML = ch;
+            window.currentProduits = produits;
+            renderProduits(produits);
         } else {
             console.error("Erreur lors de la récupération des produits. Statut :", xhr.status);
         }
@@ -388,4 +422,55 @@ function displayProducts(products, div) {
             Add to Cart
         </button>
     `).join('');
+}
+
+function toggleTrierMenu() {
+    const trierMenu = document.getElementById("trierMenu");
+    if (!trierMenu) {
+        console.error("❌ ERREUR: Element trierMenu introuvable !");
+        return;
+    }
+
+    // ✅ 确保 `display` 正确切换
+    if (trierMenu.style.display === "none" || trierMenu.style.display === "") {
+        trierMenu.style.display = "block";
+    } else {
+        trierMenu.style.display = "none";
+    }
+}
+
+
+// ✅ 重新渲染产品到页面
+function renderProduits(produits) {
+    var elt = document.getElementById("productList");
+    if (!elt) {
+        console.warn("❌ ERREUR: `productList` 不存在");
+        return;
+    }
+
+    elt.innerHTML = produits.map(produit => `
+        <div class="product-item">
+            <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
+            <h3>${produit.nomProduit}</h3>
+            <p>Prix: ${produit.prixUnit}€</p>
+            <a href="${window.location.origin}/ProjetDAI_war/jsp/article.jsp" class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
+        </div>
+    `).join('');
+}
+
+// ✅ 仅前端排序，不请求服务器
+function sortProduits(order) {
+    if (!window.currentProduits || window.currentProduits.length === 0) {
+        console.warn("❌ Aucun produit à trier !");
+        return;
+    }
+
+    let sortedProduits = [...window.currentProduits];
+    if (order === "asc") {
+        sortedProduits.sort((a, b) => a.prixUnit - b.prixUnit);
+    } else if (order === "desc") {
+        sortedProduits.sort((a, b) => b.prixUnit - a.prixUnit);
+    }
+
+    renderProduits(sortedProduits);
 }

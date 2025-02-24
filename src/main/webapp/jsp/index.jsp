@@ -17,8 +17,11 @@
             <button id="searchButton" type="submit">Check</button>
         </form>
         <button id="filter-container">Filtrer</button>
-        <div id="filterMenu" class="filter-menu">
-
+        <div id="filterMenu" class="filter-menu"> </div>
+        <button id="trier-container">Trier</button>
+        <div id="trierMenu" class="trierMenu">
+            <button id="sortAsc">Croissant par prix</button>
+            <button id="sortDesc">Décroissant par prix</button>
         </div>
 
 

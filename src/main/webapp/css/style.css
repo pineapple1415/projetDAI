@@ -1,9 +1,12 @@
+
+/* 🌟 全局样式 */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
+/* 🌟 头部导航 */
 header {
     display: flex;
     justify-content: space-between;
@@ -14,7 +17,7 @@ header {
     position: relative; /* 让菜单基于 header 定位 */
 }
 
-/* 搜索框居中 */
+/* 🌟 搜索框居中 */
 .search-container {
     flex-grow: 1;
     display: flex;
@@ -30,8 +33,8 @@ header {
     border-radius: 5px;
 }
 
-
-#searchButton, #filter-container {
+/* 🌟 按钮通用样式 */
+#searchButton, #filter-container, #trier-container {
     padding: 10px 15px;
     font-size: 16px;
     background-color: #ff9800;
@@ -42,63 +45,11 @@ header {
     transition: background-color 0.3s ease;
 }
 
-#searchButton:hover, #filter-container:hover {
+#searchButton:hover, #filter-container:hover, #trier-container:hover {
     background-color: #e68900; /* 悬停时改变颜色 */
 }
 
-#filterMenu label {
-    color: black !important;
-    font-size: 16px;
-    margin-left: 5px;
-}
-
-
-/* 过滤菜单 */
-.filter-menu {
-    position: absolute;
-    top: 100%; /* 让菜单在按钮正下方 */
-    left: 0;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    display: none; /* 默认隐藏 */
-    width: 250px;
-    z-index: 100;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.filter-menu.show {
-    display: block; /* 当 class 为 'show' 时显示 */
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 过滤菜单标题 */
-.filter-menu h3 {
-    margin: 10px 0;
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
-}
-
-#filterMenu {
-    display: none; /* ✅ 默认隐藏 */
-    position: absolute;
-    top: 50px;
-    right: 20px;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    z-index: 1000;
-}
-
-/* 复选框 */
-.filter-menu input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-/* 登录按钮 */
+/* 🌟 登录按钮 */
 #loginButton {
     background-color: #4CAF50;
     padding: 8px 15px;
@@ -108,13 +59,47 @@ header {
     border-radius: 5px;
 }
 
-/* 主要内容区 */
+/* 🌟 过滤 & 排序菜单 */
+#filterMenu, #trierMenu {
+    display: none; /* 默认隐藏 */
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+/* 🌟 过滤 & 排序菜单标题 */
+.filter-menu h3, .trierMenu h3 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 🌟 复选框样式 */
+.filter-menu input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* 🌟 让菜单显示时的样式 */
+.show {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🌟 主要内容区域 */
 main {
     text-align: center;
     padding: 20px;
 }
 
-/* 产品列表 */
+/* 🌟 产品列表 */
 #productList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -122,7 +107,7 @@ main {
     padding: 20px;
 }
 
-/* 产品项 */
+/* 🌟 产品项 */
 .product-item {
     border: 1px solid #ddd;
     padding: 15px;
@@ -136,7 +121,7 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* 响应式设计：在小屏设备上调整布局 */
+/* 🌟 响应式设计（小屏幕优化） */
 @media (max-width: 768px) {
     .search-container input {
         width: 250px;
@@ -146,11 +131,7 @@ main {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 
-    .filter-menu {
+    .filter-menu, .trierMenu {
         width: 100%;
     }
-}
-
-.show {
-    display: block !important;
 }
