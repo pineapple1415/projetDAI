@@ -34,17 +34,18 @@ public class ServletAddPanier extends HttpServlet {
             Map<String, Object> responseData = new HashMap<>();
 
             if (session != null && session.getAttribute("user") != null) {
-                // 已登录用户（7天有效期）
+                // 已登录用户：使用 Cookie 存储（7天有效期）
                 User user = (User) session.getAttribute("user");
-                new PanierDAO().addItemToPanier(user, productId, quantity);
-                responseData.put("type", "db");
-                responseData.put("userId", user.getIdUser()); // 返回用户ID用于Cookie标识
+                Long userId = user.getIdUser() != null ? user.getIdUser().longValue() : null;
+                handleCookiePanier(request, resp, productId, quantity, 7, userId);
+                responseData.put("type", "cookie");
+                responseData.put("userId", user.getIdUser());
 
                 resp.sendRedirect("ajouteSuccess"); // 重定向到成功页面
             } else {
                 // 未登录用户（3天有效期）
                 int cookieDays = 3;
-                handleCookiePanier(request, resp, productId, quantity, cookieDays);
+                handleCookiePanier(request, resp, productId, quantity, cookieDays, null); // 添加 null 作为 userId 参数
                 responseData.put("type", "cookie");
 
                 resp.sendRedirect("ajouteSuccess"); // 重定向到成功页面
@@ -62,22 +63,26 @@ public class ServletAddPanier extends HttpServlet {
 
     }
 
-    private void handleCookiePanier(HttpServletRequest req, HttpServletResponse resp,
-                                    Long productId, int quantity, int maxAgeDays) throws IOException {
+    private void handleCookiePanier(
+            HttpServletRequest req, HttpServletResponse resp,
+            Long productId, int quantity, int maxAgeDays, Long userId
+    ) throws IOException {
         Map<Long, Integer> panierMap = new HashMap<>();
+
+        // 生成 Cookie 名称：带用户ID标识（如 userId_123_panier）
+        String cookieName = userId != null ? "userId_" + userId + "_panier" : "panier";
 
         // 读取现有 Cookie
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("panier".equals(cookie.getName())) {
+                if (cookieName.equals(cookie.getName())) {
                     try {
                         panierMap = objectMapper.readValue(
                                 URLDecoder.decode(cookie.getValue(), "UTF-8"),
-                                new TypeReference<HashMap<Long, Integer>>(){}
+                                new TypeReference<HashMap<Long, Integer>>() {}
                         );
                     } catch (Exception e) {
-                        // 如果解析失败，重置购物车
                         panierMap = new HashMap<>();
                     }
                     break;
@@ -85,7 +90,7 @@ public class ServletAddPanier extends HttpServlet {
             }
         }
 
-        // 更新数量
+        // 更新购物车数据
         panierMap.put(productId, panierMap.getOrDefault(productId, 0) + quantity);
 
         // 保存新 Cookie
@@ -94,15 +99,13 @@ public class ServletAddPanier extends HttpServlet {
                 "UTF-8"
         );
 
-        Cookie newCookie = new Cookie("panier", cookieValue);
+        Cookie newCookie = new Cookie(cookieName, cookieValue);
         newCookie.setMaxAge(maxAgeDays * 24 * 3600);
-        newCookie.setPath("/"); // 确保 Cookie 对所有路径可见
+        newCookie.setPath("/");
+        newCookie.setHttpOnly(true); // 增强安全性
         resp.addCookie(newCookie);
 
-        // 在handleCookiePanier方法中添加
-        System.out.println("new Cookie : " + panierMap);
-        System.out.println("set Cookie route: " + newCookie.getPath());
-
+        System.out.println("✅ Cookie 更新：" + cookieName + " -> " + panierMap);
     }
 }
 

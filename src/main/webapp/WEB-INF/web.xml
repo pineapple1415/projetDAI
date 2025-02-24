@@ -65,6 +65,18 @@
     <url-pattern>/affichePanier</url-pattern>
   </servlet-mapping>
 
+
+
+  <servlet>
+    <servlet-name>pageLogin</servlet-name>
+    <jsp-file>/jsp/login.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>pageLogin</servlet-name>
+    <url-pattern>/pageLogin</url-pattern>
+  </servlet-mapping>
+
+
 <!--  <servlet>-->
 <!--    <servlet-name>ServletLogin</servlet-name>-->
 <!--    <servlet-class>Servlet.ServletLogin</servlet-class>-->

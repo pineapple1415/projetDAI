@@ -1,6 +1,5 @@
 package Servlet;
 
-import DAO.PanierDAO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.User;
@@ -13,14 +12,20 @@ public class ServletAnnulerPanier extends HttpServlet {
 
         try {
             if (session != null && session.getAttribute("user") != null) {
-                // 已登录用户：清空数据库购物车
+                // 已登录用户：清空专属 Cookie
                 User user = (User) session.getAttribute("user");
-                new PanierDAO().viderPanier(user);
+                String cookieName = "userId_" + user.getIdUser() + "_panier";
+
+                // 创建立即过期的 Cookie 覆盖原有值
+                Cookie clearCookie = new Cookie(cookieName, "");
+                clearCookie.setMaxAge(0);      // 立即过期
+                clearCookie.setPath("/");      // 路径需与写入时一致
+                resp.addCookie(clearCookie);
             } else {
-                // 未登录用户：清空Cookie
+                // 未登录用户：清空默认 Cookie
                 Cookie clearCookie = new Cookie("panier", "");
-                clearCookie.setMaxAge(0); // 立即过期
-                clearCookie.setPath("/"); // 匹配所有路径
+                clearCookie.setMaxAge(0);
+                clearCookie.setPath("/");
                 resp.addCookie(clearCookie);
             }
             resp.setStatus(200);

@@ -5,29 +5,37 @@
   Time: 14:53
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page import="java.net.URLDecoder, com.fasterxml.jackson.databind.ObjectMapper, java.util.*, DAO.ProductDAO, model.Produit" %>
+<%@ page import="java.net.URLDecoder, com.fasterxml.jackson.databind.ObjectMapper, java.util.*, DAO.ProductDAO, model.Produit, model.User" %>
 <%@ page import="jakarta.servlet.http.Cookie" %>
 <%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-  // 读取购物车Cookie
+  // 新增：获取用户登录状态
+  User currentUser = (User) session.getAttribute("user");
+  String cookieName = "panier"; // 默认Cookie名称
+
+  // 如果已登录，生成用户专属Cookie名称
+  if(currentUser != null){
+    cookieName = "userId_" + currentUser.getIdUser() + "_panier";
+  }
+
+  // 修改：根据cookieName读取对应Cookie
   Cookie[] cookies = request.getCookies();
   String panierValue = "";
   for (Cookie cookie : cookies) {
-    if ("panier".equals(cookie.getName())) {
+    if (cookieName.equals(cookie.getName())) { // 这里改为动态名称
       panierValue = URLDecoder.decode(cookie.getValue(), "UTF-8");
       break;
     }
   }
 
-  // 解析JSON数据
+  // 原有解析逻辑保持不变...
   ObjectMapper mapper = new ObjectMapper();
   Map<Long, Integer> panierMap = new HashMap<>();
   if (!panierValue.isEmpty()) {
     panierMap = mapper.readValue(panierValue, new TypeReference<HashMap<Long, Integer>>(){});
   }
 
-  // 获取商品详细信息
   ProductDAO productDAO = new ProductDAO();
   List<Produit> products = productDAO.getAllProducts();
   Map<Long, Produit> productInfoMap = new HashMap<>();
@@ -36,16 +44,10 @@
   }
 %>
 
-
-<html>
-<head>
-  <title>Mon Panier</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-</head>
-<body>
-<%-- 调试输出（临时可见） --%>
+<%-- 在debug信息中显示当前使用的Cookie名称 --%>
 <div style="border: 1px solid red; padding: 10px; margin: 20px;">
   <h3>Debug信息</h3>
+  <p>当前Cookie名称: <%= cookieName %></p>
   <p>Cookie原始值: <%= panierValue %></p>
   <p>解析后的Map: <%= panierMap %></p>
   <p>商品总数: <%= productInfoMap.size() %></p>
@@ -55,6 +57,14 @@
     <% } %>
   </p>
 </div>
+
+
+<html>
+<head>
+  <title>Mon Panier</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+</head>
+<body>
 
 
 <h1>🛒 Mon panier</h1>

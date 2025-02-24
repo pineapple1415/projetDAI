@@ -2,26 +2,35 @@
 <%@ page import="java.net.URLDecoder, com.fasterxml.jackson.databind.ObjectMapper, java.util.*, DAO.ProductDAO, model.Produit" %>
 <%@ page import="jakarta.servlet.http.Cookie" %>
 <%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
+<%@ page import="model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-  // 读取购物车Cookie
+  // 新增：获取用户登录状态
+  User currentUser = (User) session.getAttribute("user");
+  String cookieName = "panier"; // 默认Cookie名称
+
+  // 如果已登录，生成用户专属Cookie名称
+  if(currentUser != null){
+    cookieName = "userId_" + currentUser.getIdUser() + "_panier";
+  }
+
+  // 修改：根据cookieName读取对应Cookie
   Cookie[] cookies = request.getCookies();
   String panierValue = "";
   for (Cookie cookie : cookies) {
-    if ("panier".equals(cookie.getName())) {
+    if (cookieName.equals(cookie.getName())) { // 这里改为动态名称
       panierValue = URLDecoder.decode(cookie.getValue(), "UTF-8");
       break;
     }
   }
 
-  // 解析JSON数据
+  // 原有解析逻辑保持不变...
   ObjectMapper mapper = new ObjectMapper();
   Map<Long, Integer> panierMap = new HashMap<>();
   if (!panierValue.isEmpty()) {
     panierMap = mapper.readValue(panierValue, new TypeReference<HashMap<Long, Integer>>(){});
   }
 
-  // 获取商品详细信息
   ProductDAO productDAO = new ProductDAO();
   List<Produit> products = productDAO.getAllProducts();
   Map<Long, Produit> productInfoMap = new HashMap<>();

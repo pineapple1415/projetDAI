@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import util.HibernateUtil;
 import org.hibernate.query.Query;
 import java.util.List;
+import java.util.Set;
 
 public class ProductDAO {
     public List<Produit> getAllProducts() {
@@ -72,5 +73,13 @@ public class ProductDAO {
     }
 
 
+    public List<Produit> getProductsByIds(Set<Long> ids) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "FROM Produit WHERE idProduit IN :ids", Produit.class)
+                    .setParameterList("ids", ids)
+                    .list();
+        }
+    }
 
 }

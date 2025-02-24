@@ -57,17 +57,29 @@ public class ServletUpdatePanier extends HttpServlet {
 
     private void updateCookieCart(HttpServletRequest req, HttpServletResponse resp,
                                   Long productId, int newQuantity) throws IOException {
+        // 获取用户登录状态
+        HttpSession session = req.getSession(false);
+        String cookieName = "panier"; // 默认 Cookie 名称
+        int maxAge = 3 * 24 * 3600;   // 默认有效期：3天
+
+        // 动态生成 Cookie 名称和有效期
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            cookieName = "userId_" + user.getIdUser() + "_panier"; // 格式：userId_123_panier
+            maxAge = 7 * 24 * 3600; // 已登录用户有效期：7天
+        }
+
         Map<Long, Integer> panierMap = new HashMap<>();
         Cookie[] cookies = req.getCookies();
 
-        // 1. 读取现有 Cookie
+        // 1. 读取现有 Cookie（根据动态名称）
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("panier".equals(cookie.getName())) {
+                if (cookieName.equals(cookie.getName())) { // 动态匹配 Cookie 名称
                     try {
                         panierMap = mapper.readValue(
                                 URLDecoder.decode(cookie.getValue(), "UTF-8"),
-                                new TypeReference<HashMap<Long, Integer>>(){}
+                                new TypeReference<HashMap<Long, Integer>>() {}
                         );
                     } catch (Exception e) {
                         panierMap = new HashMap<>();
@@ -80,14 +92,16 @@ public class ServletUpdatePanier extends HttpServlet {
         // 2. 更新数量
         panierMap.put(productId, newQuantity);
 
-        // 3. 保存新 Cookie
+        // 3. 保存新 Cookie（使用动态名称和有效期）
         String cookieValue = URLEncoder.encode(
                 mapper.writeValueAsString(panierMap),
                 "UTF-8"
         );
-        Cookie newCookie = new Cookie("panier", cookieValue);
-        newCookie.setMaxAge(3 * 24 * 3600); // 3天有效期
-        newCookie.setPath("/");
+        Cookie newCookie = new Cookie(cookieName, cookieValue);
+        newCookie.setMaxAge(maxAge);       // 动态设置有效期
+        newCookie.setPath("/");            // 确保全路径可访问
+        newCookie.setHttpOnly(true);       // 增强安全性
         resp.addCookie(newCookie);
     }
+
 }
