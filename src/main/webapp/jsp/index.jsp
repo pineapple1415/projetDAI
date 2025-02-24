@@ -31,6 +31,7 @@
 
 <main>
     <h2>Liste des Produits</h2>
+    <button id="promotion">Afficher les promos</button>
     <div id="productList">
         <!-- Les produits seront affichés ici -->
     </div>

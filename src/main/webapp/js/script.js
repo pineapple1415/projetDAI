@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sortProduits("desc"); // 降序排序
     });
 
-
+    document.getElementById("promotion").addEventListener("click", togglePromotions);
 
     fetchProduits();
 
@@ -100,22 +100,24 @@ function loadFilters() {
             }
 
             // 清空过滤菜单
-            filterMenu.innerHTML = "<h3>Rayons</h3>";
+            filterMenu.innerHTML = "<h3>Rayons</h3><ul id='rayonList'></ul>";
+
+            const rayonList = document.getElementById("rayonList");
 
             if (Array.isArray(data.rayons) && data.rayons.length > 0) {
                 data.rayons.forEach(rayon => {
-                    let button = `<button class="rayon-button" data-rayon="${rayon}">${rayon}</button><br>`;
-                    filterMenu.innerHTML += button;
+                    let listItem = `<li><a href="#" class="rayon-link" data-rayon="${rayon}">${rayon}</a></li>`;
+                    rayonList.innerHTML += listItem;
                 });
             } else {
                 filterMenu.innerHTML += "<label>Aucun rayon trouvé</label>";
             }
 
-            // 监听 Rayon 按钮点击事件
-            document.querySelectorAll(".rayon-button").forEach(button => {
-                button.addEventListener("click", function () {
+            // 监听 Rayon 点击事件
+            document.querySelectorAll(".rayon-link").forEach(link => {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault(); // 防止页面跳转
                     let selectedRayon = this.getAttribute("data-rayon");
-                    sessionStorage.setItem("selectedRayon", selectedRayon); // 存储选择的 Rayon
                     showCategories(selectedRayon);
                 });
             });
@@ -126,7 +128,7 @@ function loadFilters() {
         .catch(error => console.error("❌ Erreur lors du chargement des rayons:", error));
 }
 
-// 显示选定 Rayon 的 Categories
+// 显示选定 Rayon 的 Categories，支持多个 Rayon 同时展开
 function showCategories(rayon) {
     fetch(`${window.location.origin}/ProjetDAI_war/filtrer?action=listCategoriesByRayon&rayon=${encodeURIComponent(rayon)}`, {
         method: "GET",
@@ -136,48 +138,91 @@ function showCategories(rayon) {
         .then(data => {
             console.log(`✅ Catégories pour Rayon "${rayon}":`, data);
 
-            const filterMenu = document.getElementById("filterMenu");
-            filterMenu.innerHTML = `<h3>Catégories (${rayon})</h3>`;
+            const rayonElement = document.querySelector(`.rayon-link[data-rayon="${rayon}"]`);
+            if (!rayonElement) {
+                console.error(`❌ Rayon introuvable: ${rayon}`);
+                return;
+            }
+
+            let categorySectionId = `categories-${rayon.replace(/\s+/g, '-')}`;
+
+            // 检查是否已展开
+            if (document.getElementById(categorySectionId)) {
+                console.log(`ℹ️ Les catégories pour "${rayon}" sont déjà affichées.`);
+                return;
+            }
+
+            // 创建 Categories 容器（无 h3 标题）
+            let categorySection = document.createElement("div");
+            categorySection.id = categorySectionId;
+            categorySection.style.marginLeft = "15px"; // 让 categories 和 Rayon 有间隔
 
             if (Array.isArray(data.categories) && data.categories.length > 0) {
                 data.categories.forEach(categorie => {
-                    let checkbox = `<input type="checkbox" class="filter-checkbox" value="${categorie}">
-                                <label>${categorie}</label><br>`;
-                    filterMenu.innerHTML += checkbox;
+                    let categoryItem = document.createElement("div");
+                    categoryItem.style.display = "flex";
+                    categoryItem.style.alignItems = "center";
+
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.className = "filter-checkbox";
+                    checkbox.value = categorie;
+                    checkbox.id = `checkbox-${categorie.replace(/\s+/g, '-')}`;
+                    checkbox.addEventListener("change", updateSelectedCategories);
+
+                    let label = document.createElement("label");
+                    label.innerText = categorie;
+                    label.htmlFor = checkbox.id;  // 绑定 label 和 checkbox
+                    label.style.marginLeft = "5px";
+
+                    categoryItem.appendChild(checkbox);
+                    categoryItem.appendChild(label);
+                    categorySection.appendChild(categoryItem);
                 });
-            } else {
-                filterMenu.innerHTML += "<label>Aucune catégorie trouvée</label>";
+            }
+            else {
+                categorySection.innerHTML = "<label>Aucune catégorie trouvée</label>";
             }
 
-            // 添加按钮 "Appliquer le Filtre" 和 "Revenir au Rayon"
-            filterMenu.innerHTML += `
-            <button id="applyFilters">Appliquer le Filtre</button>
-            <button id="backToRayons">Revenir au Rayon</button>
-        `;
+            // 直接插入到 Rayon 下方
+            rayonElement.insertAdjacentElement("afterend", categorySection);
 
-            // 监听 "Appliquer le Filtre"
-            document.getElementById("applyFilters").addEventListener("click", applyFilters);
+            // 确保 "Appliquer le Filtre" 按钮存在
+            let filterMenu = document.getElementById("filterMenu");
+            if (!document.getElementById("applyFilters")) {
+                let applyButton = document.createElement("button");
+                applyButton.id = "applyFilters";
+                applyButton.innerText = "Appliquer le Filtre";
+                applyButton.style.marginTop = "10px";
+                applyButton.style.display = "block"; // 确保是块级元素，不会错位
+                applyButton.style.padding = "8px 12px";
+                applyButton.style.backgroundColor = "#ff9800"; // 按钮颜色
+                applyButton.style.color = "white";
+                applyButton.style.border = "none";
+                applyButton.style.borderRadius = "5px";
+                applyButton.style.cursor = "pointer";
 
-            // 监听 "Revenir au Rayon"
-            document.getElementById("backToRayons").addEventListener("click", loadFilters);
+                applyButton.addEventListener("click", applyFilters);
 
-            // 监听复选框状态更新
-            document.querySelectorAll(".filter-checkbox").forEach(checkbox => {
-                checkbox.addEventListener("change", updateSelectedCategories);
-            });
+                filterMenu.appendChild(applyButton);
+            }
         })
         .catch(error => console.error("❌ Erreur lors du chargement des catégories:", error));
 }
 
 // 更新选中的 Categories
 function updateSelectedCategories() {
-    let selected = [];
+    let selected = new Set(JSON.parse(sessionStorage.getItem("selectedCategories") || "[]"));
+
     document.querySelectorAll(".filter-checkbox:checked").forEach(checkbox => {
-        selected.push(checkbox.value);
+        selected.add(checkbox.value);
     });
-    sessionStorage.setItem("selectedCategories", JSON.stringify(selected));
+
+    sessionStorage.setItem("selectedCategories", JSON.stringify([...selected]));
+    console.log("✅ Catégories sélectionnées mises à jour:", [...selected]);
 }
 
+// 过滤产品
 function applyFilters() {
     let selectedCategories = JSON.parse(sessionStorage.getItem("selectedCategories") || "[]");
 
@@ -213,28 +258,15 @@ function applyFilters() {
             productList.innerHTML = ""; // 清空原来的产品列表
 
             if (Array.isArray(data) && data.length > 0) {
-                data.forEach(produit => {
-                    let productHTML = `
-                    <div class="product-item">
-                        <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
-                        <h3>${produit.nomProduit}</h3>
-                        <p>Prix: ${produit.prixUnit}€</p>
-                        <a href="\`${window.location.origin}/ProjetDAI_war/jsp/article.jsp" 
-                           class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
-                    </div>`;
-                    productList.innerHTML += productHTML;
-                });
+                // ✅ 存储筛选后的产品数据
+                window.currentProduits = data;
+                window.originalProduits = [...data]; // ✅ 备份数据，供“Afficher les promos” 按钮使用
 
-
+                // ✅ 直接使用 `renderProduits(produits);` 进行渲染，保证折扣显示
+                renderProduits(data);
             } else {
                 productList.innerHTML = "<p>Aucun produit trouvé</p>";
             }
-
-            // ✅ 存储筛选后的产品数据，以便排序功能可用
-            window.currentProduits = data;
-
-            // ✅ 直接使用 `renderProduits(produits);` 进行渲染
-            renderProduits(data);
 
             toggleFilterMenu(false);
         })
@@ -242,7 +274,6 @@ function applyFilters() {
             console.error("❌ Erreur lors du filtrage des produits:", error);
         });
 }
-
 
 // 切换过滤菜单的显示状态
 function toggleFilterMenu() {
@@ -277,19 +308,10 @@ function fetchProduits() {
             }
 
             var produits = JSON.parse(xhr.responseText);
-            var ch = "";
 
-            produits.forEach(function (produit) {
-                ch += `<div class="product-item">
-                        <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
-                        <h3>${produit.nomProduit}</h3>
-                        <p>Prix: ${produit.prixUnit}€</p>
-                        <a href="${window.location.origin}/ProjetDAI_war/jsp/article.jsp" class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
-                    </div>`;
-            });
-
-            elt.innerHTML = ch;
             window.currentProduits = produits;
+            window.originalProduits = [...produits]; // ✅ 备份原始数据
+
             renderProduits(produits);
         } else {
             console.error("Erreur lors de la récupération des produits. Statut :", xhr.status);
@@ -441,6 +463,7 @@ function toggleTrierMenu() {
 
 
 // ✅ 重新渲染产品到页面
+// ✅ 重新渲染产品列表，始终显示折扣信息
 function renderProduits(produits) {
     var elt = document.getElementById("productList");
     if (!elt) {
@@ -448,15 +471,23 @@ function renderProduits(produits) {
         return;
     }
 
-    elt.innerHTML = produits.map(produit => `
-        <div class="product-item">
-            <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
-            <h3>${produit.nomProduit}</h3>
-            <p>Prix: ${produit.prixUnit}€</p>
-            <a href="${window.location.origin}/ProjetDAI_war/jsp/article.jsp" class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
-        </div>
-    `).join('');
+    elt.innerHTML = produits.map(produit => {
+        // ✅ 仅当 promotion > 0 时显示折扣
+        let promoBadge = produit.promotion > 0 ?
+            `<div class="promotion-badge">-${(produit.promotion * 100).toFixed(0)}%</div>` : '';
+
+        return `
+            <div class="product-item">
+                ${promoBadge}  
+                <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
+                <h3>${produit.nomProduit}</h3>
+                <p>Prix: ${produit.prixUnit}€</p>
+                <a href="${window.location.origin}/ProjetDAI_war/jsp/article.jsp" class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
+            </div>
+        `;
+    }).join('');
 }
+
 
 // ✅ 仅前端排序，不请求服务器
 function sortProduits(order) {
@@ -473,4 +504,26 @@ function sortProduits(order) {
     }
 
     renderProduits(sortedProduits);
+}
+
+// ✅ 只显示打折商品
+function togglePromotions() {
+    let btn = document.getElementById("promotion");
+    if (!btn) {
+        console.error("❌ ERREUR: Bouton 'promotion' introuvable !");
+        return;
+    }
+
+    // ✅ 如果当前已显示促销商品，则恢复所有商品
+    if (btn.dataset.filter === "on") {
+        renderProduits(window.originalProduits);
+        btn.innerText = "Afficher les promos";
+        btn.dataset.filter = "off";
+    } else {
+        // ✅ 过滤出打折商品
+        let discountedProducts = window.originalProduits.filter(p => p.promotion > 0);
+        renderProduits(discountedProducts);
+        btn.innerText = "Afficher tous les produits";
+        btn.dataset.filter = "on";
+    }
 }

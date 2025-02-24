@@ -47,6 +47,7 @@ public class ServletAffiche extends HttpServlet {
             produitMap.put("imageUrl", produit[0]); // ✅ 添加图片URL
             produitMap.put("nomProduit", produit[1]);
             produitMap.put("prixUnit", produit[2]);
+            produitMap.put("promotion", produit[3]);
             produitsList.add(produitMap);
         }
 

@@ -135,3 +135,55 @@ main {
         width: 100%;
     }
 }
+
+/* 🌟 促销标签样式 */
+.promotion-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: red;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 🌟 确保 product-item 是相对定位 */
+.product-item {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 15px;
+    background: white;
+    border-radius: 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filter-checkbox {
+    margin-right: 5px; /* 复选框和文本之间留一些空间 */
+    vertical-align: middle;
+}
+
+label {
+    font-size: 14px;
+    color: #333; /* 确保颜色可见 */
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.filter-checkbox + label {
+    font-size: 14px;
+    color: #333 !important;  /* 确保文字颜色为黑色 */
+    display: inline-block;  /* 确保 label 可见 */
+    cursor: pointer;
+}
+
+#filterMenu {
+    opacity: 1 !important;
+}

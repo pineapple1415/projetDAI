@@ -17,7 +17,7 @@ public class ProductDAO {
 
     public List<Object[]> getFilteredProducts(List<String> categories, List<String> rayons) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "SELECT p.imageUrl ,p.nomProduit, p.prixUnit FROM Produit p " +
+            String hql = "SELECT p.imageUrl ,p.nomProduit, p.prixUnit,p.promotion FROM Produit p " +
                     "JOIN p.categorie c " +
                     "WHERE 1=1";
 
