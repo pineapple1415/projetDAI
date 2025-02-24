@@ -40,9 +40,9 @@ public class ServletUpdatePanier extends HttpServlet {
             HttpSession session = req.getSession(false);
 
             if (session != null && session.getAttribute("user") != null) {
-                // 已登录用户：更新数据库
+                // 已登录用户：更新cookie
                 User user = (User) session.getAttribute("user");
-                new PanierDAO().updateCartItem(user, productId, newQuantity);
+                updateCookieCart(req, resp, productId, newQuantity);
             } else {
                 // 未登录用户：更新Cookie
                 updateCookieCart(req, resp, productId, newQuantity);
