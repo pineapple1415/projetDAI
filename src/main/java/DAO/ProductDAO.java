@@ -7,6 +7,7 @@ import util.HibernateUtil;
 import org.hibernate.query.Query;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProductDAO {
     public List<Produit> getAllProducts() {
@@ -74,12 +75,16 @@ public class ProductDAO {
 
 
     public List<Produit> getProductsByIds(Set<Long> ids) {
+        Set<Integer> intIds = ids.stream()
+                .map(Long::intValue) // 转换 Long -> Integer
+                .collect(Collectors.toSet());
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(
-                            "FROM Produit WHERE idProduit IN :ids", Produit.class)
-                    .setParameterList("ids", ids)
+            return session.createQuery("FROM Produit WHERE idProduit IN :ids", Produit.class)
+                    .setParameterList("ids", intIds) // 传入 Integer 类型的 id 集合
                     .list();
         }
     }
+
 
 }

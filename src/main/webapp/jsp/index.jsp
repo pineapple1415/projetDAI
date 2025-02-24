@@ -1,3 +1,4 @@
+<%@ page import="model.User" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -26,7 +27,31 @@
 
 
     </div>
-    <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
+
+
+    <div id="authSection">
+        <%
+            User user = (User) session.getAttribute("user");
+            if(user == null) {
+        %>
+        <!-- 未登录时显示登录按钮 -->
+        <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
+        <%
+        } else {
+        %>
+        <!-- 已登录时显示欢迎信息 -->
+        <a href="${pageContext.request.contextPath}/client" style="text-decoration: none;">
+            <span style="color: navy; font-weight: bold;">
+                Bonjour, <%= user.getNom() %>
+            </span>
+        </a>
+
+        <%
+            }
+        %>
+    </div>
+
+
 </header>
 
 <main>

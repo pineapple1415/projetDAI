@@ -1,9 +1,6 @@
 package DAO;
 
-import model.Commande;
-import model.Composer;
-import model.Magasin;
-import model.Produit;
+import model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
@@ -32,14 +29,21 @@ public class CommandeDAO {
         try {
             tx = session.beginTransaction();
 
-            // 保存主订单
+            // 1. 先持久化Commande并立即获取ID
             session.persist(commande);
+            session.flush(); // 强制生成ID
 
-            // 保存关联商品
+            // 2. 创建关联的Composer
             for (Map.Entry<Long, Integer> entry : panierMap.entrySet()) {
-                Produit produit = session.get(Produit.class, entry.getKey());
+                Produit produit = session.get(Produit.class, entry.getKey().intValue());
+
+                // 3. 显式构建复合主键
+                ComposerId composerId = new ComposerId();
+                composerId.setIdCommande(commande.getIdCommande());
+                composerId.setIdProduit(produit.getIdProduit());
 
                 Composer composer = new Composer();
+                composer.setId(composerId); // 关键：必须手动设置ID
                 composer.setCommande(commande);
                 composer.setProduit(produit);
                 composer.setQuantite(entry.getValue());
@@ -50,7 +54,7 @@ public class CommandeDAO {
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw e;
+            throw new RuntimeException("订单保存失败", e);
         } finally {
             session.close();
         }
@@ -65,5 +69,21 @@ public class CommandeDAO {
         }
     }
 
+
+    public void updateCommande(Commande commande) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            session.merge(commande);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
 
 }
