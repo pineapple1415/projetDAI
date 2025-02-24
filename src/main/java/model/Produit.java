@@ -1,5 +1,9 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,22 +33,28 @@ public class Produit {
 
     @ManyToOne
     @JoinColumn(name = "idFournisseur")
+    @JsonBackReference
+    @JsonIgnore // ✅ 避免 Jackson 访问 `Fournisseur`
     private Fournisseur fournisseur;
 
     @ManyToOne
     @JoinColumn(name = "idCategorie")
+    @JsonBackReference
     private Categorie categorie;
 
     /** 一对多：Produit 和 Composer（订单详情） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Composer> composers = new HashSet<>();
 
     /** 一对多：Produit 和 Ajouter（购物车中间表） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Ajouter> ajouts = new HashSet<>();
 
     /** 一对多：Produit 和 Stocker（库存中间表） */
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Stocker> stockers = new HashSet<>();
 
     /** ✅ **默认构造函数**（Hibernate 需要） */

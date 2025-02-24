@@ -18,9 +18,7 @@
         </form>
         <button id="filter-container">Filtrer</button>
         <div id="filterMenu" class="filter-menu">
-            <h3>Catégories</h3>
 
-            <h3>Rayons</h3>
         </div>
 
 

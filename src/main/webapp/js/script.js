@@ -1,18 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // 新过滤功能初始化
     console.log("Document ready, attaching event listener");
+
+    // 新过滤功能初始化
     const filterContainer = document.getElementById("filter-container");
     if (filterContainer) {
         filterContainer.addEventListener("click", function () {
             console.log("Filter button clicked");
-            loadFilters();
+
+            // ✅ 仅在 `filterMenu` 为空时加载过滤器
+            const filterMenu = document.getElementById("filterMenu");
+            if (!filterMenu || filterMenu.innerHTML.trim() === "") {
+                console.log("🔄 Chargement des filtres...");
+                loadFilters();
+            }
+
+            // ✅ 切换菜单显示/隐藏
             toggleFilterMenu();
         });
+
     }
-
     fetchProduits();
-
-
 
 
     // 事件委托处理（整合点击事件）
@@ -42,13 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-
-
-
-
-
-
 // 清空购物车函数（原有）
 function clearCart() {
     if (confirm('确定要清空购物车吗？')) {
@@ -59,21 +59,15 @@ function clearCart() {
     }
 }
 
-
-// 过滤器加载函数（新功能保持原样）
+// 加载所有 Rayons（点击 "Filtrer" 按钮后调用）
 function loadFilters() {
-    fetch(`${window.location.origin}/ProjetDAI_war/filtrer?action=listfiltrer`, {
+    fetch(`${window.location.origin}/ProjetDAI_war/filtrer?action=listRayons`, {
         method: "GET",
         headers: { "Accept": "application/json" }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log("Données reçues pour les filtres:", data);
+            console.log("✅ Données reçues pour les rayons:", data);
 
             const filterMenu = document.getElementById("filterMenu");
             if (!filterMenu) {
@@ -81,68 +75,161 @@ function loadFilters() {
                 return;
             }
 
-            filterMenu.innerHTML = "";
+            // 清空过滤菜单
+            filterMenu.innerHTML = "<h3>Rayons</h3>";
 
-            // 处理 Catégories
-            filterMenu.innerHTML += "<h3>Catégories</h3>";
+            if (Array.isArray(data.rayons) && data.rayons.length > 0) {
+                data.rayons.forEach(rayon => {
+                    let button = `<button class="rayon-button" data-rayon="${rayon}">${rayon}</button><br>`;
+                    filterMenu.innerHTML += button;
+                });
+            } else {
+                filterMenu.innerHTML += "<label>Aucun rayon trouvé</label>";
+            }
+
+            // 监听 Rayon 按钮点击事件
+            document.querySelectorAll(".rayon-button").forEach(button => {
+                button.addEventListener("click", function () {
+                    let selectedRayon = this.getAttribute("data-rayon");
+                    sessionStorage.setItem("selectedRayon", selectedRayon); // 存储选择的 Rayon
+                    showCategories(selectedRayon);
+                });
+            });
+
+            // 显示过滤菜单
+            toggleFilterMenu(true);
+        })
+        .catch(error => console.error("❌ Erreur lors du chargement des rayons:", error));
+}
+
+// 显示选定 Rayon 的 Categories
+function showCategories(rayon) {
+    fetch(`${window.location.origin}/ProjetDAI_war/filtrer?action=listCategoriesByRayon&rayon=${encodeURIComponent(rayon)}`, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(`✅ Catégories pour Rayon "${rayon}":`, data);
+
+            const filterMenu = document.getElementById("filterMenu");
+            filterMenu.innerHTML = `<h3>Catégories (${rayon})</h3>`;
+
             if (Array.isArray(data.categories) && data.categories.length > 0) {
                 data.categories.forEach(categorie => {
-                    let checkbox = `<input type="checkbox" class="filter-checkbox" data-type="categorie" value="${categorie}">
-                        <label>${categorie}</label><br>`;
+                    let checkbox = `<input type="checkbox" class="filter-checkbox" value="${categorie}">
+                                <label>${categorie}</label><br>`;
                     filterMenu.innerHTML += checkbox;
                 });
             } else {
                 filterMenu.innerHTML += "<label>Aucune catégorie trouvée</label>";
             }
 
-            // 处理 Rayons
-            filterMenu.innerHTML += "<h3>Rayons</h3>";
-            if (Array.isArray(data.rayons) && data.rayons.length > 0) {
-                data.rayons.forEach(rayon => {
-                    let checkbox = `<input type="checkbox" class="filter-checkbox" data-type="rayon" value="${rayon}">
-                        <label>${rayon}</label><br>`;
-                    filterMenu.innerHTML += checkbox;
-                });
-            } else {
-                filterMenu.innerHTML += "<label>Aucun rayon trouvé</label>";
-            }
+            // 添加按钮 "Appliquer le Filtre" 和 "Revenir au Rayon"
+            filterMenu.innerHTML += `
+            <button id="applyFilters">Appliquer le Filtre</button>
+            <button id="backToRayons">Revenir au Rayon</button>
+        `;
 
-            // 修复 label 颜色
-            document.querySelectorAll("#filterMenu label").forEach(label => {
-                label.style.display = "inline-block";
-                label.style.visibility = "visible";
-                label.style.color = "black";
-            });
+            // 监听 "Appliquer le Filtre"
+            document.getElementById("applyFilters").addEventListener("click", applyFilters);
 
-            // 添加按钮
-            filterMenu.innerHTML += '<button id="applyFilters">Appliquer le Filtre</button>';
+            // 监听 "Revenir au Rayon"
+            document.getElementById("backToRayons").addEventListener("click", loadFilters);
 
-            // 监听复选框事件
+            // 监听复选框状态更新
             document.querySelectorAll(".filter-checkbox").forEach(checkbox => {
-                checkbox.addEventListener("change", updateSessionStorage);
-            });
-
-            // 监听 "Appliquer le Filtre" 按钮点击事件
-            document.getElementById("applyFilters").addEventListener("click", function () {
-                applyFilters();
-                toggleFilterMenu(); // 过滤后隐藏
+                checkbox.addEventListener("change", updateSelectedCategories);
             });
         })
+        .catch(error => console.error("❌ Erreur lors du chargement des catégories:", error));
+}
+
+// 更新选中的 Categories
+function updateSelectedCategories() {
+    let selected = [];
+    document.querySelectorAll(".filter-checkbox:checked").forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    sessionStorage.setItem("selectedCategories", JSON.stringify(selected));
+}
+
+function applyFilters() {
+    let selectedCategories = JSON.parse(sessionStorage.getItem("selectedCategories") || "[]");
+
+    console.log("🔍 Catégories sélectionnées:", selectedCategories);
+
+    if (selectedCategories.length === 0) {
+        console.error("❌ Aucun filtre sélectionné !");
+        return;
+    }
+
+    let params = new URLSearchParams();
+    params.append("categories", selectedCategories.join(","));
+
+    const url = `/ProjetDAI_war/filtrer?action=appliquerFiltre&${params.toString()}`;
+    console.log("🔗 URL de la requête:", url);
+
+    fetch(url, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`HTTP error! Status: ${response.status}, Message: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("📦 Produits filtrés:", data);
+
+            const productList = document.getElementById("productList");
+            productList.innerHTML = ""; // 清空原来的产品列表
+
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(produit => {
+                    let productHTML = `
+                    <div class="product-item">
+                        <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
+                        <h3>${produit.nomProduit}</h3>
+                        <p>Prix: ${produit.prixUnit}€</p>
+                        <a href="\`${window.location.origin}/ProjetDAI_war/jsp/article.jsp" 
+                           class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
+                    </div>`;
+                    productList.innerHTML += productHTML;
+                });
+            } else {
+                productList.innerHTML = "<p>Aucun produit trouvé</p>";
+            }
+
+            toggleFilterMenu(false);
+        })
         .catch(error => {
-            console.error("❌ Erreur lors du chargement des données:", error);
+            console.error("❌ Erreur lors du filtrage des produits:", error);
         });
 }
 
 
-// 过滤菜单切换（新功能）
+// 切换过滤菜单的显示状态
 function toggleFilterMenu() {
     const filterMenu = document.getElementById("filterMenu");
-    if (filterMenu.style.display === "none" || filterMenu.style.display === "") {
-        filterMenu.style.display = "block";
-    } else {
+    if (!filterMenu) {
+        console.error("❌ ERREUR: Element filterMenu introuvable !");
+        return;
+    }
+
+    // ✅ 如果 `filterMenu` 是 "block"，则隐藏，否则显示
+    if (filterMenu.style.display === "block") {
         filterMenu.style.display = "none";
+    } else {
+        filterMenu.style.display = "block";
     }
 }
+
+
+
 
 // 产品获取函数（整合版）
 function fetchProduits() {
@@ -198,55 +285,6 @@ function updateSessionStorage() {
 }
 
 
-
-function applyFilters() {
-    let filters = sessionStorage.getItem("selectedFilters");
-
-    console.log("🔍 Filtres récupérés depuis sessionStorage:", filters);
-
-    if (!filters) {
-        console.error("❌ Aucun filtre trouvé dans sessionStorage !");
-        return;
-    }
-
-    const url = "/ProjetDAI_war/produits?filters=" + encodeURIComponent(filters);
-    console.log("🔗 URL de la requête:", url);
-
-    fetch(url, {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-    })
-        .then(response => {
-            console.log("📡 Réponse du serveur reçue, statut:", response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("📦 Données reçues:", data);
-
-            const productList = document.getElementById("productList");
-            productList.innerHTML = "";
-
-            if (Array.isArray(data) && data.length > 0) {
-                data.forEach(produit => {
-                    let productHTML = `<div class="product-item">
-                                <img src="${produit.imageUrl}" alt="${produit.nomProduit}" style="width: 150px; height: auto;"/>
-                                <h3>${produit.nomProduit}</h3>
-                                <p>Prix: ${produit.prixUnit}€</p>
-                                <a href="\`${window.location.origin}/ProjetDAI_war/jsp/article.jsp" class="detail-link" data-nom="${produit.nomProduit}">Détail du produit</a>
-                            </div>`;
-                    productList.innerHTML += productHTML;
-                });
-            } else {
-                productList.innerHTML = "<p>Aucun produit trouvé</p>";
-            }
-        })
-        .catch(error => {
-            console.error("❌ Erreur lors du filtrage des produits:", error);
-        });
-}
 
 // 产品详情跳转处理（新功能）
 document.getElementById("productList")?.addEventListener("click", function (e) {

@@ -82,6 +82,16 @@ header {
     font-weight: bold;
 }
 
+#filterMenu {
+    display: none; /* ✅ 默认隐藏 */
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+}
 
 /* 复选框 */
 .filter-menu input[type="checkbox"] {
