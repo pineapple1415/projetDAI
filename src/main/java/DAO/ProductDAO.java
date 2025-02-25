@@ -67,7 +67,7 @@ public class ProductDAO {
 
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null && transaction.isActive()) transaction.rollback();
             e.printStackTrace();
         }
     }
