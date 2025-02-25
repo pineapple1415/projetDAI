@@ -41,4 +41,7 @@ public class Ajouter {
     public void setNombre(Integer nombre) {
         this.nombre = nombre;
     }
+
+    @JsonBackReference
+    public Course getCourse() { return course; }
 }

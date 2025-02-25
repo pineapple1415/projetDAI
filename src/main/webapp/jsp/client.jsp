@@ -59,6 +59,9 @@
   <button class="btn back-home" onclick="location.href='${pageContext.request.contextPath}/index'">
     返回首页
   </button>
+  <button class="btn back-home" onclick="location.href='${pageContext.request.contextPath}/course'">
+    mes courses
+  </button>
 </div>
 
 </body>
