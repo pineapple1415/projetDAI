@@ -86,4 +86,31 @@ public class CommandeDAO {
         }
     }
 
+    public List<Object[]> getMonthlyShoppingTimeStats() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createNativeQuery(
+                    "SELECT MONTH(c.dateCommande), " +
+                            "AVG(TIMESTAMPDIFF(MINUTE, c.dateAjoutPanier, c.dateCommande)) " +
+                            "FROM Commande c " +
+                            "WHERE c.dateAjoutPanier IS NOT NULL AND c.dateCommande IS NOT NULL " +
+                            "GROUP BY MONTH(c.dateCommande) " +
+                            "ORDER BY MONTH(c.dateCommande)"
+            ).list();  // ✅ 只返回 List<Object[]>
+        }
+    }
+
+
+
+    public List<Object[]> getMonthlyPreparationTimeStats() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createNativeQuery(
+                    "SELECT MONTH(c.dateCommande), " +
+                            "AVG(TIMESTAMPDIFF(MINUTE, c.dateCommande, c.finirPrepa)) " +
+                            "FROM Commande c " +
+                            "WHERE c.dateCommande IS NOT NULL AND c.finirPrepa IS NOT NULL " +
+                            "GROUP BY MONTH(c.dateCommande) " +
+                            "ORDER BY MONTH(c.dateCommande)"
+            ).list();  // ✅ 只返回 List<Object[]>
+        }
+    }
 }

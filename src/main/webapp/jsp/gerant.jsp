@@ -1,3 +1,4 @@
+
 <%@ page import="model.Categorie" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.Rayon" %>
@@ -10,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Gérant</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/gerant.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="${pageContext.request.contextPath}/js/Management.js" defer></script>
 
 </head>
@@ -137,10 +139,19 @@
     <!-- Analyse de Performance -->
     <section class="section">
         <h2 class="section-title">⏳ Analyse de Performance</h2>
-        <div class="sub-section">
-            <h3>Vérification</h3>
-            <button onclick="verifierEfficacite()">⏳ Vérifier Efficacité</button>
+
+        <select id="chartSelector">
+            <option value="">-- Sélectionnez un graphique --</option>
+            <option value="shoppingTime">🛒 Temps Moyen de Shopping</option>
+            <option value="preparationTime">⏳ Temps Moyen de Préparation</option>
+        </select>
+        <button id="afficherChartBtn">Afficher</button>
+
+        <div id="chartContainer" style="display:none;">
+            <h3>Visualisation des Données</h3>
+            <canvas id="performanceChart"></canvas>
         </div>
+
         <div class="sub-section">
             <h3>Statistiques</h3>
             <button onclick="editerStatistiques()">📈 Éditer Statistiques</button>
