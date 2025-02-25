@@ -26,10 +26,12 @@ public class Commande {
 
     @ManyToOne
     @JoinColumn(name = "IdUser", nullable = false)
+    @JsonBackReference
     private User client;
 
     @ManyToOne
     @JoinColumn(name = "idPreparateur")
+    @JsonBackReference
     private User preparateur;
 
     @ManyToOne

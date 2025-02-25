@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "IdUser", nullable = false)
+    @JsonBackReference
     private User client;
 
     /** 多对多：Course 和 Produit 通过 Ajouter 连接 */
