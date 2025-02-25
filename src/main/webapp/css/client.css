@@ -1,0 +1,104 @@
+/* 全局样式 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* 容器样式 */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 标题样式 */
+h1 {
+    font-size: 26px;
+    color: #333;
+    text-align: center;
+}
+
+h2 {
+    font-size: 22px;
+    margin-top: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+    color: #444;
+}
+
+/* 个人信息部分 */
+.profile-section {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* 订单表格样式 */
+.orders-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.orders-section th, .orders-section td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.orders-section th {
+    background: #007bff;
+    color: white;
+}
+
+.orders-section tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 按钮组 */
+.button-group {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.view-cart {
+    background: #28a745;
+    color: white;
+}
+
+.view-cart:hover {
+    background: #218838;
+}
+
+.back-home {
+    background: #dc3545;
+    color: white;
+}
+
+.back-home:hover {
+    background: #c82333;
+}
+
+.course {
+    background: orange;
+    color: white;
+}
+
+.course:hover {
+    background: orange;
+}
