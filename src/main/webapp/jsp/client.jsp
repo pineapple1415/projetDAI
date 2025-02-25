@@ -51,5 +51,15 @@
     </table>
   </div>
 </div>
+
+<div class="button-group">
+  <button class="btn view-cart" onclick="location.href='${pageContext.request.contextPath}/affichePanier'">
+    查看购物车
+  </button>
+  <button class="btn back-home" onclick="location.href='${pageContext.request.contextPath}/index'">
+    返回首页
+  </button>
+</div>
+
 </body>
 </html>

@@ -1,3 +1,4 @@
+<%@ page import="model.User" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -17,19 +18,45 @@
             <button id="searchButton" type="submit">Check</button>
         </form>
         <button id="filter-container">Filtrer</button>
-        <div id="filterMenu" class="filter-menu">
-            <h3>Catégories</h3>
-
-            <h3>Rayons</h3>
+        <div id="filterMenu" class="filter-menu"> </div>
+        <button id="trier-container">Trier</button>
+        <div id="trierMenu" class="trierMenu">
+            <button id="sortAsc">Croissant par prix</button>
+            <button id="sortDesc">Décroissant par prix</button>
         </div>
 
 
     </div>
-    <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
+
+
+    <div id="authSection">
+        <%
+            User user = (User) session.getAttribute("user");
+            if(user == null) {
+        %>
+        <!-- 未登录时显示登录按钮 -->
+        <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
+        <%
+        } else {
+        %>
+        <!-- 已登录时显示欢迎信息 -->
+        <a href="${pageContext.request.contextPath}/client" style="text-decoration: none;">
+            <span style="color: navy; font-weight: bold;">
+                Bonjour, <%= user.getNom() %>
+            </span>
+        </a>
+
+        <%
+            }
+        %>
+    </div>
+
+
 </header>
 
 <main>
     <h2>Liste des Produits</h2>
+    <button id="promotion">Afficher les promos</button>
     <div id="productList">
         <!-- Les produits seront affichés ici -->
     </div>
