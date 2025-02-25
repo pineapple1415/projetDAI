@@ -36,6 +36,7 @@
         %>
         <!-- 未登录时显示登录按钮 -->
         <button id="loginButton" onclick="window.location.href='jsp/login.jsp'">Login</button>
+
         <%
         } else {
         %>

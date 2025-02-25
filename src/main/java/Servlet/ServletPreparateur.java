@@ -35,6 +35,6 @@ public class ServletPreparateur extends HttpServlet {
         request.setAttribute("commandes", commandes);
 
         // 跳转到 JSP
-        request.getRequestDispatcher("/jsp/commandeApreparer.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/AccueilPreparateur.jsp").forward(request, response);
     }
 }

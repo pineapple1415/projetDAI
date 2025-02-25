@@ -77,7 +77,10 @@
   </servlet-mapping>
 
 
-<!--  <servlet>-->
+
+
+
+  <!--  <servlet>-->
 <!--    <servlet-name>ServletLogin</servlet-name>-->
 <!--    <servlet-class>Servlet.ServletLogin</servlet-class>-->
 <!--  </servlet>-->
@@ -127,6 +130,7 @@
     <servlet-name>paymentSuccess</servlet-name>
     <url-pattern>/paymentSuccess</url-pattern>
   </servlet-mapping>
+
 
 
 

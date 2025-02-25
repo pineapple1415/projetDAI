@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,7 +34,14 @@ public class Commande {
 
     @ManyToOne
     @JoinColumn(name = "idMagasin")
+    @JsonBackReference  // Empêche la récursion infinie avec `Magasin`
     private Magasin magasin;
+
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Permet la sérialisation JSON
+    private Set<Composer> composers = new HashSet<>();
+
+
 
     public Commande() {}
 
@@ -83,5 +93,13 @@ public class Commande {
 
     public void setMagasin(Magasin magasin) {
         this.magasin = magasin;
+    }
+
+    public Set<Composer> getComposers() {
+        return composers;
+    }
+
+    public void setComposers(Set<Composer> composers) {
+        this.composers = composers;
     }
 }
