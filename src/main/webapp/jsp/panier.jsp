@@ -84,12 +84,13 @@
       Produit p = productInfoMap.get(entry.getKey());
       if (p != null) { %>
     <tr data-product-id="<%= String.valueOf(entry.getKey()) %>"
-        data-price="<%= p.getPrixApresPromotion() %>">
+        data-price="<%= p.getPrixUnit() %>"
+        data-pricereduit = "<%= p.getPrixApresPromotion() %>">
       <td><%= p.getNomProduit() %></td>
       <td>€<span class="unit-price"><%= p.getPrixUnit() %></span></td>
       <td class="quantity"><%= entry.getValue() %></td>
-      <td class="total-price">€<%= p.getPrixUnit() * entry.getValue() %></td>
-      <td class="total-price">€<%= p.getPrixApresPromotion() * entry.getValue() %></td>
+      <td class="total-price" id="total-price-avant">€<%= p.getPrixUnit() * entry.getValue() %></td>
+      <td class="total-price" id="total-price-apres">€<%= p.getPrixApresPromotion() * entry.getValue() %></td>
       <td>
         <button class="btn-minus" data-action="decrease">-</button>
         <button class="btn-plus" data-action="increase">+</button>

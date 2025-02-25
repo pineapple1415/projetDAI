@@ -390,6 +390,7 @@ function updateQuantity(productId, delta) {
 
     const quantityElement = row.querySelector('.quantity');
     const unitPrice = parseFloat(row.dataset.price);
+    const unitPriceApresPromotion = parseFloat(row.dataset.pricereduit);
     let newQuantity = parseInt(quantityElement.innerText) + delta;
 
     if (newQuantity < 1) newQuantity = 1;
@@ -401,8 +402,10 @@ function updateQuantity(productId, delta) {
     }).then(response => {
         if (response.ok) {
             quantityElement.innerText = newQuantity;
-            row.querySelector('.total-price').innerText =
+            row.querySelector('#total-price-avant').innerText =
                 '€' + (unitPrice * newQuantity).toFixed(2);
+            row.querySelector('#total-price-apres').innerText =
+                '€' + (unitPriceApresPromotion * newQuantity).toFixed(2);
             updateTotalPrice();
         }
     }).catch(error => console.error('请求失败:', error));

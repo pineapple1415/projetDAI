@@ -23,6 +23,11 @@ public class Magasin {
     @Column(name = "telMagasin")
     private String telMagasin;
 
+    @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Commande> commandes = new HashSet<>();
+
+
     @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Preparateur> preparateurs = new HashSet<>(); // 🚀 确保这里是 Set<Preparateur>，而不是 User！
@@ -81,5 +86,11 @@ public class Magasin {
         this.preparateurs.remove(preparateur);
     }
 
+    public Set<Commande> getCommandes() {
+        return commandes;
+    }
 
+    public void setCommandes(Set<Commande> commandes) {
+        this.commandes = commandes;
+    }
 }

@@ -16,21 +16,33 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Magasin;
 import model.User;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import util.HibernateUtil;
+
 @WebServlet("/getMagasins")
 public class ServletMagasin extends HttpServlet {
-    private final MagasinDAO MagasinDAO = new MagasinDAO();
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Magasin> magasins = MagasinDAO.getAllMagasins();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            objectMapper.writeValue(response.getWriter(), magasins);
-        } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+
+            List<Magasin> magasins = session.createQuery("FROM Magasin", Magasin.class).list();
+
+            // **初始化懒加载集合**
+            for (Magasin magasin : magasins) {
+                Hibernate.initialize(magasin.getCommandes()); // 解决 LazyInitializationException
+            }
+
+            tx.commit();
+            ObjectMapper mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(magasins));
+        } catch (Exception e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"无法加载商店列表\"}");
         }
     }
 }

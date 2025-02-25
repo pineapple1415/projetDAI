@@ -54,10 +54,13 @@
 
 <div class="button-group">
   <button class="btn view-cart" onclick="location.href='${pageContext.request.contextPath}/affichePanier'">
-    查看购物车
+    voir le panier
   </button>
   <button class="btn back-home" onclick="location.href='${pageContext.request.contextPath}/index'">
-    返回首页
+    à l'acceuil
+  </button>
+  <button class="btn course" onclick="location.href='${pageContext.request.contextPath}/course'">
+    mes courses
   </button>
 </div>
 

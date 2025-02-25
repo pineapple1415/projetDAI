@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,21 +26,32 @@ public class Commande {
 
     @ManyToOne
     @JoinColumn(name = "IdUser", nullable = false)
+    @JsonBackReference
     private User client;
 
     @ManyToOne
     @JoinColumn(name = "idPreparateur")
+    @JsonBackReference
     private User preparateur;
 
     @ManyToOne
     @JoinColumn(name = "idMagasin")
+    @JsonBackReference  // Empêche la récursion infinie avec `Magasin`
     private Magasin magasin;
 
+<<<<<<< HEAD
     @Column(name = "FinirPrepa")
     private Date finirPrepa;
 
     @Column(name = "dateAjoutPanier")
     private Date dateAjoutPanier;
+=======
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Permet la sérialisation JSON
+    private Set<Composer> composers = new HashSet<>();
+
+
+>>>>>>> f5992951a3c04118350a6481fc297abe41c04eb0
 
     public Commande() {}
 
@@ -82,6 +96,7 @@ public class Commande {
         this.magasin = magasin;
     }
 
+<<<<<<< HEAD
     public Date getFinirPrepa() { return finirPrepa; }
     public void setFinirPrepa(Date finirPrepa) {
         this.finirPrepa = finirPrepa;
@@ -89,5 +104,13 @@ public class Commande {
     public Date getDateAjoutPanier() { return dateAjoutPanier; }
     public void setDateAjoutPanier(Date dateAjoutPanier) {
             this.dateAjoutPanier = dateAjoutPanier;
+=======
+    public Set<Composer> getComposers() {
+        return composers;
+    }
+
+    public void setComposers(Set<Composer> composers) {
+        this.composers = composers;
+>>>>>>> f5992951a3c04118350a6481fc297abe41c04eb0
     }
 }
