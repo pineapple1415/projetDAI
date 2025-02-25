@@ -102,3 +102,47 @@ h2 {
 .course:hover {
     background: orange;
 }
+
+/* Courses 区块 */
+.courses-section {
+    margin-top: 20px;
+}
+
+/* Course 卡片容器 */
+.courses-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Course 卡片 */
+.course-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: 0.3s;
+    width: 200px;
+}
+
+.course-card:hover {
+    background: #007bff;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* 产品卡片 */
+.product-card {
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+

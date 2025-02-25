@@ -1,54 +1,58 @@
 package Servlet;
 
-import DAO.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import DAO.CourseDAO;
+import model.Course;
+import model.User;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-
-import java.io.BufferedReader;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import model.*;
-
-// ServletCourse.java
-@WebServlet("/course")
+@WebServlet("/courses")
 public class ServletCourse extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final CourseDAO courseDAO = new CourseDAO();
 
-        HttpSession session = request.getSession();
-        User currentUser = (User) session.getAttribute("user");
-
-        if (currentUser == null) {
-            response.sendRedirect("login");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("pageLogin");
             return;
         }
 
-        try {
-            List<Course> courses = new CourseDAO().getCoursesByUser(currentUser);
+        User user = (User) session.getAttribute("user");
+        String action = request.getParameter("action");
 
-            ObjectMapper mapper = new ObjectMapper();
+        if ("getCourses".equals(action)) {
+            // 获取当前用户的所有 Courses
+            List<Course> courses = courseDAO.getCoursesByUser(user);
+
+            // 构建 JSON 响应，包含 produit 信息
+            List<Map<String, Object>> courseList = new ArrayList<>();
+            for (Course course : courses) {
+                Map<String, Object> courseData = new HashMap<>();
+                courseData.put("idCourse", course.getIdCourse());
+                courseData.put("texte", course.getTexte());
+
+                // 获取当前 Course 关联的 produits
+                Map<String, String> produits = courseDAO.getProduitsByUserAndCourse(course.getIdCourse());
+                courseData.put("produits", produits);
+
+                courseList.add(courseData);
+            }
+
             response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-
-            // 配置Hibernate模块处理懒加载
-            Hibernate5Module module = new Hibernate5Module();
-            module.configure(Hibernate5Module.Feature.FORCE_LAZY_LOADING, false);
-            mapper.registerModule(module);
-
-            mapper.writeValue(response.getWriter(), courses);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("{\"error\":\"数据加载失败\"}");
+            response.getWriter().write(objectMapper.writeValueAsString(courseList));
         }
     }
 }

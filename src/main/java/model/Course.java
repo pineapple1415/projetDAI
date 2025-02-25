@@ -20,6 +20,10 @@ public class Course {
     @JsonBackReference
     private User client;
 
+    @Column(name = "texte", columnDefinition = "TEXT")
+    private String texte;
+
+
     /** 多对多：Course 和 Produit 通过 Ajouter 连接 */
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -37,6 +41,7 @@ public class Course {
 
     public void setIdCourse(Integer idCourse) {
         this.idCourse = idCourse;
+        this.texte = texte;
     }
 
     public User getClient() {
@@ -53,5 +58,13 @@ public class Course {
 
     public void setAjouts(Set<Ajouter> ajouts) {
         this.ajouts =ajouts;
+    }
+
+    public String getTexte() {
+        return texte;
+    }
+
+    public void setTexte(String texte) {
+        this.texte = texte;
     }
 }
