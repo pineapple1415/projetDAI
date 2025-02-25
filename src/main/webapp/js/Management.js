@@ -39,17 +39,15 @@ function logout() {
         .catch(error => console.error('Erreur de déconnexion:', error));
 }
 
-
-// Cette partie pour importer des produits
 // 显示隐藏导入产品的表单
 function afficherFormImporterProduit() {
     const form = document.getElementById("formProduit");
-    if (form) {
+    if(form) {
         form.style.display = "block";
     }
 }
 
-// 监听 DOM 加载
+// DOMContentLoaded事件处理表单动态逻辑
 window.addEventListener("DOMContentLoaded", function () {
     const fournisseurSelect = document.getElementById('fournisseurSelect');
     const nouveauFournisseurRow = document.getElementById('nouveauFournisseurRow');

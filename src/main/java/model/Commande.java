@@ -39,7 +39,6 @@ public class Commande {
     @JsonBackReference  // Empêche la récursion infinie avec `Magasin`
     private Magasin magasin;
 
-
     @Column(name = "FinirPrepa")
     private Date finirPrepa;
 
@@ -52,10 +51,9 @@ public class Commande {
 
 
 
-
     public Commande() {}
 
-    public Commande(Double prixTotal, Date dateCommande, Statut statut, User client, User preparateur, Magasin magasin, Date dateAjoutPanier) {
+    public Commande(Double prixTotal, Date dateCommande, Statut statut, User client, User preparateur, Magasin magasin) {
         this.prixTotal = prixTotal;
         this.dateCommande = dateCommande;
         this.statut = statut;
@@ -78,6 +76,7 @@ public class Commande {
     public Statut getStatut() {
         return statut;
     }
+
     public void setStatut(Statut statut) {
         this.statut = statut;
     }
@@ -85,13 +84,23 @@ public class Commande {
     public User getClient() {
         return client;
     }
+
     public void setClient(User client) {
         this.client = client;
+    }
+
+    public User getPreparateur() {
+        return preparateur;
+    }
+
+    public void setPreparateur(User preparateur) {
+        this.preparateur = preparateur;
     }
 
     public Magasin getMagasin() {
         return magasin;
     }
+
     public void setMagasin(Magasin magasin) {
         this.magasin = magasin;
     }
@@ -115,8 +124,5 @@ public class Commande {
 
     public void setComposers(Set<Composer> composers) {
         this.composers = composers;
-
     }
-
-
 }
