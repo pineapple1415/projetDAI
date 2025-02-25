@@ -50,6 +50,23 @@
       </tbody>
     </table>
   </div>
+
+  <div class="courses-section">
+    <h2>Mes Courses</h2>
+
+    <!-- 心愿单容器 -->
+    <div class="courses-container" id="coursesContainer"></div>
+
+    <!-- 选中的 Course 的 Produit 列表 -->
+    <div id="product-list" class="hidden">
+      <h3>Produits dans ce Course</h3>
+      <div id="products"></div>
+    </div>
+  </div>
+
+
+
+
 </div>
 
 <div class="button-group">
@@ -63,6 +80,6 @@
     mes courses
   </button>
 </div>
-
+<script src="${pageContext.request.contextPath}/js/course.js"></script>
 </body>
 </html>
