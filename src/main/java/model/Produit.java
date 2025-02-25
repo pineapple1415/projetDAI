@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +30,9 @@ public class Produit {
     @Column(name = "image")
     private String imageUrl;
 
-    @Column(name = "promotion")
+    @DecimalMin(value = "0.0", message = "Promotion不能为负数")
+    @DecimalMax(value = "1.0", message = "Promotion不能超过1.0")
+    @Column(name = "promotion", nullable = false, columnDefinition = "double default 0.0")
     private double promotion = 0.0;
 
     @ManyToOne

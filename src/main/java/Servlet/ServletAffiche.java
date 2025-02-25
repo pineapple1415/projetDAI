@@ -37,19 +37,33 @@ public class ServletAffiche extends HttpServlet {
                 e.printStackTrace();
             }
         }
-
         // 获取数据库中的产品信息，包括 imageUrl
         List<Object[]> produits = produitDAO.getFilteredProducts(selectedCategories, selectedRayons);
         List<Map<String, Object>> produitsList = new ArrayList<>();
 
+        String contextPath = request.getContextPath(); // 获取 Web 应用的 Context Path
+
         for (Object[] produit : produits) {
+            String rawImageUrl = (String) produit[0]; // 从数据库获取的 imageUrl
+            String imageUrl;
+
+            // **判断是否为远程 URL**
+            if (rawImageUrl.startsWith("http://") || rawImageUrl.startsWith("https://")) {
+                imageUrl = rawImageUrl;
+            } else {
+                // **如果是本地图片，拼接 Context Path**
+                imageUrl = contextPath + "/" + rawImageUrl;
+            }
+
+            // **构造 JSON 数据**
             Map<String, Object> produitMap = new HashMap<>();
-            produitMap.put("imageUrl", produit[0]); // ✅ 添加图片URL
+            produitMap.put("imageUrl", imageUrl); // 处理后的图片URL
             produitMap.put("nomProduit", produit[1]);
             produitMap.put("prixUnit", produit[2]);
             produitMap.put("promotion", produit[3]);
             produitsList.add(produitMap);
         }
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(produitsList);

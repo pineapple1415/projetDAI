@@ -39,6 +39,8 @@ public class ServletProduitDetail extends HttpServlet {
             return;
         }
 
+
+        String contextPath = request.getContextPath();
         Map<String, Object> produitData = new HashMap<>();
         produitData.put("idProduit", ((model.Produit) produit).getIdProduit());
         produitData.put("nomProduit", produit.getNomProduit());
@@ -46,7 +48,16 @@ public class ServletProduitDetail extends HttpServlet {
         produitData.put("origineProduit", produit.getOrigineProduit());
         produitData.put("prixUnit", produit.getPrixUnit());
         produitData.put("tailleProduit", produit.getTailleProduit());
-        produitData.put("image", produit.getImageUrl());
+        String rawImageUrl = produit.getImageUrl();
+        String image;
+        if (rawImageUrl != null && rawImageUrl.startsWith("http://") || rawImageUrl.startsWith("https://")) {
+            image = rawImageUrl;
+        }else{
+            image = contextPath + "/" + rawImageUrl;
+        }
+        produitData.put("image", image);
+
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(produitData);

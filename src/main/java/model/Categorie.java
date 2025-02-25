@@ -53,4 +53,11 @@ public class Categorie {
     public void setProduits(Set<Produit> produits) {
         this.produits = produits;
     }
+
+    public Rayon getRayon() {
+        return rayon;
+    }
+    public void setRayon(Rayon rayon) {
+        this.rayon = rayon;
+    }
 }
