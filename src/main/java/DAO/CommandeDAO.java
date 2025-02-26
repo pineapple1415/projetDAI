@@ -4,6 +4,8 @@ import model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -138,6 +140,9 @@ public class CommandeDAO {
             Commande commande = session.get(Commande.class, idCommande);
             if (commande != null) {
                 commande.setStatut(nouveauStatut);
+                if (nouveauStatut == Statut.PRETE) {
+                    commande.setFinirPrepa(new Date());
+                }
                 session.update(commande);
             } else {
                 throw new RuntimeException("Commande non trouvée pour l'id : " + idCommande);
