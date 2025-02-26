@@ -145,8 +145,51 @@ public class ServletCourse extends HttpServlet {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur");
             }
-        }
+        }else if ("updateQuantity".equals(action)) {
+            try {
+                // 解析 JSON 请求
+                Map<String, Object> requestBody = objectMapper.readValue(request.getReader(), Map.class);
 
+                // 调试日志，检查 requestBody
+                System.out.println("Request Body: " + requestBody);
+
+                // 检查 key 是否存在
+                if (!requestBody.containsKey("courseId") || !requestBody.containsKey("produitId") || !requestBody.containsKey("newQty")) {
+                    System.out.println("❌ Données manquantes: " + requestBody);
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Données manquantes");
+                    return;
+                }
+
+                // 解析参数
+                int courseId = (int) requestBody.get("courseId");
+                int produitId = (int) requestBody.get("produitId");  // 确保使用 "produitId"
+                int newQty = (int) requestBody.get("newQty");
+
+                System.out.println("✅ Mise à jour de la quantité: courseId=" + courseId + ", produitId=" + produitId + ", newQty=" + newQty);
+
+                boolean success;
+                if (newQty == 0) {
+                    success = courseDAO.removeProduitFromCourse(courseId, produitId);
+                } else {
+                    success = courseDAO.updateProduitQuantity(courseId, produitId, newQty);
+                }
+
+                if (!success) {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Échec de la mise à jour");
+                    return;
+                }
+
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\": \"Quantité mise à jour\"}");
+
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Données manquantes ou invalides");
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur");
+            }
+        }
         else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Action non reconnue");
         }

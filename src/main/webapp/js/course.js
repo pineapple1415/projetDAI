@@ -17,9 +17,14 @@ function loadCourses() {
                     <h3>Course #${course.idCourse}</h3>
                     <p>${course.texte ? course.texte : "Aucune description"}</p>
                     <div class="course-actions">
-                        <button class="edit-btn" onclick="editCourse(${course.idCourse}, '${course.texte}')">action texte</button>
-                        <button class="delete-btn" onclick="deleteCourse(${course.idCourse})">Supprimer</button>
+                        <button class="edit-btn" onclick="editCourse(${course.idCourse}, '${course.texte}')">
+                            <i class="fas fa-pencil-alt"></i> <!--  铅笔图标 -->
+                        </button>
+                        <button class="delete-btn" onclick="deleteCourse(${course.idCourse})">
+                            <i class="fas fa-times"></i> <!--  叉号图标 -->
+                        </button>
                     </div>
+
                  
                 `;
                 div.onclick = () => showProducts(course.idCourse); // 只传 idCourse
@@ -50,23 +55,39 @@ function showProducts(idCourse) {
         .then(data => {
             console.log("Produits chargés:", data); // 调试 JSON 结果
             const productList = document.getElementById("products");
-            productList.innerHTML = "";
+            productList.innerHTML = ""; // 清空旧内容
+
+            // 添加 `Ajouter Produit` 按钮
+            let ajouterDiv = document.createElement("div");
+            ajouterDiv.className = "product-card ajouter-produit";
+            ajouterDiv.innerHTML = `<h3>+ Ajouter Produit</h3>`;
+            ajouterDiv.onclick = () => window.location.href = contextPath + "/index";
 
             if (!Array.isArray(data) || data.length === 0) {
-                productList.innerHTML = "<p>Aucun produit dans ce course.</p>";
-                return;
-            }
+                // 仅显示 `Ajouter Produit` 按钮
+                productList.appendChild(ajouterDiv);
+            } else {
+                // 显示 `produits`
+                data.forEach(product => {
+                    console.log("Produit Data:", product); // 确保 `idProduit` 存在
 
-            data.forEach(product => {
-                let div = document.createElement("div");
-                div.className = "product-card";
-                div.innerHTML = `
-                    <img src="${product.imageUrl}" alt="${product.nom}" class="product-image">
-                    <p>${product.nom}</p>
-                    <p><strong>Quantité:</strong> ${product.nombre}</p>
-                `;
-                productList.appendChild(div);
-            });
+                    let div = document.createElement("div");
+                    div.className = "product-card";
+                    div.innerHTML = `
+                        <img src="${product.imageUrl}" alt="${product.nom}" class="product-image">
+                        <p>${product.nom}</p>
+                        <div class="quantity-controls">
+                            <button onclick="updateQuantity(${idCourse}, ${product.idProduit}, -1)">➖</button>
+                            <span id="qty-${product.idProduit}">${product.nombre}</span>
+                            <button onclick="updateQuantity(${idCourse}, ${product.idProduit}, 1)">➕</button>
+                        </div>
+                    `;
+                    productList.appendChild(div);
+                });
+
+                // 最后再添加 `Ajouter Produit` 按钮
+                productList.appendChild(ajouterDiv);
+            }
 
             document.getElementById("product-list").classList.remove("hidden");
         })
@@ -139,4 +160,40 @@ function deleteCourse(idCourse) {
             loadCourses(); // 重新加载 Courses
         })
         .catch(error => console.error("Erreur lors de la suppression du Course:", error));
+}
+
+function updateQuantity(courseId, produitId, change) {
+    let qtyElement = document.getElementById(`qty-${produitId}`);
+    let currentQty = parseInt(qtyElement.innerText);
+    let newQty = currentQty + change;
+
+    if (newQty < 0) return;
+
+    // 调试日志，检查数据是否正确
+    console.log("Sending updateQuantity request:", { courseId, produitId, newQty });
+
+    fetch("/ProjetDAI_war/courses?action=updateQuantity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseId: courseId, produitId: produitId, newQty: newQty })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error("Erreur serveur: " + text); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Response from updateQuantity:", data);
+            if (newQty === 0) {
+                let productDiv = document.getElementById(`product-${produitId}`);
+                console.log("Trying to remove produit:", produitId, document.getElementById(`product-${produitId}`));
+                if (productDiv) {
+                    productDiv.remove();  // 确保 `null` 时不会调用 `.remove()`
+                }
+            } else {
+                qtyElement.innerText = newQty;
+            }
+        })
+        .catch(error => console.error("Erreur lors de la modification de la quantité:", error));
 }

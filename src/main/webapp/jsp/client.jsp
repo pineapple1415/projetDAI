@@ -4,6 +4,8 @@
 <head>
   <title>Espace Client</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/client.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
 <div class="container">
@@ -80,6 +82,7 @@
     mes courses
   </button>
 </div>
+<script>var contextPath = "${pageContext.request.contextPath}";</script>
 <script src="${pageContext.request.contextPath}/js/course.js"></script>
 </body>
 </html>
