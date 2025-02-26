@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,5 +51,82 @@ public class CourseDAO {
         }
         return produitsMap;
     }
+
+    public List<Map<String, Object>> getProduitsWithQuantity(int idCourse) {
+        List<Map<String, Object>> produits = new ArrayList<>();
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Object[]> query = session.createQuery(
+                    "SELECT p.nomProduit, p.imageUrl, a.nombre " +
+                            "FROM Ajouter a " +
+                            "JOIN a.produit p " +
+                            "WHERE a.id.idCourse = :idCourse", Object[].class);
+            query.setParameter("idCourse", idCourse);
+            List<Object[]> results = query.list();
+
+            for (Object[] row : results) {
+                Map<String, Object> produitData = new HashMap<>();
+                produitData.put("nom", row[0]);  // Produit 名称
+                produitData.put("imageUrl", row[1]);  // Produit 图片
+                produitData.put("nombre", row[2]);  // Produit 数量
+                produits.add(produitData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return produits;
+    }
+
+    public void createCourse(Course course) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.save(course);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+    }
+
+
+    public boolean updateCourseTexte(int idCourse, String newTexte) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            Course course = session.get(Course.class, idCourse);
+            if (course != null) {
+                course.setTexte(newTexte);
+                session.update(course);
+                transaction.commit();
+                return true;
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    public void deleteCourse(int idCourse) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            Course course = session.get(Course.class, idCourse);
+            if (course != null) {
+                session.delete(course);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }
 

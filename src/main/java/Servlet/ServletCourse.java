@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import DAO.CourseDAO;
 import model.Course;
 import model.User;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @WebServlet("/courses")
 public class ServletCourse extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -26,33 +26,155 @@ public class ServletCourse extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("pageLogin");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Utilisateur non connecté");
             return;
         }
 
-        User user = (User) session.getAttribute("user");
         String action = request.getParameter("action");
 
         if ("getCourses".equals(action)) {
-            // 获取当前用户的所有 Courses
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            User user = (User) session.getAttribute("user");
             List<Course> courses = courseDAO.getCoursesByUser(user);
 
-            // 构建 JSON 响应，包含 produit 信息
-            List<Map<String, Object>> courseList = new ArrayList<>();
+            // 只返回 idCourse 和 texte
+            List<Map<String, Object>> result = new ArrayList<>();
             for (Course course : courses) {
                 Map<String, Object> courseData = new HashMap<>();
                 courseData.put("idCourse", course.getIdCourse());
                 courseData.put("texte", course.getTexte());
-
-                // 获取当前 Course 关联的 produits
-                Map<String, String> produits = courseDAO.getProduitsByUserAndCourse(course.getIdCourse());
-                courseData.put("produits", produits);
-
-                courseList.add(courseData);
+                result.add(courseData);
             }
 
+            response.getWriter().write(objectMapper.writeValueAsString(result));
+        } else if ("getProducts".equals(action)) {
+            String idCourseParam = request.getParameter("idCourse");
+
+            if (idCourseParam == null || !idCourseParam.matches("\\d+")) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "idCourse invalide");
+                return;
+            }
+
+            int idCourse = Integer.parseInt(idCourseParam);
+            List<Map<String, Object>> produits = courseDAO.getProduitsWithQuantity(idCourse);
+
             response.setContentType("application/json");
-            response.getWriter().write(objectMapper.writeValueAsString(courseList));
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(produits));
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Action non reconnue");
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Utilisateur non connecté");
+            return;
+        }
+
+        String action = request.getParameter("action");
+        ObjectMapper objectMapper = new ObjectMapper();
+        CourseDAO courseDAO = new CourseDAO();
+
+        if ("createCourse".equals(action)) {
+            // ✅ 处理创建 Course
+            Map<String, String> requestBody = objectMapper.readValue(request.getReader(), Map.class);
+            String texte = requestBody.get("texte");
+
+            if (texte == null || texte.trim().isEmpty()) {
+                texte = "Sans description"; // 默认值
+            }
+
+            User user = (User) session.getAttribute("user");
+            Course newCourse = new Course(user, texte);
+            courseDAO.createCourse(newCourse);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(newCourse));
+
+        } else if ("editCourse".equals(action)) {
+            try {
+                // 解析 JSON 请求体
+                Map<String, Object> requestBody = objectMapper.readValue(request.getReader(), Map.class);
+
+                // 确保 `idCourse` 和 `texte` 存在
+                if (!requestBody.containsKey("idCourse") || !requestBody.containsKey("texte")) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Données manquantes");
+                    return;
+                }
+
+                int idCourse;
+                try {
+                    // 如果 `idCourse` 是 `Integer`，直接转换，否则解析为整数
+                    Object idCourseObj = requestBody.get("idCourse");
+                    if (idCourseObj instanceof Integer) {
+                        idCourse = (Integer) idCourseObj;
+                    } else {
+                        idCourse = Integer.parseInt(idCourseObj.toString());
+                    }
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID Course invalide");
+                    return;
+                }
+
+                // 解析 texte
+                Object texteObj = requestBody.get("texte");
+                String texte = (texteObj != null) ? texteObj.toString().trim() : "Sans description";
+                if (texte.isEmpty()) {
+                    texte = "Sans description"; // 默认值
+                }
+
+                // 调用 DAO 更新 Course
+                boolean success = courseDAO.updateCourseTexte(idCourse, texte);
+                if (!success) {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Échec de la mise à jour");
+                    return;
+                }
+
+                // 返回 JSON 响应
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"message\": \"Course modifié avec succès\"}");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur");
+            }
+        }
+
+        else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Action non reconnue");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Utilisateur non connecté");
+            return;
+        }
+
+        String idCourseParam = request.getParameter("idCourse");
+        if (idCourseParam == null || !idCourseParam.matches("\\d+")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID Course invalide");
+            return;
+        }
+
+        int idCourse = Integer.parseInt(idCourseParam);
+        CourseDAO courseDAO = new CourseDAO();
+        courseDAO.deleteCourse(idCourse);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"message\": \"Course supprimé avec succès\"}");
+    }
+
+
+
 }
