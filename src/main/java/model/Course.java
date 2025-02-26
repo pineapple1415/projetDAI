@@ -20,7 +20,7 @@ public class Course {
     @JsonBackReference
     private User client;
 
-    @Column(name = "texte", columnDefinition = "TEXT")
+    @Column(name = "texte", columnDefinition = "TEXT", nullable = true) // 允许 NULL
     private String texte;
 
 
@@ -31,9 +31,13 @@ public class Course {
 
     public Course() {}
 
-    public Course(User client) {
+    // 允许创建 Course 时提供 texte，但可以为空
+    public Course(User client, String texte) {
         this.client = client;
+        this.texte = (texte == null || texte.trim().isEmpty()) ? "Sans description" : texte; // 默认值
     }
+
+
 
     public Integer getIdCourse() {
         return idCourse;
@@ -41,7 +45,6 @@ public class Course {
 
     public void setIdCourse(Integer idCourse) {
         this.idCourse = idCourse;
-        this.texte = texte;
     }
 
     public User getClient() {
