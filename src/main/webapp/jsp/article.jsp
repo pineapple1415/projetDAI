@@ -52,24 +52,32 @@
         </div>
     </div>
 
-    <button type="button" id="ajoutePanier" disabled>Ajouter au panier</button>
+    <button type="button" id="ajoutePanier">Ajouter au panier</button>
+    <button type="button" id="ajouteCourse">Ajouter au course</button>
 </main>
 
 <script>
+    document.getElementById("loginButton").addEventListener("click", function () {
+        window.location.href = "${pageContext.request.contextPath}/client";
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
-        let nomProduit = sessionStorage.getItem("nomProduit");
+        let nomProduit = sessionStorage.getItem("nomProduit"); // 获取产品名称
 
         if (!nomProduit) {
             document.getElementById("produitNom").innerText = "Produit non trouvé";
             return;
         }
 
+        // 发送请求获取产品信息
         fetch(`${window.location.origin}/ProjetDAI_war/produitDetail?nomProduit=` + encodeURIComponent(nomProduit), {
             method: "GET",
             headers: { "Accept": "application/json" }
         })
             .then(response => {
-                if (!response.ok) throw new Error("Erreur lors de la récupération des détails du produit");
+                if (!response.ok) {
+                    throw new Error("Erreur lors de la récupération des détails du produit");
+                }
                 return response.json();
             })
             .then(produit => {
@@ -85,6 +93,8 @@
                 document.getElementById("productOrigin").innerText = produit.origineProduit;
                 document.getElementById("productSize").innerText = produit.tailleProduit;
                 document.getElementById("productImage").src = produit.image;
+
+                // 设置 productId
                 document.getElementById("productId").value = produit.idProduit;
 
                 // 根据库存状态更新按钮
@@ -140,6 +150,55 @@
 
     // 绑定点击事件（替代onclick属性）
     document.getElementById('ajoutePanier').addEventListener('click', addToCart);
+
+    // 绑定点击事件（替代onclick属性）
+    document.getElementById('ajouteCourse').addEventListener('click', addToCourse);
+
+    function addToCourse() {
+        const productId = document.getElementById('productId').value;
+        const quantity = currentQuantity; // 获取当前选择的数量
+
+        // 弹出 `prompt` 让用户输入 `idCourse`
+        let idCourse = prompt("Veuillez entrer l'ID du course où vous voulez ajouter ce produit:");
+
+        // 验证用户输入
+        if (!idCourse || isNaN(idCourse) || parseInt(idCourse) <= 0) {
+            alert("ID de course invalide. Veuillez entrer un nombre valide.");
+            return;
+        }
+
+        console.log("Ajout au course:", { productId, quantity, idCourse });
+
+        fetch(`${window.location.origin}/ProjetDAI_war/courses?action=addToCourse`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                idCourse: idCourse,
+                productId: productId,
+                quantity: quantity
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error("Erreur serveur: " + text); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Réponse de l'ajout au course:", data);
+                if (data.success) {
+                    alert("Produit ajouté au course avec succès !");
+                } else {
+                    alert("Échec de l'ajout au course: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert("Une erreur s'est produite lors de l'ajout au course.");
+            });
+
+    }
+
 </script>
 
 </body>
