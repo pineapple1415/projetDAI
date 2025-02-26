@@ -181,3 +181,37 @@ h2 {
     transform: scale(1.05);
     background-color: #f8f9fa;
 }
+
+.course-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.course-actions button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* 修改按钮（铅笔） */
+.edit-btn {
+    color: #3498db;
+}
+
+.edit-btn:hover {
+    transform: scale(1.2);
+    color: #2980b9;
+}
+
+/* 删除按钮（叉号） */
+.delete-btn {
+    color: #e74c3c;
+}
+
+.delete-btn:hover {
+    transform: scale(1.2);
+    color: #c0392b;
+}

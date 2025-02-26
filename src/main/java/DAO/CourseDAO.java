@@ -57,7 +57,7 @@ public class CourseDAO {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Object[]> query = session.createQuery(
-                    "SELECT p.nomProduit, p.imageUrl, a.nombre " +
+                    "SELECT p.idProduit, p.nomProduit, p.imageUrl, a.nombre " +
                             "FROM Ajouter a " +
                             "JOIN a.produit p " +
                             "WHERE a.id.idCourse = :idCourse", Object[].class);
@@ -66,9 +66,10 @@ public class CourseDAO {
 
             for (Object[] row : results) {
                 Map<String, Object> produitData = new HashMap<>();
-                produitData.put("nom", row[0]);  // Produit 名称
-                produitData.put("imageUrl", row[1]);  // Produit 图片
-                produitData.put("nombre", row[2]);  // Produit 数量
+                produitData.put("idProduit", row[0]);
+                produitData.put("nom", row[1]);  // Produit 名称
+                produitData.put("imageUrl", row[2]);  // Produit 图片
+                produitData.put("nombre", row[3]);  // Produit 数量
                 produits.add(produitData);
             }
         } catch (Exception e) {
@@ -126,6 +127,45 @@ public class CourseDAO {
     }
 
 
+    public boolean updateProduitQuantity(int courseId, int produitId, int newQty) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            Ajouter ajouter = session.get(Ajouter.class, new AjouterId(courseId, produitId));
+            if (ajouter != null) {
+                ajouter.setNombre(newQty);
+                session.update(ajouter);
+                transaction.commit();
+                return true;
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean removeProduitFromCourse(int idCourse, int idProduit) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            Query<?> query = session.createQuery(
+                    "DELETE FROM Ajouter WHERE id.idCourse = :idCourse AND id.idProduit = :idProduit"
+            );
+            query.setParameter("idCourse", idCourse);
+            query.setParameter("idProduit", idProduit);
+
+            int result = query.executeUpdate();
+            transaction.commit();
+
+            return result > 0;
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 }
