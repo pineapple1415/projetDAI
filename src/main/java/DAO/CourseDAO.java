@@ -168,5 +168,66 @@ public class CourseDAO {
     }
 
 
+    public boolean checkCourseExists(int idCourse) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long count = (Long) session.createQuery(
+                            "SELECT COUNT(c) FROM Course c WHERE c.idCourse = :idCourse"
+                    )
+                    .setParameter("idCourse", idCourse)
+                    .uniqueResult();
+            return count > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean addProduitToCourse(int idCourse, int idProduit, int quantity) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            // 检查 `Ajouter` 是否已经存在
+            Ajouter existingAjout = session.createQuery(
+                            "FROM Ajouter WHERE id.idCourse = :idCourse AND id.idProduit = :idProduit",
+                            Ajouter.class
+                    )
+                    .setParameter("idCourse", idCourse)
+                    .setParameter("idProduit", idProduit)
+                    .uniqueResult();
+
+            if (existingAjout != null) {
+                // 如果 `Produit` 已经在 `Course` 里，更新数量
+                existingAjout.setNombre(existingAjout.getNombre() + quantity);
+                session.update(existingAjout);
+            } else {
+                // 否则，创建新的 `Ajouter` 记录
+                Course course = session.get(Course.class, idCourse);
+                Produit produit = session.get(Produit.class, idProduit);
+
+                if (course == null || produit == null) {
+                    transaction.rollback();
+                    return false;
+                }
+
+                Ajouter nouvelAjout = new Ajouter();
+                nouvelAjout.setCourse(course);
+                nouvelAjout.setProduit(produit);
+                nouvelAjout.setNombre(quantity);
+                nouvelAjout.setId(new AjouterId(idCourse, idProduit));
+
+                session.save(nouvelAjout);
+            }
+
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
 

@@ -44,4 +44,30 @@ public class Ajouter {
 
     @JsonBackReference
     public Course getCourse() { return course; }
+
+    public void setCourse(Course course) {
+        this.course = course;
+        if (this.id == null) {
+            this.id = new AjouterId();
+        }
+        this.id.setIdCourse(course.getIdCourse());
+    }
+
+    public Produit getProduit() { return produit; }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+        if (this.id == null) {
+            this.id = new AjouterId();
+        }
+        this.id.setIdProduit(produit.getIdProduit());
+    }
+
+    public AjouterId getId() {
+        return id;
+    }
+
+    public void setId(AjouterId id) {
+        this.id = id;
+    }
 }

@@ -189,7 +189,59 @@ public class ServletCourse extends HttpServlet {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur");
             }
+        }else if ("addToCourse".equals(action)) {
+            try {
+                // 解析 JSON 请求
+                Map<String, Object> requestBody = objectMapper.readValue(request.getReader(), Map.class);
+                System.out.println("🔍 Request Body: " + requestBody);
+
+                // 验证数据
+                if (!requestBody.containsKey("idCourse") || !requestBody.containsKey("productId") || !requestBody.containsKey("quantity")) {
+                    System.out.println("❌ Données manquantes: " + requestBody);
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Données manquantes");
+                    return;
+                }
+
+                // **正确转换 String -> int**
+                int idCourse = Integer.parseInt(requestBody.get("idCourse").toString());
+                int productId = Integer.parseInt(requestBody.get("productId").toString());
+                int quantity = Integer.parseInt(requestBody.get("quantity").toString());
+
+                System.out.println("🟢 Ajout de produit au course: idCourse=" + idCourse + ", productId=" + productId + ", quantity=" + quantity);
+
+                // 检查 `idCourse` 是否存在
+                boolean courseExists = courseDAO.checkCourseExists(idCourse);
+                if (!courseExists) {
+                    System.out.println("❌ Course ID " + idCourse + " n'existe pas.");
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"success\": false, \"message\": \"SVP créez ce course d'abord.\"}");
+                    return;
+                }
+
+                // 添加到 `Ajouter` 表
+                boolean success = courseDAO.addProduitToCourse(idCourse, productId, quantity);
+                if (!success) {
+                    System.out.println("❌ Échec de l'ajout au course.");
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Échec de l'ajout au course");
+                    return;
+                }
+
+                System.out.println("✅ Produit ajouté au course avec succès !");
+                response.setContentType("application/json");
+                response.getWriter().write("{\"success\": true}");
+
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Erreur de conversion String -> int");
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Format invalide des données");
+            } catch (Exception e) {
+                System.out.println("❌ Erreur serveur:");
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur");
+            }
         }
+
+
         else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Action non reconnue");
         }
