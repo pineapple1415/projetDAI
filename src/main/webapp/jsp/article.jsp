@@ -62,7 +62,7 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-        let nomProduit = sessionStorage.getItem("nomProduit"); // 获取产品名称
+        let nomProduit = sessionStorage.getItem("nomProduit");
 
         if (!nomProduit) {
             document.getElementById("produitNom").innerText = "Produit non trouvé";
