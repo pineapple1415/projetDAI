@@ -53,7 +53,7 @@ public class Commande {
 
     public Commande() {}
 
-    public Commande(Double prixTotal, Date dateCommande, Statut statut, User client, User preparateur, Magasin magasin) {
+    public Commande(Double prixTotal, Date dateCommande, Statut statut, User client, User preparateur, Magasin magasin, Date dateAjoutPanier) {
         this.prixTotal = prixTotal;
         this.dateCommande = dateCommande;
         this.statut = statut;
@@ -105,18 +105,14 @@ public class Commande {
         this.magasin = magasin;
     }
 
-
     public Date getFinirPrepa() { return finirPrepa; }
     public void setFinirPrepa(Date finirPrepa) {
         this.finirPrepa = finirPrepa;
     }
     public Date getDateAjoutPanier() { return dateAjoutPanier; }
-
     public void setDateAjoutPanier(Date dateAjoutPanier) {
             this.dateAjoutPanier = dateAjoutPanier;
     }
-
-
 
     public Set<Composer> getComposers() {
         return composers;

@@ -39,6 +39,8 @@ function logout() {
         .catch(error => console.error('Erreur de déconnexion:', error));
 }
 
+
+// Cette partie pour importer des produits
 // 显示隐藏导入产品的表单
 function afficherFormImporterProduit() {
     const form = document.getElementById("formProduit");
