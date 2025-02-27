@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -13,13 +15,19 @@ public class Categorie {
 
     private String nomCategorie;
 
+    @ManyToOne
+    @JoinColumn(name = "idRayon")
+    private Rayon rayon;
+
     @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Produit> produits;
 
     public Categorie() {}
 
-    public Categorie(String nomCategorie) {
+    public Categorie(String nomCategorie, Rayon rayon) {
         this.nomCategorie = nomCategorie;
+        this.rayon = rayon;
     }
 
     public Integer getIdCategorie() {
@@ -44,5 +52,12 @@ public class Categorie {
 
     public void setProduits(Set<Produit> produits) {
         this.produits = produits;
+    }
+
+    public Rayon getRayon() {
+        return rayon;
+    }
+    public void setRayon(Rayon rayon) {
+        this.rayon = rayon;
     }
 }

@@ -21,9 +21,9 @@ public class Rayon {
             inverseJoinColumns = @JoinColumn(name = "idMagasin"))
     private Set<Magasin> magasins = new HashSet<>();
 
-    /** 一对多：Rayon 和 Produit */
+    /** 一对多：Rayon 和 Categorie */
     @OneToMany(mappedBy = "rayon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Produit> produits = new HashSet<>();
+    private Set<Categorie> categories = new HashSet<>();
 
     public Rayon() {}
 
@@ -55,11 +55,11 @@ public class Rayon {
         this.magasins = magasins;
     }
 
-    public Set<Produit> getProduits() {
-        return produits;
+    public Set<Categorie> getCategories() {
+        return categories;
     }
 
-    public void setProduits(Set<Produit> produits) {
-        this.produits = produits;
+    public void setCategories(Set<Categorie> categories) {
+        this.categories = categories;
     }
 }

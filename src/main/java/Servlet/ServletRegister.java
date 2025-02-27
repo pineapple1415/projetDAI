@@ -25,7 +25,6 @@ public class ServletRegister extends HttpServlet {
 
         // 密码加密
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
         User newUser;
 
         // 🏷 **实例化具体的子类**

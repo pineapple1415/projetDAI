@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 
+import java.util.List;
+
 public class PanierDAO {
     public void addItemToPanier(User user, Long productId, int quantity) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -49,4 +51,49 @@ public class PanierDAO {
             tx.commit();
         }
     }
+
+    public void updateCartItem(User user, Long productId, int newQuantity) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+
+            // 获取购物车项
+            ProduitDansPanier item = session.createQuery(
+                            "FROM ProduitDansPanier WHERE panier.user = :user AND Produit.id = :productId",
+                            ProduitDansPanier.class)
+                    .setParameter("user", user)
+                    .setParameter("productId", productId)
+                    .uniqueResult();
+
+            if (item != null) {
+                item.setQuantity(newQuantity);
+                session.merge(item);
+            }
+
+            tx.commit();
+        }
+    }
+
+    public void viderPanier(User user) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+
+            int userId = user.getIdUser();
+            // 获取用户所有购物车项
+            List<ProduitDansPanier> items = session.createQuery(
+                            "FROM ProduitDansPanier WHERE panier.utilisateur.idUtilisateur = :userId",
+                            ProduitDansPanier.class)
+                    .setParameter("userId", userId)
+                    .list();
+
+            // 批量删除操作
+            for (ProduitDansPanier item : items) {
+                session.remove(item); // 使用remove替代delete
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            throw new RuntimeException("清空购物车失败", e);
+        }
+    }
+
 }

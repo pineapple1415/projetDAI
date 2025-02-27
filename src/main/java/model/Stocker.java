@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,11 +14,13 @@ public class Stocker {
     @ManyToOne
     @MapsId("idProduit")
     @JoinColumn(name = "idProduit")
+    @JsonBackReference
     private Produit produit;
 
     @ManyToOne
     @MapsId("idMagasin")
     @JoinColumn(name = "idMagasin")
+    @JsonBackReference
     private Magasin magasin;
 
     private Integer nbStock;

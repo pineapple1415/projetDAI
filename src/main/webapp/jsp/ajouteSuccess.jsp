@@ -45,10 +45,10 @@
   <h2> ajoute reussi ！</h2>
   <div class="button-group">
     <button class="btn view-cart" onclick="location.href='${pageContext.request.contextPath}/affichePanier'">
-      查看购物车
+      voir le panier
     </button>
     <button class="btn back-home" onclick="location.href='${pageContext.request.contextPath}/index'">
-      返回首页
+      retour
     </button>
   </div>
 </div>

@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,12 +14,28 @@ public class Magasin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idMagasin;
 
+    @Column(name = "nomMagasin")
     private String nomMagasin;
+
+    @Column(name = "adresseMagasin")
     private String adresseMagasin;
+
+    @Column(name = "telMagasin")
     private String telMagasin;
 
     @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Commande> commandes = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Set<Preparateur> preparateurs = new HashSet<>(); // 🚀 确保这里是 Set<Preparateur>，而不是 User！
+
+    /** 一对多：Magasin 和 Stocker（库存中间表） */
+    @OneToMany(mappedBy = "magasin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Stocker> stockers = new HashSet<>();
 
     public Magasin() {}
 
@@ -57,13 +75,22 @@ public class Magasin {
     public Set<Preparateur> getPreparateurs() { return preparateurs; }
     public void setPreparateurs(Set<Preparateur> preparateurs) { this.preparateurs = preparateurs; }
 
+    public Set<Stocker> getStockers() { return stockers; }
+    public void setStockers(Set<Stocker> stockers) { this.stockers = stockers; }
+
     public void addPreparateur(Preparateur preparateur) {
         this.preparateurs.add(preparateur);
-        preparateur.setMagasin(this);
     }
 
     public void removePreparateur(Preparateur preparateur) {
         this.preparateurs.remove(preparateur);
-        preparateur.setMagasin(null);
+    }
+
+    public Set<Commande> getCommandes() {
+        return commandes;
+    }
+
+    public void setCommandes(Set<Commande> commandes) {
+        this.commandes = commandes;
     }
 }

@@ -18,12 +18,23 @@ function loadProducts() {
 }
 
 // 添加到购物车 ajouter dans le panier
-function addToPanier(IdProduit) {
-    fetch('/cart', {
+function addToCart(productId, quantity) {
+    fetch("/ProjetDAI_war/addToPanier",  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'add', IdProduit: IdProduit })
-    }).then(response => updateCartDisplay());
+        body: JSON.stringify({
+            productId: productId,
+            quantity: quantity
+        })
+    })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+
+    console.log('正在添加商品:', { productId, quantity });
 }
 
 // triggers
@@ -31,7 +42,8 @@ window.onload = () => {
     loadProducts();
     updateCartDisplay();
 };
-
+//to make this function golbal
+window.addToCart = addToCart;
 
 
 // 统一Cookie处理函数

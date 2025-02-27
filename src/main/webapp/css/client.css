@@ -1,0 +1,217 @@
+/* 全局样式 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* 容器样式 */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 标题样式 */
+h1 {
+    font-size: 26px;
+    color: #333;
+    text-align: center;
+}
+
+h2 {
+    font-size: 22px;
+    margin-top: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+    color: #444;
+}
+
+/* 个人信息部分 */
+.profile-section {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* 订单表格样式 */
+.orders-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.orders-section th, .orders-section td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.orders-section th {
+    background: #007bff;
+    color: white;
+}
+
+.orders-section tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 按钮组 */
+.button-group {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.view-cart {
+    background: #28a745;
+    color: white;
+}
+
+.view-cart:hover {
+    background: #218838;
+}
+
+.back-home {
+    background: #dc3545;
+    color: white;
+}
+
+.back-home:hover {
+    background: #c82333;
+}
+
+.course {
+    background: orange;
+    color: white;
+}
+
+.course:hover {
+    background: orange;
+}
+
+/* Courses 区块 */
+.courses-section {
+    margin-top: 20px;
+}
+
+/* Course 卡片容器 */
+.courses-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Course 卡片 */
+.course-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: 0.3s;
+    width: 200px;
+}
+
+.course-card:hover {
+    background: #007bff;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* 产品卡片样式 */
+.product-card {
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+    width: 120px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+/* 图片样式 */
+.product-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* 悬停效果 */
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa; /* 悬停时背景色变浅 */
+}
+
+/* 文字样式 */
+.product-card p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.create-course {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.create-course:hover {
+    transform: scale(1.05);
+    background-color: #f8f9fa;
+}
+
+.course-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.course-actions button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* 修改按钮（铅笔） */
+.edit-btn {
+    color: #3498db;
+}
+
+.edit-btn:hover {
+    transform: scale(1.2);
+    color: #2980b9;
+}
+
+/* 删除按钮（叉号） */
+.delete-btn {
+    color: #e74c3c;
+}
+
+.delete-btn:hover {
+    transform: scale(1.2);
+    color: #c0392b;
+}

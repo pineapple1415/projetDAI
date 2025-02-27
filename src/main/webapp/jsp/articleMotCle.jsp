@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Résultats de la recherche</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/articleMotCle.css">
+    <script defer src="${pageContext.request.contextPath}/js/script.js"></script>
 </head>
 <body>
 <header>
@@ -27,11 +28,14 @@
         <div class="product-card">
             <img src="<%= produit.getImageUrl() %>" alt="<%= produit.getNomProduit() %>">
             <p class="product-name"><%= produit.getNomProduit() %></p>
+            <a href="${pageContext.request.contextPath}/jsp/article.jsp" class="detail-link" data-nom="<%= produit.getNomProduit() %>">Détail du produit</a>
+
         </div>
         <%
                 }
             }
         %>
+
     </div>
 </main>
 
