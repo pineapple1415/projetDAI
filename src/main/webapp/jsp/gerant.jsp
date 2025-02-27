@@ -130,10 +130,32 @@
 
             <div id="resultat"></div>
         </div>
+
+
         <div class="sub-section">
-            <h3>État du Stock</h3>
-            <button onclick="voirStock()">📊 Voir Stock</button>
+            <h3>📊 État du Stock - 7 Prochains Jours</h3>
+            <button id="voirStockBtn">📊 Voir Stock</button>
+
+            <div id="stockContainer" style="display: none;">
+                <h3>📦 État du Stock Prévisionnel</h3>
+
+                <table border="1">
+                    <thead>
+                    <tr>
+                        <th>Nom Produit</th>
+                        <th>Stock Actuel</th>
+                        <th>Ventes Estimées (7 Jours)</th>
+                        <th>Stock Prévu</th>
+                    </tr>
+                    </thead>
+                    <tbody id="stockTableBody"></tbody>
+                </table>
+
+                <canvas id="stockChart"></canvas>
+            </div>
         </div>
+
+
     </section>
 
     <!-- Analyse de Performance -->
@@ -152,11 +174,79 @@
             <canvas id="performanceChart"></canvas>
         </div>
 
-        <div class="sub-section">
-            <h3>Statistiques</h3>
-            <button onclick="editerStatistiques()">📈 Éditer Statistiques</button>
+    </section>
+
+    <!-- 🔹 **新的统计数据部分** -->
+    <section class="section">
+        <h2 class="section-title">📊 Statistiques des Ventes</h2>
+
+        <!-- 选择统计类型 -->
+        <label for="statSelector">Sélectionnez un type de statistique :</label>
+        <select id="statSelector">
+            <option value="">-- Sélectionnez un graphique --</option>
+            <option value="customerPurchaseDistribution">🛍️ Répartition des Achats Clients</option>
+            <option value="salesPerProduct">💰 Ventes par Produit</option>
+            <option value="stockPerProduct">📦 Stock des Produits</option>
+            <option value="salesPerCategory">📊 Répartition des Ventes par Catégorie</option>
+            <option value="salesPerRayon">🏬 Répartition des Ventes par Rayon</option> <!-- 🔥 新增 -->
+        </select>
+
+        <!-- 选择 Rayon (默认隐藏，选中 salesPerCategory 时才显示) -->
+        <div id="rayonSelectorContainer" style="display: none;">
+            <label for="rayonSelector">Sélectionnez un Rayon :</label>
+            <%
+                List<Rayon> rayon2 = (List<Rayon>) request.getAttribute("rayons"); // 更改变量名称
+            %>
+            <select id="rayonSelector">
+                <option value="">-- Tous les Rayons --</option>
+                <%
+                    if (rayon2 != null) {
+                        for (Rayon ray : rayon2) {
+                %>
+                <option value="<%= ray.getIdRayon() %>"><%= ray.getNomRayon() %></option>
+                <%
+                        }
+                    }
+                %>
+            </select>
+        </div>
+        <button id="showStatChartBtn">Afficher</button>
+
+        <!-- **统计数据展示区** -->
+        <div id="statChartContainer" style="display:none;">
+            <h3>Visualisation des Données</h3>
+
+            <!-- 购买次数分布 -->
+            <!-- 修正 `canvas` 的 ID，确保和 `chartType` 匹配 -->
+            <div id="customerPurchaseDistribution" style="display:none;">
+                <h3>🛍️ Répartition des Achats Clients</h3>
+                <canvas id="chartCustomerPurchaseDistribution"></canvas>  <!-- ✅ 修正 -->
+            </div>
+
+            <div id="salesPerProduct" style="display:none;">
+                <h3>💰 Ventes par Produit</h3>
+                <canvas id="chartSalesPerProduct"></canvas>  <!-- ✅ 修正 -->
+            </div>
+
+            <div id="stockPerProduct" style="display:none;">
+                <h3>📦 Stock des Produits</h3>
+                <canvas id="chartStockPerProduct"></canvas>  <!-- ✅ 修正 -->
+            </div>
+
+            <div id="salesPerCategory" style="display:none;">
+                <h3>📊 Répartition des Ventes par Catégorie</h3>
+                <canvas id="chartSalesPerCategory"></canvas>
+            </div>
+
+
+            <div id="salesPerRayon" style="display:none;">
+                <h3>🏬 Répartition des Ventes par Rayon</h3>
+                <canvas id="chartSalesPerRayon"></canvas>  <!-- ✅ 修正 -->
+            </div>
+
         </div>
     </section>
+
 
     <!-- Recommandations et Consommateurs -->
     <section class="section">

@@ -182,7 +182,7 @@ public class CommandeDAO {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createNativeQuery(
                     "SELECT MONTH(c.dateCommande), " +
-                            "AVG(TIMESTAMPDIFF(MINUTE, c.dateAjoutPanier, c.dateCommande)) " +
+                            "ROUND(AVG(TIMESTAMPDIFF(MINUTE, c.dateAjoutPanier, c.dateCommande)), 2) " +
                             "FROM Commande c " +
                             "WHERE c.dateAjoutPanier IS NOT NULL AND c.dateCommande IS NOT NULL " +
                             "GROUP BY MONTH(c.dateCommande) " +
@@ -197,7 +197,7 @@ public class CommandeDAO {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createNativeQuery(
                     "SELECT MONTH(c.dateCommande), " +
-                            "AVG(TIMESTAMPDIFF(MINUTE, c.dateCommande, c.finirPrepa)) " +
+                            "ROUND(AVG(TIMESTAMPDIFF(MINUTE, c.dateCommande, c.finirPrepa)), 2) " +
                             "FROM Commande c " +
                             "WHERE c.dateCommande IS NOT NULL AND c.finirPrepa IS NOT NULL " +
                             "GROUP BY MONTH(c.dateCommande) " +
