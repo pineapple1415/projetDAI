@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -23,6 +24,13 @@ public class ServletAffiche extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
 
+        HttpSession session = request.getSession();
+        String applyFiltre = request.getParameter("applyFiltre");
+
+        if ("true".equals(applyFiltre)) {
+            session.removeAttribute("filters");
+        }
+
         String filtersParam = request.getParameter("filters");
         List<String> selectedCategories = new ArrayList<>();
         List<String> selectedRayons = new ArrayList<>();
@@ -33,38 +41,35 @@ public class ServletAffiche extends HttpServlet {
                 Map<String, List<String>> filters = objectMapper.readValue(filtersParam, Map.class);
                 selectedCategories = filters.getOrDefault("categories", new ArrayList<>());
                 selectedRayons = filters.getOrDefault("rayons", new ArrayList<>());
+                session.setAttribute("filters", filters);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        // 获取数据库中的产品信息，包括 imageUrl
+
         List<Object[]> produits = produitDAO.getFilteredProducts(selectedCategories, selectedRayons);
         List<Map<String, Object>> produitsList = new ArrayList<>();
 
-        String contextPath = request.getContextPath(); // 获取 Web 应用的 Context Path
+        String contextPath = request.getContextPath();
 
         for (Object[] produit : produits) {
-            String rawImageUrl = (String) produit[1]; // 从数据库获取的 imageUrl
+            String rawImageUrl = (String) produit[1];
             String imageUrl;
 
-            // **判断是否为远程 URL**
             if (rawImageUrl.startsWith("http://") || rawImageUrl.startsWith("https://")) {
                 imageUrl = rawImageUrl;
             } else {
-                // **如果是本地图片，拼接 Context Path**
                 imageUrl = contextPath + "/" + rawImageUrl;
             }
 
-            // **构造 JSON 数据**
             Map<String, Object> produitMap = new HashMap<>();
-            produitMap.put("idProduit", ((Integer) produit[0])); // ✅ 确保它是 Integer
-            produitMap.put("imageUrl", imageUrl); // 处理后的图片URL
+            produitMap.put("idProduit", ((Integer) produit[0]));
+            produitMap.put("imageUrl", imageUrl);
             produitMap.put("nomProduit", produit[2]);
             produitMap.put("prixUnit", produit[3]);
             produitMap.put("promotion", produit[4]);
             produitsList.add(produitMap);
         }
-
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(produitsList);
@@ -75,3 +80,4 @@ public class ServletAffiche extends HttpServlet {
         }
     }
 }
+

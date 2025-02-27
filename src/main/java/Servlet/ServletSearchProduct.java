@@ -27,10 +27,8 @@ public class ServletSearchProduct extends HttpServlet {
         String searchQuery = request.getParameter("nomProduit");
         System.out.println("Recherche : " + searchQuery);
 
-
         if (searchQuery == null || searchQuery.trim().isEmpty()) {
-            request.setAttribute("error", "Aucun mot-clé de recherche fourni.");
-            request.getRequestDispatcher("articleMotCle.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/index"); // ✅ 使用 request.getContextPath() 获取根路径
             return;
         }
 

@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // ✅ 切换菜单显示/隐藏
             toggleFilterMenu();
+
         });
 
     }
@@ -179,7 +180,17 @@ function showCategories(rayon) {
                     checkbox.className = "filter-checkbox";
                     checkbox.value = categorie;
                     checkbox.id = `checkbox-${categorie.replace(/\s+/g, '-')}`;
+
+                    // ✅ 确保 `selected` 变量被正确初始化
+                    let selected = new Set(JSON.parse(sessionStorage.getItem("selectedCategories") || "[]"));
+
                     checkbox.addEventListener("change", updateSelectedCategories);
+
+                    if (selected.has(categorie)) {
+                        checkbox.checked = true;
+                    }
+
+
 
                     let label = document.createElement("label");
                     label.innerText = categorie;
@@ -235,6 +246,8 @@ function updateSelectedCategories() {
 
 // 过滤产品
 function applyFilters() {
+
+
     let selectedCategories = JSON.parse(sessionStorage.getItem("selectedCategories") || "[]");
 
     console.log("🔍 Catégories sélectionnées:", selectedCategories);
@@ -247,7 +260,9 @@ function applyFilters() {
     let params = new URLSearchParams();
     params.append("categories", selectedCategories.join(","));
 
+    params.append("applyFiltre", "true");  // ✅ 添加 applyFiltre 参数
     const url = `/ProjetDAI_war/filtrer?action=appliquerFiltre&${params.toString()}`;
+
     console.log("🔗 URL de la requête:", url);
 
     fetch(url, {
@@ -278,6 +293,9 @@ function applyFilters() {
             } else {
                 productList.innerHTML = "<p>Aucun produit trouvé</p>";
             }
+
+            // ✅ 在数据成功加载后，才删除 sessionStorage 的过滤条件
+            sessionStorage.removeItem("selectedCategories");
 
             toggleFilterMenu(false);
         })
