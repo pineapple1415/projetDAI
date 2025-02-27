@@ -39,10 +39,19 @@
   }
 %>
 
-
 <html>
 <head>
-  <title>conformation commande</title>
+  <title>confirme votre choix</title>
+  <style>
+    .out-of-stock {
+      background-color: #f0f0f0 !important;
+      color: #999 !important;
+    }
+    .out-of-stock button {
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+  </style>
 </head>
 <body>
 <h1>confirme votre choix</h1>
@@ -58,17 +67,17 @@
       <th>prix/unit</th>
       <th>quantity</th>
       <th>prix ensemble</th>
-      <th>操作</th>
     </tr>
     <% for (Map.Entry<Long, Integer> entry : panierMap.entrySet()) {
       Produit p = productInfoMap.get(entry.getKey());
       if (p != null) { %>
     <tr data-product-id="<%= String.valueOf(entry.getKey()) %>"
-        data-price="<%= p.getPrixUnit() %>">
+        data-price="<%= p.getPrixUnit() %>"
+        data-pricereduit="<%= p.getPrixApresPromotion() %>">
       <td><%= p.getNomProduit() %></td>
       <td>€<span class="unit-price"><%= p.getPrixUnit() %></span></td>
       <td class="quantity"><%= entry.getValue() %></td>
-      <td class="total-price">€<%= p.getPrixUnit() * entry.getValue() %></td>
+      <td class="total-price" id="total-price-apres">€<%= p.getPrixApresPromotion() * entry.getValue() %></td>
     </tr>
     <% }
     } %>
@@ -87,5 +96,62 @@
 
 <script src="/ProjetDAI_war/static/JS/validerPanier.js"></script>
 <script src="/ProjetDAI_war/js/script.js"></script>
+
+<script>
+  // 新增库存检查和总价更新逻辑
+  function checkStockStatus() {
+    const productIds = Array.from(document.querySelectorAll('tr[data-product-id]'))
+            .map(row => parseInt(row.dataset.productId));
+
+    if (productIds.length === 0) return;
+
+    fetch('/ProjetDAI_war/checkStock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productIds)
+    })
+            .then(response => response.json())
+            .then(stockStatus => {
+              document.querySelectorAll('tr[data-product-id]').forEach(row => {
+                const productId = parseInt(row.dataset.productId);
+                if (!stockStatus[productId]) {
+                  row.classList.add('out-of-stock');
+                  row.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                }
+              });
+              updateTotalPrice();
+            })
+            .catch(error => console.error('库存检查失败:', error));
+  }
+
+  function updateTotalPrice() {
+    let total = 0;
+
+    document.querySelectorAll('tr[data-product-id]').forEach(row => {
+      if (!row.classList.contains('out-of-stock')) {
+        const price = parseFloat(row.dataset.pricereduit || row.dataset.price);
+        const quantity = parseInt(row.querySelector('.quantity').innerText);
+        total += price * quantity;
+      }
+    });
+
+    // 添加总价显示元素（如果不存在）
+    if (!document.getElementById('totalPrice')) {
+      const totalDiv = document.createElement('div');
+      totalDiv.id = 'totalPrice';
+      totalDiv.style.margin = '20px 0';
+      document.querySelector('.cart-items').appendChild(totalDiv);
+    }
+
+    document.getElementById('totalPrice').textContent =
+            'Prix Total : €' + total.toFixed(2);
+  }
+
+  // 初始化时执行
+  document.addEventListener("DOMContentLoaded", () => {
+    updateTotalPrice();
+    checkStockStatus();
+  });
+</script>
 </body>
 </html>

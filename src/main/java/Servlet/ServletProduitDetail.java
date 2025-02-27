@@ -58,6 +58,11 @@ public class ServletProduitDetail extends HttpServlet {
         produitData.put("image", image);
 
 
+        // 检查库存
+        boolean isAvailable = productDAO.isProduitAvailable(produit.getIdProduit());
+        produitData.put("available", isAvailable);
+
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(produitData);

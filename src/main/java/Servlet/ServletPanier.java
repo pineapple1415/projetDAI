@@ -75,10 +75,11 @@ public class ServletPanier extends HttpServlet {
                 }
             }
 
-            // --- 新增：可选合并未登录购物车（按需启用）---
-            if (userId != null) {
-                // 如果已登录，可在此合并未登录时的 panier Cookie（需额外实现）
-                // handleMergeGuestCart(request, userId);
+
+            // 检查是否售罄 confirmer si le produit est vendu ou pas
+            for (ProduitDansPanier item : cart) {
+                boolean isAvailable = productDAO.isProduitAvailable(item.getProduit().getIdProduit());
+                item.setAvailable(isAvailable);
             }
 
             new ObjectMapper().writeValue(response.getWriter(), new CartResponse(cart));

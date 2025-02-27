@@ -187,3 +187,23 @@ label {
 #filterMenu {
     opacity: 1 !important;
 }
+
+
+/* 在style.css中添加 */
+tr.out-of-stock {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    opacity: 0.6;
+}
+
+tr.out-of-stock td {
+    position: relative;
+}
+
+tr.out-of-stock td::after {
+    content: "Épuisé";
+    position: absolute;
+    right: 10px;
+    color: #dc3545;
+    font-weight: bold;
+}

@@ -11,7 +11,11 @@ public class ProduitDansPanier {
 
     private Integer quantity = 1;
 
+    private boolean available = true;
 
+    public boolean isAvailable() {
+        return available;
+    }
 
     // Getters/Setters
 
@@ -45,5 +49,9 @@ public class ProduitDansPanier {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

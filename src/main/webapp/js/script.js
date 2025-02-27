@@ -367,15 +367,17 @@ document.querySelector(".product-container")?.addEventListener("click", function
 // 更新总价函数（原有）
 function updateTotalPrice() {
     let total = 0;
+
     document.querySelectorAll('tr[data-product-id]').forEach(row => {
-        const price = parseFloat(row.dataset.price);
-        const quantity = parseInt(row.querySelector('.quantity').innerText);
-        total += price * quantity;
+        if (!row.classList.contains('out-of-stock')) {
+            const price = parseFloat(row.dataset.pricereduit || row.dataset.price);
+            const quantity = parseInt(row.querySelector('.quantity').innerText);
+            total += price * quantity;
+        }
     });
-    const totalElement = document.getElementById('total-price');
-    if (totalElement) {
-        totalElement.innerText = '总价: €' + total.toFixed(2);
-    }
+
+    document.getElementById('total-price').innerText =
+        'Prix Total : €' + total.toFixed(2);
 }
 
 
@@ -529,4 +531,30 @@ function togglePromotions() {
         btn.innerText = "Afficher tous les produits";
         btn.dataset.filter = "on";
     }
+}
+
+
+function checkStockStatus() {
+    const productIds = Array.from(document.querySelectorAll('tr[data-product-id]'))
+        .map(row => parseInt(row.dataset.productId));
+
+    if (productIds.length === 0) return;
+
+    fetch('/ProjetDAI_war/checkStock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productIds)
+    })
+        .then(response => response.json())
+        .then(stockStatus => {
+            document.querySelectorAll('tr[data-product-id]').forEach(row => {
+                const productId = parseInt(row.dataset.productId);
+                if (!stockStatus[productId]) {
+                    row.classList.add('out-of-stock');
+                    row.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                }
+            });
+            updateTotalPrice();
+        })
+        .catch(error => console.error('库存检查失败:', error));
 }

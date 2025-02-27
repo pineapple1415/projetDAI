@@ -26,6 +26,7 @@ import model.*;
 public class ServletValiderPanier extends HttpServlet {
     private MagasinDAO magasinDAO = new MagasinDAO();
     private CommandeDAO commandeDAO = new CommandeDAO();
+    private ProductDAO productDAO = new ProductDAO(); // 新增DAO实例
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -43,14 +44,21 @@ public class ServletValiderPanier extends HttpServlet {
             int magasinId = Integer.parseInt(request.getParameter("magasin"));
             Magasin magasin = magasinDAO.getMagasinById(magasinId);
 
-            // 3. 获取购物车数据
+            // 3. 获取并过滤购物车数据（新增库存检查）
             Map<Long, Integer> panierMap = getPanierFromCookie(request);
-            List<Produit> products = new ProductDAO().getProductsByIds(panierMap.keySet());
+            Map<Long, Integer> filteredPanier = filterOutOfStockItems(panierMap); // 关键修改
 
-            // 4. 计算总价
-            double total = calculateTotal(panierMap, products);
+            // 4. 如果购物车已空则返回错误
+            if (filteredPanier.isEmpty()) {
+                response.sendRedirect("panier?error=empty");
+                return;
+            }
 
-            // 5. 创建订单
+            // 5. 计算总价
+            List<Produit> products = productDAO.getProductsByIds(filteredPanier.keySet());
+            double total = calculateTotal(filteredPanier, products);
+
+            // 6. 创建订单
             Commande commande = new Commande();
             commande.setPrixTotal(total);
             commande.setDateCommande(new Date());
@@ -58,18 +66,49 @@ public class ServletValiderPanier extends HttpServlet {
             commande.setClient(currentUser);
             commande.setMagasin(magasin);
 
-            // 6. 保存订单及关联商品
-            commandeDAO.createCommande(commande, panierMap);
+            // 7. 保存订单及关联商品（使用过滤后的数据）
+            commandeDAO.createCommande(commande, filteredPanier);
 
-            // 7. 清空购物车
+            // 8. 清空购物车
             clearCartCookie(request, response);
 
-            // 8. 跳转确认页面
+            // 9. 跳转确认页面
             response.sendRedirect("confirmation?commandeId=" + commande.getIdCommande());
 
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect("panier?error=stock");
         }
+    }
+
+    // 新增方法：过滤无库存商品
+    private Map<Long, Integer> filterOutOfStockItems(Map<Long, Integer> panierMap) {
+        Map<Long, Integer> filtered = new HashMap<>();
+
+        panierMap.forEach((productId, quantity) -> {
+            if (productDAO.isProduitAvailable(productId.intValue())) { // 假设DAO有库存检查方法
+                filtered.put(productId, quantity);
+            } else {
+                System.out.println("[库存过滤] 商品ID " + productId + " 已售罄");
+            }
+        });
+
+        return filtered;
+    }
+
+    // 修改原计算方法（添加有效性校验）
+    private double calculateTotal(Map<Long, Integer> panierMap, List<Produit> products) {
+        return products.stream()
+                .filter(p -> panierMap.containsKey(Long.valueOf(p.getIdProduit())))
+                .mapToDouble(p -> {
+                    Integer quantity = panierMap.get(Long.valueOf(p.getIdProduit()));
+                    // 双重校验（商品存在且库存充足）
+                    if (quantity == null || quantity <= 0 || !productDAO.isProduitAvailable(p.getIdProduit())) {
+                        return 0.0;
+                    }
+                    return p.getPrixApresPromotion() * quantity;
+                })
+                .sum();
     }
 
     private Map<Long, Integer> getPanierFromCookie(HttpServletRequest request) throws IOException {
@@ -120,20 +159,6 @@ public class ServletValiderPanier extends HttpServlet {
             System.err.println("Failed to parse panier cookie: " + e.getMessage());
             return Collections.emptyMap();
         }
-    }
-
-    private double calculateTotal(Map<Long, Integer> panierMap, List<Produit> products) {
-        return products.stream()
-                .filter(p -> panierMap.containsKey(Long.valueOf(p.getIdProduit()))) // 过滤掉无效商品
-                .mapToDouble(p -> {
-                    Integer quantity = panierMap.get(Long.valueOf(p.getIdProduit()));
-                    // 检查数量是否为null或负数
-                    if (quantity == null || quantity <= 0) {
-                        return 0.0;
-                    }
-                    return p.getPrixApresPromotion() * quantity;
-                })
-                .sum();
     }
 
     private void clearCartCookie(HttpServletRequest req, HttpServletResponse resp) {

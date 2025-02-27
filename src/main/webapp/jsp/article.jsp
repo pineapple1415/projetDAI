@@ -52,27 +52,24 @@
         </div>
     </div>
 
-    <button type="button" id="ajoutePanier">Ajouter au panier</button>
+    <button type="button" id="ajoutePanier" disabled>Ajouter au panier</button>
 </main>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let nomProduit = sessionStorage.getItem("nomProduit"); // 获取产品名称
+        let nomProduit = sessionStorage.getItem("nomProduit");
 
         if (!nomProduit) {
             document.getElementById("produitNom").innerText = "Produit non trouvé";
             return;
         }
 
-        // 发送请求获取产品信息
         fetch(`${window.location.origin}/ProjetDAI_war/produitDetail?nomProduit=` + encodeURIComponent(nomProduit), {
             method: "GET",
             headers: { "Accept": "application/json" }
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Erreur lors de la récupération des détails du produit");
-                }
+                if (!response.ok) throw new Error("Erreur lors de la récupération des détails du produit");
                 return response.json();
             })
             .then(produit => {
@@ -88,9 +85,18 @@
                 document.getElementById("productOrigin").innerText = produit.origineProduit;
                 document.getElementById("productSize").innerText = produit.tailleProduit;
                 document.getElementById("productImage").src = produit.image;
-
-                // 设置 productId
                 document.getElementById("productId").value = produit.idProduit;
+
+                // 根据库存状态更新按钮
+                const addButton = document.getElementById('ajoutePanier');
+                if (!produit.available) {
+                    addButton.innerText = "produit deja vendu";
+                    addButton.disabled = true;
+                    addButton.style.backgroundColor = "#ccc"; // 灰色背景
+                    addButton.style.cursor = "not-allowed"; // 禁用光标
+                } else {
+                    addButton.disabled = false;
+                }
             })
             .catch(error => console.error("Erreur:", error));
     });
