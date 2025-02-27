@@ -39,6 +39,7 @@ public class Commande {
     @JsonBackReference  // Empêche la récursion infinie avec `Magasin`
     private Magasin magasin;
 
+
     @Column(name = "FinirPrepa")
     private Date finirPrepa;
 
@@ -113,7 +114,6 @@ public class Commande {
     public void setDateAjoutPanier(Date dateAjoutPanier) {
             this.dateAjoutPanier = dateAjoutPanier;
     }
-
     public Set<Composer> getComposers() {
         return composers;
     }
