@@ -78,9 +78,6 @@
   <button class="btn back-home" onclick="location.href='${pageContext.request.contextPath}/index'">
     à l'acceuil
   </button>
-  <button class="btn course" onclick="location.href='${pageContext.request.contextPath}/course'">
-    mes courses
-  </button>
 </div>
 
 

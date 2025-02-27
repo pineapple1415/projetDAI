@@ -57,12 +57,30 @@
 
 <main>
     <h2>Liste des Produits</h2>
+    <%
+        HttpSession currentSession = request.getSession(false);
+        User loggedInUser = (currentSession != null) ? (User) currentSession.getAttribute("user") : null;
+
+        // ✅ 修正：确保 userId 声明，即使 null 也不会报错
+        Integer userId = (loggedInUser != null) ? loggedInUser.getIdUser() : null;
+    %>
+
+
+
     <button id="promotion">Afficher les promos</button>
+
+    <div class="filter-container">
+        <% if (userId != null) { %>
+        <button id="sortPurchased">Mes Frequents</button>
+        <% } %>
+    </div>
+
     <div id="productList">
         <!-- Les produits seront affichés ici -->
     </div>
 
 </main>
+
 
 <script>
     // 统一事件监听（支持动态生成的按钮）

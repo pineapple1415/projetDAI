@@ -44,7 +44,7 @@ public class ServletAffiche extends HttpServlet {
         String contextPath = request.getContextPath(); // 获取 Web 应用的 Context Path
 
         for (Object[] produit : produits) {
-            String rawImageUrl = (String) produit[0]; // 从数据库获取的 imageUrl
+            String rawImageUrl = (String) produit[1]; // 从数据库获取的 imageUrl
             String imageUrl;
 
             // **判断是否为远程 URL**
@@ -57,10 +57,11 @@ public class ServletAffiche extends HttpServlet {
 
             // **构造 JSON 数据**
             Map<String, Object> produitMap = new HashMap<>();
+            produitMap.put("idProduit", ((Integer) produit[0])); // ✅ 确保它是 Integer
             produitMap.put("imageUrl", imageUrl); // 处理后的图片URL
-            produitMap.put("nomProduit", produit[1]);
-            produitMap.put("prixUnit", produit[2]);
-            produitMap.put("promotion", produit[3]);
+            produitMap.put("nomProduit", produit[2]);
+            produitMap.put("prixUnit", produit[3]);
+            produitMap.put("promotion", produit[4]);
             produitsList.add(produitMap);
         }
 

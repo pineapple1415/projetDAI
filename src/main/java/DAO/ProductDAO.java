@@ -19,7 +19,7 @@ public class ProductDAO {
 
     public List<Object[]> getFilteredProducts(List<String> categories, List<String> rayons) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "SELECT p.imageUrl ,p.nomProduit, p.prixUnit,p.promotion FROM Produit p " +
+            String hql = "SELECT p.idProduit,p.imageUrl ,p.nomProduit, p.prixUnit,p.promotion FROM Produit p " +
                     "JOIN p.categorie c " +
                     "WHERE 1=1";
 
@@ -155,6 +155,23 @@ public class ProductDAO {
                     .list();
         }
     }
+
+
+
+    public static List<Integer> getPurchasedProductsByUser(int userId) {
+        List<Integer> purchasedProducts;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT DISTINCT c.produit.idProduit FROM Composer c " +
+                    "WHERE c.commande.client.idUser = :userId";
+
+            Query<Integer> query = session.createQuery(hql, Integer.class); // ✅ `Integer.class`
+            query.setParameter("userId", userId);
+            purchasedProducts = query.getResultList();
+        }
+        return purchasedProducts;
+    }
+
 
 
 }

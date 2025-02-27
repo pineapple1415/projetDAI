@@ -1,6 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Document ready, attaching event listener");
 
+    const sortPurchasedBtn = document.getElementById("sortPurchased");
+    if (sortPurchasedBtn) {
+        sortPurchasedBtn.addEventListener("click", function () {
+            console.log("🔄 'Mes Fréquents' 按钮被点击");
+            fetchPurchasedProducts(prioritizePurchasedProducts);
+        });
+    } else {
+        console.error("❌ 'Mes Fréquents' 按钮未找到");
+    }
+
+
     // 新过滤功能初始化
     const filterContainer = document.getElementById("filter-container");
     if (filterContainer) {
@@ -294,53 +305,44 @@ function toggleFilterMenu() {
 
 
 
-// 产品获取函数（整合版）
+// 产品获取函数（保持 XMLHttpRequest 结构）
 function fetchProduits() {
-    var xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
 
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            var elt = document.getElementById("productList");
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var elt = document.getElementById("productList");
 
-            if (!elt) {
-                console.warn("productList元素不存在，跳过渲染");
-                return;
+                if (!elt) {
+                    console.warn("productList元素不存在，跳过渲染");
+                    resolve([]);
+                    return;
+                }
+
+                var produits = JSON.parse(xhr.responseText);
+
+                window.currentProduits = produits;
+                window.originalProduits = [...produits]; // ✅ 备份原始数据
+
+                renderProduits(produits);
+                resolve(produits);
+            } else {
+                console.error("Erreur lors de la récupération des produits. Statut :", xhr.status);
+                reject("产品获取失败");
             }
+        };
 
-            var produits = JSON.parse(xhr.responseText);
+        xhr.onerror = function () {
+            console.error("❌ 发生错误: 网络问题或服务器无响应");
+            reject("网络错误");
+        };
 
-            window.currentProduits = produits;
-            window.originalProduits = [...produits]; // ✅ 备份原始数据
-
-            renderProduits(produits);
-        } else {
-            console.error("Erreur lors de la récupération des produits. Statut :", xhr.status);
-        }
-    };
-
-    xhr.open("GET", "/ProjetDAI_war/produits", true);
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.send();
+        xhr.open("GET", "/ProjetDAI_war/produits", true);
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.send();
+    });
 }
-
-
-// 过滤相关函数（新功能保持原样）
-function updateSessionStorage() {
-    let selectedFilters = { categories: [], rayons: [] };
-
-    var checkboxes = document.getElementsByClassName("filter-checkbox");
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            var type = checkboxes[i].getAttribute("data-type");
-            var value = checkboxes[i].value;
-            selectedFilters[type + "s"].push(value); // "categories" 或 "rayons"
-        }
-    }
-
-    sessionStorage.setItem("selectedFilters", JSON.stringify(selectedFilters));
-}
-
-
 
 // 产品详情跳转处理（新功能）
 document.getElementById("productList")?.addEventListener("click", function (e) {
@@ -557,4 +559,50 @@ function checkStockStatus() {
             updateTotalPrice();
         })
         .catch(error => console.error('库存检查失败:', error));
+}
+
+
+function fetchPurchasedProducts(callback) {
+    fetch("/ProjetDAI_war/getPurchasedProducts", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    })
+        .then(response => response.json())
+        .then(productIds => {
+            console.log("📦 用户已购商品 ID:", productIds);
+            if (!Array.isArray(productIds) || productIds.length === 0) {
+                console.warn("⚠️ 用户没有购买任何商品！");
+                return;
+            }
+            callback(productIds);
+        })
+        .catch(error => console.error("❌ 获取已购商品失败:", error));
+}
+
+
+function prioritizePurchasedProducts(productIds) {
+    if (!window.currentProduits || window.currentProduits.length === 0) {
+        console.error("❌ 没有产品数据可用！");
+        return;
+    }
+
+    console.log("📦 用户已购商品 ID:", productIds);
+    console.log("🔍 当前产品列表:", window.currentProduits);
+
+    if (window.currentProduits.length > 0) {
+        console.log("🔍 示例产品对象:", window.currentProduits[0]);
+    }
+
+    let purchasedProducts = window.currentProduits.filter(product => {
+        let productId = Number(product.idProduit);  // ✅ 确保 `idProduit` 是 `Number`
+        console.log("🔍 检查 ID 类型:", typeof productId, productId);
+        return productIds.map(Number).includes(productId);  // ✅ 统一类型
+    });
+
+    if (purchasedProducts.length === 0) {
+        console.warn("⚠️ 没有找到已购商品！");
+    }
+
+    console.log("📌 仅显示已购商品:", purchasedProducts);
+    renderProduits(purchasedProducts);
 }
