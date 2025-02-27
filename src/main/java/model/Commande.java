@@ -121,4 +121,7 @@ public class Commande {
     public void setComposers(Set<Composer> composers) {
         this.composers = composers;
     }
+
+
+    public String getCreneauRetrait() { return null; }
 }
