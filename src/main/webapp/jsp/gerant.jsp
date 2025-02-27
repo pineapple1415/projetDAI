@@ -1,8 +1,6 @@
 
-<%@ page import="model.Categorie" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Rayon" %>
-<%@ page import="model.Fournisseur" %>
+<%@ page import="model.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,17 +14,26 @@
 
 </head>
 <body>
-
-<h1 class="title">Bienvenue, Gérant</h1>
+<%
+    Gerant gerant = (Gerant) session.getAttribute("user");
+    if (gerant == null) {
+        response.sendRedirect("jsp/login.jsp");
+        return;
+    }
+%>
+<div class="header">
+    <h1>Bienvenue, <%= gerant.getNom() %></h1>
+    <button class="logout-button" onclick="window.location.href='${pageContext.request.contextPath}/logout'">Déconnexion</button>
+</div>
 
 <div class="container">
 
     <!-- Gestion des Produits -->
     <section class="section">
-        <h2 class="section-title">📦 Gestion des Produits</h2>
+        <h2 class="section-title">Gestion des Produits</h2>
         <div class="sub-section">
             <h3>Importation</h3>
-            <button onclick="afficherFormImporterProduit()">📥 Importer Produits</button>
+            <button onclick="afficherFormImporterProduit()">Importer Produits</button>
             <div id="formProduit" style="display:none;">
                 <form id="produitForm" action="${pageContext.request.contextPath}/ajouterProduit" method="post" enctype="multipart/form-data">
                     <table>
@@ -133,11 +140,11 @@
 
 
         <div class="sub-section">
-            <h3>📊 État du Stock - 7 Prochains Jours</h3>
-            <button id="voirStockBtn">📊 Voir Stock</button>
+            <h3>État du Stock - 7 Prochains Jours</h3>
+            <button id="voirStockBtn">Voir Stock</button>
 
             <div id="stockContainer" style="display: none;">
-                <h3>📦 État du Stock Prévisionnel</h3>
+                <h3>État du Stock Prévisionnel</h3>
 
                 <table border="1">
                     <thead>
@@ -160,12 +167,12 @@
 
     <!-- Analyse de Performance -->
     <section class="section">
-        <h2 class="section-title">⏳ Analyse de Performance</h2>
+        <h2 class="section-title">Analyse de Performance</h2>
 
         <select id="chartSelector">
             <option value="">-- Sélectionnez un graphique --</option>
-            <option value="shoppingTime">🛒 Temps Moyen de Shopping</option>
-            <option value="preparationTime">⏳ Temps Moyen de Préparation</option>
+            <option value="shoppingTime">Temps Moyen de Shopping</option>
+            <option value="preparationTime">Temps Moyen de Préparation</option>
         </select>
         <button id="afficherChartBtn">Afficher</button>
 
@@ -178,17 +185,17 @@
 
     <!-- 🔹 **新的统计数据部分** -->
     <section class="section">
-        <h2 class="section-title">📊 Statistiques des Ventes</h2>
+        <h2 class="section-title">Statistiques des Ventes</h2>
 
         <!-- 选择统计类型 -->
         <label for="statSelector">Sélectionnez un type de statistique :</label>
         <select id="statSelector">
             <option value="">-- Sélectionnez un graphique --</option>
-            <option value="customerPurchaseDistribution">🛍️ Répartition des Achats Clients</option>
-            <option value="salesPerProduct">💰 Ventes par Produit</option>
-            <option value="stockPerProduct">📦 Stock des Produits</option>
-            <option value="salesPerCategory">📊 Répartition des Ventes par Catégorie</option>
-            <option value="salesPerRayon">🏬 Répartition des Ventes par Rayon</option> <!-- 🔥 新增 -->
+            <option value="customerPurchaseDistribution">Répartition des Achats Clients</option>
+            <option value="salesPerProduct">Ventes par Produit</option>
+            <option value="stockPerProduct">Stock des Produits</option>
+            <option value="salesPerCategory">Répartition des Ventes par Catégorie</option>
+            <option value="salesPerRayon">Répartition des Ventes par Rayon</option>
         </select>
 
         <!-- 选择 Rayon (默认隐藏，选中 salesPerCategory 时才显示) -->
@@ -219,29 +226,29 @@
             <!-- 购买次数分布 -->
             <!-- 修正 `canvas` 的 ID，确保和 `chartType` 匹配 -->
             <div id="customerPurchaseDistribution" style="display:none;">
-                <h3>🛍️ Répartition des Achats Clients</h3>
-                <canvas id="chartCustomerPurchaseDistribution"></canvas>  <!-- ✅ 修正 -->
+                <h3>Répartition des Achats Clients</h3>
+                <canvas id="chartCustomerPurchaseDistribution"></canvas>
             </div>
 
             <div id="salesPerProduct" style="display:none;">
-                <h3>💰 Ventes par Produit</h3>
-                <canvas id="chartSalesPerProduct"></canvas>  <!-- ✅ 修正 -->
+                <h3>Ventes par Produit</h3>
+                <canvas id="chartSalesPerProduct"></canvas>
             </div>
 
             <div id="stockPerProduct" style="display:none;">
-                <h3>📦 Stock des Produits</h3>
-                <canvas id="chartStockPerProduct"></canvas>  <!-- ✅ 修正 -->
+                <h3>Stock des Produits</h3>
+                <canvas id="chartStockPerProduct"></canvas>
             </div>
 
             <div id="salesPerCategory" style="display:none;">
-                <h3>📊 Répartition des Ventes par Catégorie</h3>
+                <h3>Répartition des Ventes par Catégorie</h3>
                 <canvas id="chartSalesPerCategory"></canvas>
             </div>
 
 
             <div id="salesPerRayon" style="display:none;">
-                <h3>🏬 Répartition des Ventes par Rayon</h3>
-                <canvas id="chartSalesPerRayon"></canvas>  <!-- ✅ 修正 -->
+                <h3>Répartition des Ventes par Rayon</h3>
+                <canvas id="chartSalesPerRayon"></canvas>
             </div>
 
         </div>
@@ -250,29 +257,29 @@
 
     <!-- Recommandations et Consommateurs -->
     <section class="section">
-        <h2 class="section-title">🔧 Recommandations & Consommateurs</h2>
+        <h2 class="section-title">Recommandations & Consommateurs</h2>
         <div class="sub-section">
             <h3>Algorithme de Recommandation</h3>
-            <button onclick="gererRecommandation()">🔧 Gérer Algorithme</button>
+            <button onclick="gererRecommandation()">Gérer Algorithme</button>
         </div>
         <div class="sub-section">
             <h3>Profils Consommateurs</h3>
-            <button onclick="consulterProfils()">👤 Consulter Profils</button>
+            <button onclick="consulterProfils()">Consulter Profils</button>
         </div>
         <div class="sub-section">
             <h3>Détection d'Habitudes</h3>
-            <button onclick="detecterHabitudes()">🕵️ Détecter Habitudes</button>
+            <button onclick="detecterHabitudes()">Détecter Habitudes</button>
         </div>
     </section>
 
     <!-- Déconnexion -->
-    <section class="section">
-        <h2 class="section-title">🚪 Sécurité</h2>
-        <div class="sub-section">
-            <h3>Déconnexion</h3>
-            <button onclick="logout()">🚪 Déconnexion</button>
-        </div>
-    </section>
+<%--    <section class="section">--%>
+<%--        <h2 class="section-title">🚪 Sécurité</h2>--%>
+<%--        <div class="sub-section">--%>
+<%--            <h3>Déconnexion</h3>--%>
+<%--            <button onclick="logout()">🚪 Déconnexion</button>--%>
+<%--        </div>--%>
+<%--    </section>--%>
 
     <!-- Zone AJAX pour contenu dynamique -->
     <div id="contenu-dynamique"></div>
