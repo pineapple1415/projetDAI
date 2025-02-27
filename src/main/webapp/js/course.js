@@ -63,6 +63,11 @@ function showProducts(idCourse) {
             ajouterDiv.innerHTML = `<h3>+ Ajouter Produit</h3>`;
             ajouterDiv.onclick = () => window.location.href = contextPath + "/index";
 
+            let addToCartDiv = document.createElement("div");
+            addToCartDiv.className = "add-to-cart";
+            addToCartDiv.innerHTML = `<button onclick="addAllToPanier(${idCourse})">🛒 全部加入购物车</button>`;
+
+
             if (!Array.isArray(data) || data.length === 0) {
                 // 仅显示 `Ajouter Produit` 按钮
                 productList.appendChild(ajouterDiv);
@@ -84,6 +89,8 @@ function showProducts(idCourse) {
                     `;
                     productList.appendChild(div);
                 });
+
+                productList.appendChild(addToCartDiv);
 
                 // 最后再添加 `Ajouter Produit` 按钮
                 productList.appendChild(ajouterDiv);
@@ -196,4 +203,28 @@ function updateQuantity(courseId, produitId, change) {
             }
         })
         .catch(error => console.error("Erreur lors de la modification de la quantité:", error));
+}
+
+
+function addAllToPanier(idCourse) {
+    console.log("🛒 正在添加 Course ID", idCourse, "的所有产品到购物车");
+
+    fetch(`/ProjetDAI_war/courses?action=getProducts&idCourse=${idCourse}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("📦 获取到的产品数据:", data);
+
+            // 确保数据有效
+            if (!Array.isArray(data) || data.length === 0) {
+                console.warn("⚠ 该 Course 没有可添加的产品");
+                return;
+            }
+
+            // **逐个调用 `addToCart()` 添加到购物车**
+            data.forEach(product => {
+                console.log(`🛒 添加产品: ID=${product.idProduit}, 数量=${product.nombre}`);
+                addToCart(product.idProduit, product.nombre);
+            });
+        })
+        .catch(error => console.error("❌ 购物车添加失败:", error));
 }

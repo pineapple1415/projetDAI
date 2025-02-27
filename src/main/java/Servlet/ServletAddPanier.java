@@ -2,20 +2,22 @@ package Servlet;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import DAO.PanierDAO;
-import model.User;
-import jakarta.servlet.http.*;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import model.User;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
-
-
 @WebServlet("/addToPanier")
 public class ServletAddPanier extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -24,43 +26,55 @@ public class ServletAddPanier extends HttpServlet {
         try{
             System.out.println("------ Servlet used ------"); // 确认是否执行
 
-            // 解析请求参数
-            Map<String, String> params = objectMapper.readValue(request.getReader(), HashMap.class);
-            Long productId = Long.parseLong(params.get("productId"));
-            int quantity = Integer.parseInt(String.valueOf(params.getOrDefault("quantity", "1")));
+            // **解析请求参数（Map<String, String>）**
+            Map<String, String> params = objectMapper.readValue(request.getReader(), new TypeReference<HashMap<String, String>>() {});
 
+            // **确保 productId 和 quantity 先转为 String，再解析**
+            String productIdStr = params.get("productId");
+            if (productIdStr == null) {
+                throw new IllegalArgumentException("❌ productId 参数缺失！");
+            }
+            Long productId = Long.parseLong(productIdStr); // ✅ 转换为 Long
+
+            String quantityStr = params.getOrDefault("quantity", "1");
+            int quantity = Integer.parseInt(quantityStr); // ✅ 转换为 Integer
 
             HttpSession session = request.getSession(false);
             Map<String, Object> responseData = new HashMap<>();
+            Long userId = getUserIdFromSession(session); // 🔹 修正 session 获取 userId
 
-            if (session != null && session.getAttribute("user") != null) {
-                // 已登录用户：使用 Cookie 存储（7天有效期）
-                User user = (User) session.getAttribute("user");
-                Long userId = user.getIdUser() != null ? user.getIdUser().longValue() : null;
+            if (userId != null) {
                 handleCookiePanier(request, resp, productId, quantity, 7, userId);
                 responseData.put("type", "cookie");
-                responseData.put("userId", user.getIdUser());
-
-                resp.sendRedirect("ajouteSuccess"); // 重定向到成功页面
+                responseData.put("userId", userId);
+                resp.sendRedirect("ajouteSuccess"); // ✅ 重定向
             } else {
-                // 未登录用户（3天有效期）
-                int cookieDays = 3;
-                handleCookiePanier(request, resp, productId, quantity, cookieDays, null); // 添加 null 作为 userId 参数
+                handleCookiePanier(request, resp, productId, quantity, 3, null);
                 responseData.put("type", "cookie");
-
-                resp.sendRedirect("ajouteSuccess"); // 重定向到成功页面
+                resp.sendRedirect("ajouteSuccess"); // ✅ 重定向
             }
 
+            // **返回 JSON 响应**
             resp.setContentType("application/json");
             objectMapper.writeValue(resp.getWriter(), responseData);
 
-        }catch (Exception e) {
-            e.printStackTrace(); // 打印完整堆栈信息
+        } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatus(500);
             resp.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
         }
+    }
 
-
+    // **🔹 修正 session 解析用户 ID**
+    private Long getUserIdFromSession(HttpSession session) {
+        if (session != null && session.getAttribute("user") != null) {
+            Object userObj = session.getAttribute("user");
+            if (userObj instanceof User) {
+                User user = (User) userObj;
+                return (user.getIdUser() != null) ? user.getIdUser().longValue() : null;
+            }
+        }
+        return null;
     }
 
     private void handleCookiePanier(
@@ -69,10 +83,10 @@ public class ServletAddPanier extends HttpServlet {
     ) throws IOException {
         Map<Long, Integer> panierMap = new HashMap<>();
 
-        // 生成 Cookie 名称：带用户ID标识（如 userId_123_panier）
-        String cookieName = userId != null ? "userId_" + userId + "_panier" : "panier";
+        // **生成 Cookie 名称**
+        String cookieName = (userId != null) ? "userId_" + userId + "_panier" : "panier";
 
-        // 读取现有 Cookie
+        // **读取现有 Cookie**
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -90,10 +104,10 @@ public class ServletAddPanier extends HttpServlet {
             }
         }
 
-        // 更新购物车数据
+        // **更新购物车**
         panierMap.put(productId, panierMap.getOrDefault(productId, 0) + quantity);
 
-        // 保存新 Cookie
+        // **保存新的 Cookie**
         String cookieValue = URLEncoder.encode(
                 objectMapper.writeValueAsString(panierMap),
                 "UTF-8"
@@ -102,11 +116,9 @@ public class ServletAddPanier extends HttpServlet {
         Cookie newCookie = new Cookie(cookieName, cookieValue);
         newCookie.setMaxAge(maxAgeDays * 24 * 3600);
         newCookie.setPath("/");
-        newCookie.setHttpOnly(true); // 增强安全性
+        newCookie.setHttpOnly(true);
         resp.addCookie(newCookie);
 
-        System.out.println("✅ Cookie 更新：" + cookieName + " -> " + panierMap);
+        System.out.println("✅ 购物车更新：" + panierMap);
     }
 }
-
-

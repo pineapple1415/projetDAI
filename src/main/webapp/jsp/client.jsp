@@ -82,7 +82,10 @@
     mes courses
   </button>
 </div>
+
+
 <script>var contextPath = "${pageContext.request.contextPath}";</script>
+<script src="${pageContext.request.contextPath}/static/JS/panier.js"></script>
 <script src="${pageContext.request.contextPath}/js/course.js"></script>
 </body>
 </html>
