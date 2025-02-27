@@ -65,7 +65,7 @@ function showProducts(idCourse) {
 
             let addToCartDiv = document.createElement("div");
             addToCartDiv.className = "add-to-cart";
-            addToCartDiv.innerHTML = `<button onclick="addAllToPanier(${idCourse})">🛒 全部加入购物车</button>`;
+            addToCartDiv.innerHTML = `<button onclick="addAllToPanier(${idCourse})">🛒 add all to panier</button>`;
 
 
             if (!Array.isArray(data) || data.length === 0) {
@@ -214,17 +214,25 @@ function addAllToPanier(idCourse) {
         .then(data => {
             console.log("📦 获取到的产品数据:", data);
 
-            // 确保数据有效
             if (!Array.isArray(data) || data.length === 0) {
                 console.warn("⚠ 该 Course 没有可添加的产品");
                 return;
             }
 
-            // **逐个调用 `addToCart()` 添加到购物车**
-            data.forEach(product => {
+            // **并行发送多个 `addToCart` 请求**
+            const promises = data.map(product => {
                 console.log(`🛒 添加产品: ID=${product.idProduit}, 数量=${product.nombre}`);
-                addToCart(product.idProduit, product.nombre);
+                return addToCartAsync(product.idProduit, product.nombre);
             });
+
+            // **等待所有请求完成**
+            return Promise.all(promises);
+        })
+        .then(() => {
+            console.log("✅ 所有商品已成功添加到购物车！");
+
+
         })
         .catch(error => console.error("❌ 购物车添加失败:", error));
 }
+

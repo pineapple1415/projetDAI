@@ -75,6 +75,13 @@ public class ServletPanier extends HttpServlet {
                 }
             }
 
+            System.out.println("🔍 解析的购物车数据: " + panierMap);
+            System.out.println("🔍 购物车商品数量: " + panierMap.size());
+
+            for (Map.Entry<Long, Integer> item : panierMap.entrySet()) {
+                System.out.println("✅ 购物车商品: ID=" + item.getKey() + ", 数量=" + item.getValue());
+            }
+
 
             // 检查是否售罄 confirmer si le produit est vendu ou pas
             for (ProduitDansPanier item : cart) {

@@ -1,49 +1,56 @@
 
 // 获取商品列表 get liste des produit dans le panier
+// ✅ 修正 loadProducts() 方法
 function loadProducts() {
     fetch('/cart?action=listProducts')
         .then(response => response.json())
-        .then(products => {
+        .then(data => {
             const container = document.getElementById('product-list');
-            products.forEach(product => {
+            container.innerHTML = ""; // 确保不会重复渲染
+
+            // **修正 items 遍历**
+            data.items.forEach(item => {
                 container.innerHTML += `
                     <div class="product">
-                        <h3>${product.name}</h3>
-                        <p>价格: ${product.price}</p>
-                        <button onclick="addToPanier(${product.id})">Ajoute dans panier</button>
+                        <h3>${item.produit.nom}</h3>
+                        <p>prix: ${item.produit.prixUnit} €</p>
+                        <p>quantite: ${item.quantity}</p>
+                        <button onclick="addToCart(${item.produit.idProduit}, 1)">➕ 增加</button>
+                        <button onclick="removeFromCart(${item.produit.idProduit})">➖ 减少</button>
                     </div>
                 `;
             });
-        });
+
+            // **更新总价显示**
+            document.getElementById('cartTotal').textContent = `总价: ${data.total} €`;
+        })
+        .catch(error => console.error("❌ 加载购物车失败:", error));
 }
 
-// 添加到购物车 ajouter dans le panier
-function addToCart(productId, quantity) {
-    fetch("/ProjetDAI_war/addToPanier",  {
+/// **将 `addToCart` 改成 async 版本**
+function addToCartAsync(productId, quantity) {
+    return fetch("/ProjetDAI_war/addToPanier", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             productId: productId,
             quantity: quantity
         })
-    })
-        .then(response => {
-            if (response.redirected) {
-                window.location.href = response.url;
-            }
-        })
-        .catch(error => console.error('Erreur:', error));
-
-    console.log('正在添加商品:', { productId, quantity });
+    }).then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+    }).catch(error => console.error('Erreur:', error));
 }
+//to make this function golbal
+window.addToCart = addToCart;
 
 // triggers
 window.onload = () => {
     loadProducts();
     updateCartDisplay();
 };
-//to make this function golbal
-window.addToCart = addToCart;
+
 
 
 // 统一Cookie处理函数

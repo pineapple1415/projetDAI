@@ -92,7 +92,7 @@ public class ServletAddPanier extends HttpServlet {
             for (Cookie cookie : cookies) {
                 if (cookieName.equals(cookie.getName())) {
                     try {
-                        panierMap = objectMapper.readValue(
+                        panierMap = new ObjectMapper().readValue(
                                 URLDecoder.decode(cookie.getValue(), "UTF-8"),
                                 new TypeReference<HashMap<Long, Integer>>() {}
                         );
@@ -104,21 +104,29 @@ public class ServletAddPanier extends HttpServlet {
             }
         }
 
-        // **更新购物车**
+        // **确保新商品不会覆盖已有数据**
         panierMap.put(productId, panierMap.getOrDefault(productId, 0) + quantity);
+
+        // **调试日志**
+        System.out.println("✅ 购物车更新：" + panierMap);
 
         // **保存新的 Cookie**
         String cookieValue = URLEncoder.encode(
-                objectMapper.writeValueAsString(panierMap),
+                new ObjectMapper().writeValueAsString(panierMap),
                 "UTF-8"
         );
 
         Cookie newCookie = new Cookie(cookieName, cookieValue);
         newCookie.setMaxAge(maxAgeDays * 24 * 3600);
         newCookie.setPath("/");
-        newCookie.setHttpOnly(true);
+        newCookie.setHttpOnly(false); // 允许前端访问（测试时用）
         resp.addCookie(newCookie);
 
-        System.out.println("✅ 购物车更新：" + panierMap);
+        // **防止浏览器缓存旧 Cookie**
+        resp.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        resp.addHeader("Pragma", "no-cache");
+        resp.addHeader("Expires", "0");
     }
+
+
 }
