@@ -1,15 +1,13 @@
 package DAO;
 
+import model.Categorie;
 import model.Produit;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 import org.hibernate.query.Query;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProductDAO {
@@ -131,6 +129,30 @@ public class ProductDAO {
             // 处理未找到库存记录的商品
             produitIds.forEach(id -> stockStatus.putIfAbsent(id, false));
             return stockStatus;
+        }
+    }
+
+
+    // ProductDAO.java 新增方法
+    public List<Produit> getRecommendations(int currentProductId, int limit) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // 获取当前产品的类别和价格
+            Produit current = session.get(Produit.class, currentProductId);
+            if (current == null) return Collections.emptyList();
+
+            Categorie categorie = current.getCategorie();
+            double currentPrice = current.getPrixUnit();
+
+            return session.createQuery(
+                            "FROM Produit p " +
+                                    "WHERE p.idProduit != :currentId " +
+                                    "AND p.categorie = :categorie " +
+                                    "ORDER BY ABS(p.prixUnit - :currentPrice) ASC", Produit.class)
+                    .setParameter("currentId", currentProductId)
+                    .setParameter("categorie", categorie)
+                    .setParameter("currentPrice", currentPrice)
+                    .setMaxResults(limit)
+                    .list();
         }
     }
 
