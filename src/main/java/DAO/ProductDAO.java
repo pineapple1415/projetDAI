@@ -156,5 +156,22 @@ public class ProductDAO {
         }
     }
 
+        public List<Produit> getProduitsByCategorie (int categorieId) {
+            Transaction transaction = null;
+            List<Produit> produits = null;
+            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+                transaction = session.beginTransaction();
 
+                produits = session.createQuery(
+                                "FROM Produit WHERE categorie.idCategorie = :categorieId", Produit.class)
+                        .setParameter("categorieId", categorieId)
+                        .list();
+
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) transaction.rollback();
+                e.printStackTrace();
+            }
+            return produits;
+        }
 }

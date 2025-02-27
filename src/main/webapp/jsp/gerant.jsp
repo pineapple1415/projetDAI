@@ -139,6 +139,79 @@
         </div>
 
 
+        <!-- Ajout de Stock -->
+        <div class="sub-section">
+            <h3>Ajout de Stock</h3>
+            <button id="ajouterStockBtn">Ajouter au Stock</button>
+
+            <!-- Stock Form -->
+            <div id="stockFormContainer" style="display: none;">
+                <table>
+                    <!-- Magasin -->
+                    <tr>
+                        <td>Magasin:</td>
+                        <td>
+                            <select name="magasin" id="magasinSelect" required>
+                                <option value="">Sélectionner un magasin</option>
+                                <%-- 直接从 request 读取 magasins 数据 --%>
+                                <%
+                                    List<Magasin> magasins = (List<Magasin>) request.getAttribute("magasins");
+                                    if (magasins != null) {
+                                        for (Magasin magasin : magasins) { %>
+                                <option value="<%= magasin.getIdMagasin() %>"><%= magasin.getNomMagasin() %></option>
+                                <%      }
+                                }
+                                %>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <!-- Rayon -->
+                    <tr id="rayonRow2" style="display: none;">
+                        <td>Rayon:</td>
+                        <td>
+                            <select name="rayon" id="rayonStockSelect" required>
+                                <option value="">Sélectionner un rayon</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <!-- Catégorie -->
+                    <tr id="categorieRow" style="display: none;">
+                        <td>Catégorie:</td>
+                        <td>
+                            <select name="categorie" id="categorieStockSelect" required>
+                                <option value="">Sélectionner une catégorie</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <!-- Produit -->
+                    <tr id="produitRow" style="display: none;">
+                        <td>Produit:</td>
+                        <td>
+                            <select name="produit" id="produitStockSelect" required>
+                                <option value="">Sélectionner un produit</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <!-- Quantité -->
+                    <tr id="quantiteRow" style="display: none;">
+                        <td>Quantité à Ajouter:</td>
+                        <td><input type="number" id="quantiteInput" min="1" required></td>
+                    </tr>
+
+                    <!-- Soumission -->
+                    <tr>
+                        <td colspan="2">
+                            <button id="confirmerStockBtn">Ajouter</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         <div class="sub-section">
             <h3>État du Stock - 7 Prochains Jours</h3>
             <button id="voirStockBtn">Voir Stock</button>
@@ -161,8 +234,6 @@
                 <canvas id="stockChart"></canvas>
             </div>
         </div>
-
-
     </section>
 
     <!-- Analyse de Performance -->

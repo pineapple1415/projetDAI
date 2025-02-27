@@ -37,8 +37,23 @@ public class Stocker {
     public Integer getNbStock() {
         return nbStock;
     }
-
     public void setNbStock(Integer nbStock) {
         this.nbStock = nbStock;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    public Magasin getMagasin() {
+        return magasin;
+    }
+
+    public void setMagasin(Magasin magasin) {
+        this.magasin = magasin;
     }
 }
