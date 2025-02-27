@@ -8,106 +8,74 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>Accueil Préparateur</title>
+  <title>Tableau de Bord Préparateur</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
       padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     .container {
       width: 80%;
-      margin: 50px auto;
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
+      padding: 30px;
+      text-align: center;
     }
     h2 {
       color: #333;
-      text-align: center;
+      margin-bottom: 20px;
     }
-    ul {
-      list-style-type: none;
-      padding: 0;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      justify-items: center;
+    }
+    .button {
       display: flex;
-      flex-direction: column;
       align-items: center;
-    }
-    li {
-      margin: 15px 0;
-      width: 100%;
-      text-align: center;
-    }
-    a {
+      justify-content: center;
+      gap: 10px;
       text-decoration: none;
       color: white;
       background-color: #007BFF;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 15px;
+      border-radius: 8px;
       font-size: 16px;
+      font-weight: bold;
       transition: background-color 0.3s;
+      width: 200px;
     }
-    a:hover {
+    .button:hover {
       background-color: #0056b3;
     }
-    .msg_erreur {
-      color: red;
-      background-color: #ffcccb;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
-      margin-top: 20px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 14px;
-      color: #888;
+    .icon {
+      font-size: 20px;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <div class="container">
-  <h2>Bienvenue sur votre espace Préparateur</h2>
-
-  <ul>
-    <!-- US 5.2 : Consulter la liste des commandes à préparer par ordre de priorité -->
-    <li>
-      <a href="<%= request.getContextPath() %>/commande?action=listePreparations"> Consulter la liste des commandes à préparer </a>
-    </li>
-
-    <li>
-      <a href="<%= request.getContextPath() %>/commande?action=listePreparationsPrioritaire">Liste des commandes à préparer par prioritée</a>
-    </li>
-
-    <li>
-      <a href="<%= request.getContextPath() %>/commande?action=listePrioritairePrete">Consulter la Liste des commandes à préparer prioritée Pretes</a>
-    </li>
-
-
-
-
-    <!-- US 5.3 et US 5.4 : Ces actions se font via des formulaires sur la page de liste ou de détail de commande -->
-    <!-- Pour les actions liées aux formulaires, vous pouvez les retrouver sur les pages appropriées -->
-  </ul>
-
-  <%
-    // Affichage éventuel d'un message d'erreur
-    String msg_erreur = (String) request.getAttribute("msgerreur");
-    if (msg_erreur != null) {
-  %>
-  <div class="msg_erreur">
-    <%= msg_erreur %>
+  <h2>Tableau de Bord Préparateur</h2>
+  <div class="grid">
+    <a href="<%= request.getContextPath() %>/commande?action=listePreparations" class="button">
+      <i class="fa-solid fa-eye icon"></i> Consulter la liste des commandes prioritaire
+    </a>
+    <a href="<%= request.getContextPath() %>/commande?action=listePreparationsPrioritaire" class="button">
+      <i class="fa-solid fa-list icon"></i> Consulter la liste des commandes en cours de preparation
+    </a>
+    <a href="<%= request.getContextPath() %>/commande?action=listePrioritairePrete" class="button">
+      <i class="fa-solid fa-check-double icon"></i> Consulter les commandes pretes
+    </a>
   </div>
-  <%
-    }
-  %>
-</div>
-
-<div class="footer">
-  <p>© 2025 Système de gestion des commandes</p>
 </div>
 </body>
 </html>

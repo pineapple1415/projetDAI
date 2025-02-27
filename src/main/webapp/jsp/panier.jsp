@@ -63,6 +63,19 @@
 <head>
   <title>Mon Panier</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
+  <style>
+    .out-of-stock {
+      background-color: #f0f0f0 !important;
+      color: #999 !important;
+    }
+    .out-of-stock button {
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+  </style>
+
+
 </head>
 <body>
 
@@ -125,6 +138,7 @@
 <script>
 
   updateTotalPrice();
+  checkStockStatus();
 
   document.querySelector('.cart-items').addEventListener('click', function(e) {
     const target = e.target;

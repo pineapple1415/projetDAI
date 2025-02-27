@@ -51,7 +51,10 @@ public class Commande {
     private Set<Composer> composers = new HashSet<>();
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e40a8bf66f93e4442f988fa3ee3de95fe091d3b
 
     public Commande() {}
 
@@ -96,20 +99,37 @@ public class Commande {
         this.magasin = magasin;
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4e40a8bf66f93e4442f988fa3ee3de95fe091d3b
     public Date getFinirPrepa() { return finirPrepa; }
     public void setFinirPrepa(Date finirPrepa) {
         this.finirPrepa = finirPrepa;
     }
     public Date getDateAjoutPanier() { return dateAjoutPanier; }
+<<<<<<< HEAD
     public void setDateAjoutPanier(Date dateAjoutPanier) {
             this.dateAjoutPanier = dateAjoutPanier;
     }
+=======
+
+>>>>>>> 4e40a8bf66f93e4442f988fa3ee3de95fe091d3b
     public Set<Composer> getComposers() {
         return composers;
     }
 
     public void setComposers(Set<Composer> composers) {
         this.composers = composers;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e40a8bf66f93e4442f988fa3ee3de95fe091d3b
     }
+
+    public void setDateAjoutPanier(Date dateAjoutPanier) {
+            this.dateAjoutPanier = dateAjoutPanier;
+
+
+}
 }
