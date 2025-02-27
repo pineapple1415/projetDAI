@@ -8,11 +8,7 @@ import java.util.List;
 
 public class MagasinDAO {
 
-    public List<Magasin> getAllMagasins() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Magasin", Magasin.class).list();
-        }
-    }
+
 
     public Magasin getMagasinById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

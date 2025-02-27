@@ -105,9 +105,132 @@ window.addEventListener("DOMContentLoaded", function () {
     };
 });
 
+// Ce partie pour ajouter des stocks
+document.addEventListener("DOMContentLoaded", function () {
+    const ajouterStockBtn = document.getElementById("ajouterStockBtn");
+    const stockFormContainer = document.getElementById("stockFormContainer");
+
+    // 获取所有的 DOM 元素
+    const magasinSelect = document.getElementById("magasinSelect");
+    const rayonSelect = document.getElementById("rayonStockSelect");
+    const categorieSelect = document.getElementById("categorieStockSelect");
+    const produitSelect = document.getElementById("produitStockSelect");
+    const quantiteInput = document.getElementById("quantiteInput");
+    const confirmerStockBtn = document.getElementById("confirmerStockBtn");
+
+    const rayonRow = document.getElementById("rayonRow2");
+    const categorieRow = document.getElementById("categorieRow");
+    const produitRow = document.getElementById("produitRow");
+    const quantiteRow = document.getElementById("quantiteRow");
+
+    /** ✅ 点击 "Ajouter au Stock" 按钮时，加载 magasins 和 rayons */
+    ajouterStockBtn.addEventListener("click", function () {
+        stockFormContainer.style.display = stockFormContainer.style.display === "none" ? "block" : "none";
+
+        // **1️⃣ 加载 magasins**
+        fetch(`${window.location.origin}/ProjetDAI_war/ajouterStock?type=magasins`)
+            .then(response => response.text())
+            .then(data => {
+                console.log("Magasins reçus:", data);  // 调试信息
+                magasinSelect.innerHTML = '<option value="">Sélectionner un magasin</option>';
+                data.trim().split("\n").forEach(line => {
+                    const [id, nom] = line.split(",");
+                    magasinSelect.innerHTML += `<option value="${id}">${nom}</option>`;
+                });
+            })
+            .catch(error => console.error("Erreur lors du chargement des magasins:", error));
+
+        // **2️⃣ 加载 rayons（rayon 与 magasin 无关，独立加载）**
+        fetch(`${window.location.origin}/ProjetDAI_war/ajouterStock?type=rayons`)
+            .then(response => response.text())
+            .then(data => {
+                console.log("Rayons reçus:", data);  // 调试信息
+                rayonSelect.innerHTML = '<option value="">Sélectionner un rayon</option>';
+                data.trim().split("\n").forEach(line => {
+                    const [id, nom] = line.split(",");
+                    rayonSelect.innerHTML += `<option value="${id}">${nom}</option>`;
+                });
+                rayonRow.style.display = "table-row"; // 显示 Rayon 选择框
+            })
+            .catch(error => console.error("Erreur lors du chargement des rayons:", error));
+    });
+
+    /** ✅ 监听 Rayon 选择，加载对应的 Catégories */
+    rayonSelect.addEventListener("change", function () {
+        const rayonId = rayonSelect.value;
+        if (!rayonId) return;
+
+        fetch(`${window.location.origin}/ProjetDAI_war/ajouterStock?type=categories&rayonId=${rayonId}`)
+            .then(response => response.text())
+            .then(data => {
+                console.log("Catégories reçues:", data);  // 调试信息
+                categorieSelect.innerHTML = '<option value="">Sélectionner une catégorie</option>';
+                data.trim().split("\n").forEach(line => {
+                    const [id, nom] = line.split(",");
+                    categorieSelect.innerHTML += `<option value="${id}">${nom}</option>`;
+                });
+                categorieRow.style.display = "table-row"; // 显示 Catégorie 选择框
+            })
+            .catch(error => console.error("Erreur lors du chargement des catégories:", error));
+    });
+
+    /** ✅ 监听 Catégorie 选择，加载对应的 Produits */
+    categorieSelect.addEventListener("change", function () {
+        const categorieId = categorieSelect.value;
+        if (!categorieId) return;
+
+        fetch(`${window.location.origin}/ProjetDAI_war/ajouterStock?type=produits&categorieId=${categorieId}`)
+            .then(response => response.text())
+            .then(data => {
+                console.log("Produits reçus:", data);  // 调试信息
+                produitSelect.innerHTML = '<option value="">Sélectionner un produit</option>';
+                data.trim().split("\n").forEach(line => {
+                    const [id, nom] = line.split(",");
+                    produitSelect.innerHTML += `<option value="${id}">${nom}</option>`;
+                });
+                produitRow.style.display = "table-row"; // 显示 Produit 选择框
+            })
+            .catch(error => console.error("Erreur lors du chargement des produits:", error));
+    });
+
+    /** ✅ 监听 Produit 选择，显示 Quantité 输入框 */
+    produitSelect.addEventListener("change", function () {
+        quantiteRow.style.display = "table-row";
+    });
+
+    /** ✅ 发送 Stock 添加请求 */
+    confirmerStockBtn.addEventListener("click", function () {
+        const magasinId = magasinSelect.value;
+        const produitId = produitSelect.value;
+        const quantite = quantiteInput.value;
+
+        if (!magasinId || !produitId || !quantite) {
+            alert("Veuillez remplir tous les champs !");
+            return;
+        }
+
+        fetch(`${window.location.origin}/ProjetDAI_war/ajouterStock`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `magasin=${magasinId}&produit=${produitId}&quantite=${quantite}`
+        })
+            .then(response => response.text())
+            .then(message => {
+                alert(message);
+                stockFormContainer.style.display = "none";  // ✅ 关闭表单
+                magasinSelect.value = "";
+                rayonSelect.innerHTML = '<option value="">Sélectionner un rayon</option>';
+                categorieSelect.innerHTML = '<option value="">Sélectionner une catégorie</option>';
+                produitSelect.innerHTML = '<option value="">Sélectionner un produit</option>';
+                quantiteInput.value = "";
+            })
+            .catch(error => console.error("Erreur lors de l'ajout de stock:", error));
+    });
+});
 
 
-// Cette partie pour visuqliser des performances
+
+// Cette partie pour visualiser des performances
 // ✅ 确保 DOM 加载后执行
 document.addEventListener("DOMContentLoaded", function () {
     const chartSelector = document.getElementById("chartSelector");

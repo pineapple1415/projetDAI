@@ -65,6 +65,26 @@
     <url-pattern>/affichePanier</url-pattern>
   </servlet-mapping>
 
+<!--  <servlet>-->
+<!--    <servlet-name>ServletLogin</servlet-name>-->
+<!--    <servlet-class>Servlet.ServletLogin</servlet-class>-->
+<!--  </servlet>-->
+<!--  <servlet-mapping>-->
+<!--    <servlet-name>ServletLogin</servlet-name>-->
+<!--    <url-pattern>/login</url-pattern>-->
+<!--  </servlet-mapping>-->
+
+<!--  <servlet>-->
+<!--    <servlet-name>ServletPreparateur</servlet-name>-->
+<!--    <servlet-class>Servlet.ServletPreparateur</servlet-class>-->
+<!--  </servlet>-->
+
+<!--  <servlet-mapping>-->
+<!--    <servlet-name>ServletPreparateur</servlet-name>-->
+<!--    <url-pattern>/Preparateur</url-pattern>-->
+<!--  </servlet-mapping>-->
+
+
 
 
   <servlet>

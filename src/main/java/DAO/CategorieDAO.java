@@ -35,4 +35,23 @@ public class CategorieDAO {
                     .uniqueResult();
         }
     }
+
+    public List<Categorie> getCategoriesByRayon(int rayonId) {
+        Transaction transaction = null;
+        List<Categorie> categories = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            categories = session.createQuery(
+                            "FROM Categorie WHERE rayon.idRayon = :rayonId", Categorie.class)
+                    .setParameter("rayonId", rayonId)
+                    .list();
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+        return categories;
+    }
 }
