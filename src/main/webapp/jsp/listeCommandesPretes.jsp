@@ -58,6 +58,8 @@
         <th>Adresse</th>
         <th>Détails sur la Commande</th>  <!-- ✅ Nouvelle colonne pour les détails -->
         <th>Finaliser la commande</th>   <!-- ✅ Nouvelle colonne pour le statut -->
+        <th>Mail</th>   <!-- ✅ Nouvelle colonne pour le statut -->
+
     </tr>
     </thead>
     <tbody>
@@ -100,6 +102,10 @@
             <% } %>
         </td>
 
+        <td>
+            <a href="commande?action=envoyerMail&id=<%= c.getIdCommande() %>" class="btn btn-info btn-sm">📧 Envoyer un mail</a>
+        </td>
+
     </tr>
     <%
         }
@@ -111,7 +117,7 @@
     }
 %>
 <div class="back-link">
-    <a href="commande?action=retour">🔙 Retour à la liste</a>
+    <a href="commande?action=listePreparationsPrioritaire">🔙 Retour Commande en cours </a>
 </div>
 
 </body>

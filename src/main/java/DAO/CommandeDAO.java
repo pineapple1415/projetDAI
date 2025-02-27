@@ -129,6 +129,17 @@ public class CommandeDAO {
             return session.get(Commande.class, id);
         }
     }
+    public Commande getCommandeByIds(int idCommande) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT c FROM Commande c "
+                                    + "LEFT JOIN FETCH c.client " // ✅ Charge le client
+                                    + "LEFT JOIN FETCH c.magasin "
+                                    + "WHERE c.idCommande = :id", Commande.class)
+                    .setParameter("id", idCommande)
+                    .uniqueResult();
+        }
+    }
 
     /**
      * Méthode générique pour mettre à jour le statut d'une commande.
@@ -142,6 +153,7 @@ public class CommandeDAO {
                 commande.setStatut(nouveauStatut);
                 if (nouveauStatut == Statut.PRETE) {
                     commande.setFinirPrepa(new Date());
+                    //commande.setPreparateur(idPreparateur); // Assurez-vous que la classe Commande a un champ idUtilisateur
                 }
                 session.update(commande);
             } else {

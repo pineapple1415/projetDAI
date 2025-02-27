@@ -59,6 +59,21 @@
     .icon {
       font-size: 20px;
     }
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .back-link a {
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -76,6 +91,10 @@
       <i class="fa-solid fa-check-double icon"></i> Consulter les commandes pretes
     </a>
   </div>
+  <div class="back-link">
+    <a href="commande?action=login">🔙 Retour login</a>
+  </div>
+
 </div>
 </body>
 </html>
