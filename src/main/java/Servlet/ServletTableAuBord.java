@@ -15,6 +15,7 @@ import java.util.List;
 @WebServlet("/getPurchasedProducts")
 public class ServletTableAuBord extends HttpServlet {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ProductDAO ProductDAO = new ProductDAO();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
