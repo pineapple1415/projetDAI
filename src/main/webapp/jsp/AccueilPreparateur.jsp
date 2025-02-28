@@ -92,7 +92,7 @@
     </a>
   </div>
   <div class="back-link">
-    <a href="commande?action=login">🔙 Retour login</a>
+    <a href="commande?action=login">Deconnexion</a>
   </div>
 
 </div>
