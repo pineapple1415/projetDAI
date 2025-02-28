@@ -1,13 +1,8 @@
 package ServiceMail;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.io.File;
 import java.util.Properties;
 
 public class EmailService {
@@ -17,11 +12,7 @@ public class EmailService {
     private static final String EMAIL_SENDER = "pokedex694@gmail.com";
     private static final String APP_PASSWORD = "ffoymgvwsnwzaapj"; // Mot de passe d'application
 
-    public static void sendSimpleEmail(String recipientEmail, String subject, String messageBody) {
-        if (!isValidEmail(recipientEmail)) {
-            throw new IllegalArgumentException("Email invalide: " + recipientEmail);
-        }
-
+    private static Session getSession() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -34,8 +25,16 @@ public class EmailService {
             }
         });
         session.setDebug(true);
+        return session;
+    }
+
+    public static void sendSimpleEmail(String recipientEmail, String subject, String messageBody) {
+        if (!isValidEmail(recipientEmail)) {
+            throw new IllegalArgumentException("Email invalide: " + recipientEmail);
+        }
 
         try {
+            Session session = getSession();
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(EMAIL_SENDER));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
@@ -45,6 +44,39 @@ public class EmailService {
             System.out.println("E-mail envoyé avec succès à " + recipientEmail);
         } catch (MessagingException e) {
             System.err.println("Échec de l'envoi : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendEmailWithAttachment(String recipientEmail, String subject, String messageBody, File attachment) {
+        if (!isValidEmail(recipientEmail)) {
+            throw new IllegalArgumentException("Email invalide: " + recipientEmail);
+        }
+        try {
+            Session session = getSession();
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(EMAIL_SENDER));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject(subject, "UTF-8");
+
+            // Création de la partie texte
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setContent(messageBody, "text/html; charset=UTF-8");
+
+            // Création de la partie pièce jointe
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            attachmentPart.attachFile(attachment);
+            attachmentPart.setFileName(attachment.getName());
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(attachmentPart);
+
+            message.setContent(multipart);
+            Transport.send(message);
+            System.out.println("E-mail avec pièce jointe envoyé avec succès à " + recipientEmail);
+        } catch (Exception e) {
+            System.err.println("Échec de l'envoi avec pièce jointe : " + e.getMessage());
             e.printStackTrace();
         }
     }

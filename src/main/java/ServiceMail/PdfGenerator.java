@@ -8,7 +8,6 @@ import model.Composer;
 import model.Produit;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -50,9 +49,7 @@ public class PdfGenerator {
         if (commande.getMagasin() != null) {
             document.add(new Paragraph("Magasin : " + commande.getMagasin().getNomMagasin() + " - " + commande.getMagasin().getAdresseMagasin()));
         }
-        if (commande.getCreneauRetrait() != null) {
-            document.add(new Paragraph("Créneau de retrait : " + commande.getCreneauRetrait()));
-        }
+
         document.add(new Paragraph("Prix Total : " + commande.getPrixTotal() + " €"));
         document.add(Chunk.NEWLINE);
 

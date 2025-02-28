@@ -39,6 +39,7 @@ public class Commande {
     @JsonBackReference  // Empêche la récursion infinie avec `Magasin`
     private Magasin magasin;
 
+    private String CreneauRetrait;
 
     @Column(name = "FinirPrepa")
     private Date finirPrepa;
@@ -49,7 +50,6 @@ public class Commande {
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference // Permet la sérialisation JSON
     private Set<Composer> composers = new HashSet<>();
-
 
 
     public Commande() {}
@@ -82,10 +82,12 @@ public class Commande {
         this.statut = statut;
     }
 
-    public User getClient() {
-        return client;
+    public Client getClient() {
+        if (client instanceof Client) {
+            return (Client) client;
+        }
+        return null; // Ou lancer une exception si ça ne devrait jamais arriver
     }
-
     public void setClient(User client) {
         this.client = client;
     }
@@ -123,5 +125,8 @@ public class Commande {
     }
 
 
-    public String getCreneauRetrait() { return null; }
+    public String getCreneauRetrait() { return CreneauRetrait; }
+    public void setCreneauRetrait(String creneauRetrait) {
+        this.CreneauRetrait = creneauRetrait;
+    }
 }

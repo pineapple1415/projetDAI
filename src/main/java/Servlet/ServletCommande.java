@@ -32,18 +32,22 @@ public class ServletCommande extends HttpServlet {
                 try {
                     String recipientEmail = commande.getClient().getEmail();
                     String subject = "Votre commande #" + idCommande + " est prête !";
-                    String messageBody = buildEmailBody(commande.getClient());
+                    String messageBody = buildEmailBody(commande);
 
-                    // Envoi d'un email simple sans pièce jointe
+
+                    // 1️⃣ Envoi d'un e-mail simple (sans pièce jointe)
+                    System.out.println("➡️ Envoi de l'e-mail simple...");
                     EmailService.sendSimpleEmail(recipientEmail, subject, messageBody);
+                    System.out.println("✅ E-mail simple envoyé avec succès !");
 
-                    request.setAttribute("message", "Email envoyé à " + recipientEmail);
+
+                    request.setAttribute("message", "Email envoyé avec le PDF à " + recipientEmail);
                 } catch (Exception e) {
                     e.printStackTrace();
                     request.setAttribute("message", "Erreur: " + e.getMessage());
                 }
             }
-            request.getRequestDispatcher("commande?action=listePreparationsPrioritaire").forward(request, response);
+            request.getRequestDispatcher("jsp/confirmationEmail.jsp").forward(request, response);
         } else if ("consulter".equals(act)) {
             // US 5.1 – Consulter une commande à préparer pour un retrait
             try {
@@ -101,18 +105,20 @@ public class ServletCommande extends HttpServlet {
         }
     }
 
-    private String buildEmailBody(User client) {
+    private String buildEmailBody(Commande commande) { // Remplacer User par Commande
+        User client = commande.getClient();
         return "<html>"
                 + "<body style='font-family: Arial, sans-serif;'>"
-                + "  <h2 style='color: #2c3e50;'>Bonjour " + client.getNom() + client.getPrenom() + ",</h2>"
+                + "  <h2 style='color: #2c3e50;'>Bonjour  Mr" + client.getNom() + " " + client.getPrenom() + ",</h2>"
                 + "  <p>Votre commande est prête pour retrait dans notre magasin.</p>"
-                + "  <p>Ci-joint le lien pour choisir un creneau de retrait .</p>"
-                + "  <p>Lien de retrait: <a href='http://magasin.example.com/retrait/creneau?idCommande=" + client.getIdUser() + "'>Cliquez ici</a></p>"
-                + "  <p>Voici en piece-joint les details de la commande/p>"
+                + "  <p>Ci-joint le lien pour choisir un creneau de retrait.</p>"
+                + "  <p>Lien de retrait: <a href='http://localhost:8080/ProjetDAI_war/creneau?idCommande=" + commande.getIdCommande() + "'>Cliquez ici</a></p>"
+                + "  <p>Voici en pièce-jointe les détails de la commande.</p>"
                 + "  <p>Cordialement,<br/>L'équipe Magasin</p>"
                 + "</body>"
                 + "</html>";
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
