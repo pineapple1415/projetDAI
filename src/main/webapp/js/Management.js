@@ -544,6 +544,62 @@ function afficherStockChart(labels, stockActuelData, stockPrevuData) {
 }
 
 
+// cette partie est le profil du client
+document.addEventListener("DOMContentLoaded", function () {
+    // Cacher tous les graphiques
+    function hideAllCharts() {
+        document.querySelectorAll('.chart-container').forEach(chart => {
+            chart.style.display = 'none';
+        });
+    }
+
+    // Afficher le graphique correspondant
+    window.toggleChart = function (chartId) {
+        hideAllCharts();
+        document.getElementById(chartId).style.display = 'block';
+        loadChart(chartId);
+    };
+
+    // Charger les données et afficher le graphique
+    function loadChart(chartType) {
+        fetch(`${window.location.origin}/ProjetDAI_war/getConsumerStats?type=${chartType}`)
+            .then(response => response.json())
+            .then(data => {
+                let ctx = document.getElementById(`chart${capitalizeFirstLetter(chartType)}`).getContext("2d");
+                renderChart(ctx, data.labels, data.values, `Répartition des consommateurs : ${chartType}`);
+            })
+            .catch(error => console.error("Erreur lors du chargement des données:", error));
+    }
+
+    // Créer un graphique avec Chart.js
+    function renderChart(ctx, labels, values, title) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+});
+
+
 
 
 

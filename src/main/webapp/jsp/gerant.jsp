@@ -334,9 +334,35 @@
             <button onclick="gererRecommandation()">Gérer Algorithme</button>
         </div>
         <div class="sub-section">
-            <h3>Profils Consommateurs</h3>
-            <button onclick="consulterProfils()">Consulter Profils</button>
+            <h3>Profils des Consommateurs</h3>
+            <div class="consumer-buttons">
+                <button onclick="toggleChart('regularCustomers')">Clients réguliers</button>
+                <button onclick="toggleChart('highValueCustomers')">Clients à haute valeur</button>
+                <button onclick="toggleChart('newCustomers')">Nouveaux clients</button>
+                <button onclick="toggleChart('inactiveCustomers')">Clients inactifs</button>
+            </div>
+
+            <!-- Zone d'affichage des statistiques -->
+            <div id="consumerChartContainer">
+                <div id="regularCustomers" class="chart-container">
+                    <h3>Répartition des clients réguliers</h3>
+                    <canvas id="chartRegularCustomers"></canvas>
+                </div>
+                <div id="highValueCustomers" class="chart-container">
+                    <h3>Répartition des clients à haute valeur</h3>
+                    <canvas id="chartHighValueCustomers"></canvas>
+                </div>
+                <div id="newCustomers" class="chart-container">
+                    <h3>Répartition des nouveaux clients</h3>
+                    <canvas id="chartNewCustomers"></canvas>
+                </div>
+                <div id="inactiveCustomers" class="chart-container">
+                    <h3>Répartition des clients inactifs</h3>
+                    <canvas id="chartInactiveCustomers"></canvas>
+                </div>
+            </div>
         </div>
+
         <div class="sub-section">
             <h3>Détection d'Habitudes</h3>
             <button onclick="detecterHabitudes()">Détecter Habitudes</button>

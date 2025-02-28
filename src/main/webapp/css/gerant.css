@@ -132,6 +132,51 @@ th {
     text-align: center;
 }
 
+/* ========== Boutons pour les profils de consommateurs ========== */
+.consumer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.consumer-buttons button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s ease-in-out;
+}
+
+.consumer-buttons button:hover {
+    background: #0056b3;
+}
+
+/* ========== Conteneur des graphiques ========== */
+#consumerChartContainer {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-container {
+    display: none; /* Caché par défaut */
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+canvas {
+    width: 100%;
+    height: auto;
+}
+
+
 /* ========== 响应式优化 ========== */
 @media screen and (max-width: 1024px) {
     .container {
