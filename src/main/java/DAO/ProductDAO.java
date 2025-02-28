@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 public class ProductDAO {
     public List<Produit> getAllProducts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("from Produit ", Produit.class).list();
+            return session.createQuery("from Produit", Produit.class).list();
         }
     }
 
     public List<Object[]> getFilteredProducts(List<String> categories, List<String> rayons) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "SELECT p.idProduit,p.imageUrl ,p.nomProduit, p.prixUnit,p.promotion FROM Produit p " +
+            String hql = "SELECT p.idProduit, p.imageUrl, p.nomProduit, p.prixUnit, p.promotion FROM Produit p " +
                     "JOIN p.categorie c " +
                     "WHERE 1=1";
 
@@ -27,7 +27,7 @@ public class ProductDAO {
                 hql += " AND c.nomCategorie IN (:categories)";
             }
             if (!rayons.isEmpty()) {
-                hql += " AND r.nomRayon IN (:rayons)";
+                hql += " AND c.rayon.nomRayon IN (:rayons)";
             }
 
             Query<Object[]> query = session.createQuery(hql, Object[].class);
@@ -59,14 +59,11 @@ public class ProductDAO {
         }
     }
 
-
-
     public void addProduit(Produit product) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.save(product);
-
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) transaction.rollback();
@@ -74,19 +71,17 @@ public class ProductDAO {
         }
     }
 
-
     public List<Produit> getProductsByIds(Set<Long> ids) {
         Set<Integer> intIds = ids.stream()
-                .map(Long::intValue) // 转换 Long -> Integer
+                .map(Long::intValue)
                 .collect(Collectors.toSet());
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Produit WHERE idProduit IN :ids", Produit.class)
-                    .setParameterList("ids", intIds) // 传入 Integer 类型的 id 集合
+                    .setParameterList("ids", intIds)
                     .list();
         }
     }
-
 
     public Produit getProduitById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -94,9 +89,6 @@ public class ProductDAO {
         }
     }
 
-
-
-    // ProductDAO.java
     public boolean isProduitAvailable(int produitId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Long totalStock = session.createQuery(
@@ -108,8 +100,6 @@ public class ProductDAO {
         }
     }
 
-
-    // ProductDAO.java 新增方法
     public Map<Integer, Boolean> checkStockStatus(Set<Integer> produitIds) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Object[]> results = session.createQuery(
@@ -126,17 +116,13 @@ public class ProductDAO {
                 long totalStock = (Long) result[1];
                 stockStatus.put(produitId, totalStock > 0);
             }
-            // 处理未找到库存记录的商品
             produitIds.forEach(id -> stockStatus.putIfAbsent(id, false));
             return stockStatus;
         }
     }
 
-
-    // ProductDAO.java 新增方法
     public List<Produit> getRecommendations(int currentProductId, int limit) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // 获取当前产品的类别和价格
             Produit current = session.get(Produit.class, currentProductId);
             if (current == null) return Collections.emptyList();
 
@@ -156,42 +142,31 @@ public class ProductDAO {
         }
     }
 
-        public List<Produit> getProduitsByCategorie (int categorieId) {
-            Transaction transaction = null;
-            List<Produit> produits = null;
-            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-                transaction = session.beginTransaction();
+    public List<Produit> getProduitsByCategorie(int categorieId) {
+        List<Produit> produits = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            produits = session.createQuery(
+                            "FROM Produit WHERE categorie.idCategorie = :categorieId", Produit.class)
+                    .setParameter("categorieId", categorieId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return produits;
+    }
 
-<<<<<<< HEAD
-
-    public static List<Integer> getPurchasedProductsByUser(int userId) {
-        List<Integer> purchasedProducts;
-
+    public List<Integer> getPurchasedProductsByUser(int userId) {
+        List<Integer> purchasedProducts = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT DISTINCT c.produit.idProduit FROM Composer c " +
                     "WHERE c.commande.client.idUser = :userId";
 
-            Query<Integer> query = session.createQuery(hql, Integer.class); // ✅ `Integer.class`
+            Query<Integer> query = session.createQuery(hql, Integer.class);
             query.setParameter("userId", userId);
             purchasedProducts = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return purchasedProducts;
     }
-
-
-
-=======
-                produits = session.createQuery(
-                                "FROM Produit WHERE categorie.idCategorie = :categorieId", Produit.class)
-                        .setParameter("categorieId", categorieId)
-                        .list();
-
-                transaction.commit();
-            } catch (Exception e) {
-                if (transaction != null) transaction.rollback();
-                e.printStackTrace();
-            }
-            return produits;
-        }
->>>>>>> test-branch
 }
